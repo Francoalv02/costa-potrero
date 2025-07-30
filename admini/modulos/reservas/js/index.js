@@ -22,6 +22,7 @@ window.addEventListener('load', async () => {
                     <td>${reserva.fechafin || 'N/A'}</td>
                     <td>${reserva.nombre_cabana || 'N/A'}</td>
                     <td>${reserva.preciototal || 'N/A'}</td>
+                    <td>${reserva.nombreestado}</td>
                     <td>
                         <button class="eliminar" data-id="${reserva.id}">Eliminar</button>
                         <a class="editar" href="editar.html?id=${reserva.id}">Editar</a>

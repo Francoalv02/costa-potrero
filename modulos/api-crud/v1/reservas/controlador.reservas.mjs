@@ -21,7 +21,7 @@ export async function consultarDisponibilidad(req, res) {
 // --- OBTENER TODAS LAS RESERVAS ---
 async function obtenerReservas(req, res) {
   try {
-    const resultado = await modelo.obtenerReservas();
+    const resultado = await modelo.obtenerReservasConEstado();
     if (resultado.rows.length > 0) {
       res.json(resultado.rows);
     } else {
@@ -37,7 +37,7 @@ async function obtenerReservas(req, res) {
 async function obtenerReserva(req, res) {
   try {
     const { id } = req.params;
-    const resultado = await modelo.obtenerReserva(id);
+    const resultado = await modelo.obtenerReservaConEstadoPorId(id);
 
     if (resultado.rows.length > 0) {
       res.json(resultado.rows[0]);
@@ -51,19 +51,18 @@ async function obtenerReserva(req, res) {
 }
 
 // --- CREAR NUEVA RESERVA (verifica huésped también) ---
- async function crearReservaHandler(req, res) {
+async function crearReservaHandler(req, res) {
   try {
-    const { id_dni, nombre, gmail, id_cabana, fecha_inicio, fecha_fin, precio_total } = req.body;
+    const { id_dni, nombre, gmail, id_cabana, fecha_inicio, fecha_fin, id_estado } = req.body;
 
-    if (!id_dni || !nombre || !gmail || !id_cabana || !fecha_inicio || !fecha_fin || !precio_total) {
+    if (!id_dni || !nombre || !gmail || !id_cabana || !fecha_inicio || !fecha_fin || !id_estado) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
 
-    // Asegura huésped existente
     await modelo.verificarOCrearHuesped({ id_dni, nombre, gmail });
 
-    // Crea la reserva
-    const resultado = await modelo.crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total });
+    // calcula automáticamente el precio
+    const resultado = await modelo.crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado });
 
     res.status(201).json({ mensaje: `Reserva creada correctamente` });
   } catch (error) {
@@ -72,28 +71,28 @@ async function obtenerReserva(req, res) {
   }
 }
 
-// --- MODIFICAR RESERVA ---
+
+
 // --- MODIFICAR RESERVA ---
 async function modificarReserva(req, res) {
   try {
     const { id } = req.params;
-    const { id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total, nombre, gmail } = req.body;
+    const { id_dni, id_cabana, fecha_inicio, fecha_fin, nombre, gmail, id_estado } = req.body;
 
-    if (!id || !id_dni || !id_cabana || !fecha_inicio || !fecha_fin || !precio_total) {
+    if (!id || !id_dni || !id_cabana || !fecha_inicio || !fecha_fin || !id_estado) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
 
-    // ✅ ACTUALIZAR DATOS DEL HUÉSPED
     await modelo.actualizarHuesped({ id_dni, nombre, gmail });
 
-    // ✅ MODIFICAR RESERVA
+    // recalcula el precio
     const resultado = await modelo.modificarReserva({
       id,
       id_dni,
       id_cabana,
       fecha_inicio,
       fecha_fin,
-      precio_total
+      id_estado
     });
 
     const { id: idReservaModificada } = resultado.rows[0];
@@ -122,6 +121,17 @@ async function eliminarReserva(req, res) {
     res.status(500).json({ mensaje: 'Error en el servidor' });
   }
 }
+
+export async function obtenerEstados(req, res) {
+  try {
+    const estados = await modelo.obtenerEstados();
+    res.json(estados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al obtener estados' });
+  }
+}
+
 
 // --- EXPORTACIONES ---
 export {

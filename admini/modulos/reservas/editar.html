@@ -28,7 +28,8 @@
     </header>
     <hr>
     <main>
-        <button class="buttonAtras" onclick="window.history.back()">Atrás</button>
+    <button class="buttonAtras" onclick="window.location.href='index.html'">Atrás</button>
+
         <div class="form-container">
         <h1 class="titulo-reservas">Reservas</h1>
         <h2 class="subtitulo-reservas">Editar</h2>
@@ -79,6 +80,10 @@
         Precio total:
         <input type="number" name="precio_total" id="precio_total" required min="0">
     </label>
+
+    <label for="estado">Estado</label>
+    <select id="estado" name="estado" required></select>
+
 
     <button type="submit">Guardar Cambios</button>
 </form>

@@ -32,20 +32,21 @@ async function obtenerCabana(id_cabana) {
 async function crearCabana(cabana) {
     try {
         const {
-           nombre_cabana,
-            descripcion ,
-            capacidad_personas 
+            nombre_cabana,
+            descripcion,
+            capacidad_personas,
+            precio // ✅ agregado
         } = cabana;
 
         const resultado = await pool.query(
             `
             INSERT INTO cabanas
-                (nombre_cabana, descripcion, capacidad_personas)
+                (nombre_cabana, descripcion, capacidad_personas, precio)
             VALUES
-                ($1, $2, $3)
-    RETURNING id_cabana
-        `,
-            [nombre_cabana, descripcion, capacidad_personas]
+                ($1, $2, $3, $4)
+            RETURNING id_cabana
+            `,
+            [nombre_cabana, descripcion, capacidad_personas, precio] // ✅ agregado
         );
 
         return resultado;
@@ -55,14 +56,14 @@ async function crearCabana(cabana) {
     }
 }
 
-
 async function modificarCabana(cabana) {
     try {
         const {
-            id_cabana ,
-           nombre_cabana,
-            descripcion ,
-            capacidad_personas 
+            id_cabana,
+            nombre_cabana,
+            descripcion,
+            capacidad_personas,
+            precio // ✅ agregado
         } = cabana;
 
         const resultado = await pool.query(
@@ -71,16 +72,12 @@ async function modificarCabana(cabana) {
             SET
                 nombre_cabana = $1,
                 descripcion = $2,
-                capacidad_personas = $3
-            WHERE id_cabana = $4
+                capacidad_personas = $3,
+                precio = $4
+            WHERE id_cabana = $5
             RETURNING id_cabana
-        `,
-            [
-             nombre_cabana,
-             descripcion ,
-             capacidad_personas ,
-             id_cabana
-            ]
+            `,
+            [nombre_cabana, descripcion, capacidad_personas, precio, id_cabana] // ✅ actualizado
         );
 
         return resultado;
@@ -96,8 +93,8 @@ async function eliminarCabana(id_cabana) {
             `
             DELETE FROM cabanas
             WHERE id_cabana = $1
-        `,
-            [id_cabana ]
+            `,
+            [id_cabana]
         );
         return resultado;
     } catch (error) {

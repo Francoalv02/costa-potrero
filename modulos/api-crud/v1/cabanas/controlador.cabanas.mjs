@@ -34,22 +34,24 @@ async function obtenerCabana(req, res) {
 
 async function crearCabana(req, res) {
     try {
-        const {
-            nombre_cabana,
-            descripcion ,
-            capacidad_personas
-
+                const {
+        nombre_cabana,
+        descripcion,
+        capacidad_personas,
+        precio 
         } = req.body;
 
-        if (!nombre_cabana|| !descripcion || !capacidad_personas ) {
+            if (!nombre_cabana || !descripcion || !capacidad_personas || !precio) {
             return res.status(400).json({ mensaje: 'Datos incompletos para crear la cabaña' });
-        }
+            }
 
-        const resultado = await modelo.crearCabana({
-           nombre_cabana,
-            descripcion ,
-            capacidad_personas
-        });
+            const resultado = await modelo.crearCabana({
+            nombre_cabana,
+            descripcion,
+            capacidad_personas,
+            precio 
+            });
+
 
         const { id: idCabanaCreada } = resultado.rows[0];
         res.json({ mensaje: `La Cabaña fue creada correctamente` });
@@ -63,22 +65,25 @@ async function modificarCabana(req, res) {
     try {
         const { id: id_cabana } = req.params;
 
-        const {
-           nombre_cabana,
-            descripcion ,
-            capacidad_personas ,
+                const {
+        nombre_cabana,
+        descripcion,
+        capacidad_personas,
+        precio 
         } = req.body;
 
-        if (!id_cabana  || !nombre_cabana|| !descripcion || !capacidad_personas) {
-            return res.status(400).json({ mensaje: 'Datos incompletos para modificar la cabaña' });
+        if (!id_cabana || !nombre_cabana || !descripcion || !capacidad_personas || !precio) {
+        return res.status(400).json({ mensaje: 'Datos incompletos para modificar la cabaña' });
         }
 
         const resultado = await modelo.modificarCabana({
-            id_cabana ,
-           nombre_cabana,
-            descripcion ,
-            capacidad_personas ,
+        id_cabana,
+        nombre_cabana,
+        descripcion,
+        capacidad_personas,
+        precio 
         });
+
 
         const { id: idCabanaModificada } = resultado.rows[0];
         res.json({ mensaje: `La Cabaña fue modificada correctamente` });

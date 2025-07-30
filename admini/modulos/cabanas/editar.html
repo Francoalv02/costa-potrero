@@ -30,29 +30,38 @@
     <hr>
     <main>
         
-        <button class="buttonAtras" onclick="window.history.back()" >Atrás</button>
+        <button class="buttonAtras" onclick="window.location.href='index.html'">Atrás</button>
+
 
         <div class="form-container">
         <h1 class="titulo-reservas">Cabañas</h1>
         <h2 class="subtitulo-reservas">Editar</h2>
         <div class="mensajes" id="mensajes"></div>
         <section>
-            <form class="form-group" id="form-editarCabana">
-                <label for="nombre_cabana">
-                    Nombre de la Cabaña
-                    <input type="text" name="nombre_cabana" id="nombre_cabana" required>
-                </label>
-                <label for="descripcion">
-                    Descripcion
-                    <input type="text" name="descripcion" id="descripcion">
-                </label>
-                <label for="capacidad_personas">
-                    Capacidad de Personas
-                    <input type="number" name="capacidad_personas" id="capacidad_personas" required>
-                </label>
+<form class="form-group" id="form-editarCabana">
+    <label for="nombre_cabana">
+        Nombre de la Cabaña
+        <input type="text" name="nombre_cabana" id="nombre_cabana" required>
+    </label>
 
-                <button type="submit" >Guardar Cambios</button>
-            </form>
+    <label for="descripcion">
+        Descripción
+        <input type="text" name="descripcion" id="descripcion">
+    </label>
+
+    <label for="capacidad_personas">
+        Capacidad de Personas
+        <input type="number" name="capacidad_personas" id="capacidad_personas" required>
+    </label>
+
+    <label for="precio">
+        Precio por Noche ($)
+        <input type="number" name="precio" id="precio" required min="0" step="100">
+    </label>
+
+    <button type="submit">Guardar Cambios</button>
+</form>
+
         </section>
         </div>
     </main>

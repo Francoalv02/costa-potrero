@@ -9,37 +9,46 @@ const mensajes = document.getElementById('mensajes');
 const precioInput = document.getElementById('precio_total');
 const selectCabana = document.getElementById('id_cabana');
 
-// Tarifas por cabaña (ajustalas según tus precios reales)
-const tarifasPorCabana = {
-  1: 15000,
-  2: 12000,
-  3: 20000,
-  4: 18000
-};
+// Almacena precios por ID cabaña
+let preciosCabanas = {};
 
-// Precargar desde URL y llenar opciones
 window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const fechaInicio = params.get('fecha_inicio');
   const fechaFin = params.get('fecha_fin');
   const idCabana = params.get('id');
 
-  await cargarOpcionesCabana(); // ← Llenamos el select con cabañas
+  await Promise.all([cargarOpcionesCabana(), cargarEstados()]);
 
   if (fechaInicio) document.getElementById('fecha_inicio').value = fechaInicio;
   if (fechaFin) document.getElementById('fecha_fin').value = fechaFin;
   if (idCabana) document.getElementById('id_cabana').value = idCabana;
 
-  calcularPrecio(); // Calcular de entrada si está todo completo
+  calcularPrecio(); // Cálculo automático
 });
 
-// Llenar lista desplegable desde la API
+formulario.addEventListener('change', calcularPrecio);
+
+function calcularPrecio() {
+  const fechaInicio = new Date(document.getElementById('fecha_inicio').value);
+  const fechaFin = new Date(document.getElementById('fecha_fin').value);
+  const idCabana = parseInt(document.getElementById('id_cabana').value);
+
+  if (!isNaN(idCabana) && fechaInicio && fechaFin && fechaFin > fechaInicio) {
+    const dias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
+    const precioUnitario = preciosCabanas[idCabana] || 0;
+    precioInput.value = (dias * precioUnitario).toFixed(2);
+  } else {
+    precioInput.value = '';
+  }
+}
+
 async function cargarOpcionesCabana() {
   try {
     const res = await fetch('/api/v1/cabanas');
     const cabanas = await res.json();
-
     cabanas.forEach(c => {
+      preciosCabanas[c.id_cabana] = c.precio; // Guardar precio
       const opcion = document.createElement('option');
       opcion.value = c.id_cabana;
       opcion.textContent = c.nombre_cabana;
@@ -51,24 +60,6 @@ async function cargarOpcionesCabana() {
   }
 }
 
-// Actualiza el precio cuando cambian fechas o cabaña
-formulario.addEventListener('change', calcularPrecio);
-
-function calcularPrecio() {
-  const fechaInicio = new Date(document.getElementById('fecha_inicio').value);
-  const fechaFin = new Date(document.getElementById('fecha_fin').value);
-  const idCabana = parseInt(document.getElementById('id_cabana').value);
-
-  if (!isNaN(idCabana) && fechaInicio && fechaFin && fechaFin > fechaInicio) {
-    const dias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-    const tarifa = tarifasPorCabana[idCabana] || 10000;
-    precioInput.value = (dias * tarifa).toFixed(2);
-  } else {
-    precioInput.value = '';
-  }
-}
-
-// Enviar datos al backend
 formulario.addEventListener('submit', async (evento) => {
   evento.preventDefault();
   const datosFormulario = procesarFormulario(formulario);
@@ -80,25 +71,21 @@ formulario.addEventListener('submit', async (evento) => {
     id_cabana: parseInt(datosFormulario.id_cabana),
     fecha_inicio: datosFormulario.fecha_inicio,
     fecha_fin: datosFormulario.fecha_fin,
-    precio_total: parseFloat(datosFormulario.precio_total)
+    precio_total: parseFloat(datosFormulario.precio_total),
+    id_estado: parseInt(document.getElementById('estado').value)
   };
 
   try {
-    // 1. Verificar o crear huésped
-    const resHuesped = await fetch('/api/v1/huespedes', {
+    await fetch('/api/v1/huespedes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id_dni: datosTransformados.id_dni,
         nombre: datosTransformados.nombre,
         gmail: datosTransformados.gmail
-
       })
     });
 
-    if (!resHuesped.ok) throw new Error('Error al registrar huésped');
-
-    // 2. Crear reserva
     const resReserva = await altaRegistro('/api/v1/reservas', 'POST', datosTransformados);
     const datos = await resReserva.json();
     mostrarMensaje(mensajes, datos.mensaje);
@@ -109,3 +96,16 @@ formulario.addEventListener('submit', async (evento) => {
     mostrarMensaje(mensajes, 'Datos incompletos o error al crear la reserva');
   }
 });
+
+async function cargarEstados() {
+  const res = await fetch('/api/v1/estados');
+  const estados = await res.json();
+  const select = document.getElementById('estado');
+  select.innerHTML = '';
+  estados.forEach(est => {
+    const option = document.createElement('option');
+    option.value = est.id_estado;
+    option.textContent = est.nombreestado;
+    select.appendChild(option);
+  });
+}

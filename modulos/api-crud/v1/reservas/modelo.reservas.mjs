@@ -40,32 +40,8 @@ export async function buscarProximaDisponibilidad(fecha_inicio) {
 //
 
 // Obtener todas las reservas con datos completos
-async function obtenerReservas() {
-  try {
-    const resultado = await pool.query(`
-      SELECT 
-        r.id_reserva AS id,
-        h.id_dni,
-        h.nombre,
-        h.gmail AS email,
-        c.nombre_cabana,
-        r.fechaInicio,
-        r.fechaFin,
-        r.precioTotal
-      FROM reservas r
-      JOIN huespedes h ON r.id_dni = h.id_dni
-      JOIN cabanas c ON r.id_cabana = c.id_cabana
-      ORDER BY r.id_reserva
-    `);
-    return resultado;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-// Obtener reserva por ID
-async function obtenerReserva(id) {
+// Obtener reserva por ID (con nombre de estado)
+async function obtenerReservaConEstadoPorId(id) {
   try {
     const resultado = await pool.query(`
       SELECT 
@@ -76,9 +52,11 @@ async function obtenerReserva(id) {
         r.id_cabana,
         r.fechaInicio,
         r.fechaFin,
-        r.precioTotal
+        r.precioTotal,
+        e.NombreEstado
       FROM reservas r
       JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN Estados e ON r.ID_Estado = e.ID_Estado
       WHERE r.id_reserva = $1
     `, [id]);
     return resultado;
@@ -88,14 +66,26 @@ async function obtenerReserva(id) {
   }
 }
 
-// Crear reserva
-async function crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total }) {
+// Obtener todas las reservas con nombre de estado
+async function obtenerReservasConEstado() {
   try {
     const resultado = await pool.query(`
-      INSERT INTO reservas (id_dni, id_cabana, fechaInicio, fechaFin, precioTotal)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id_reserva AS id
-    `, [id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total]);
+      SELECT 
+        r.id_reserva AS id,
+        h.id_dni,
+        h.nombre,
+        h.gmail AS email,
+        c.nombre_cabana,
+        r.fechaInicio,
+        r.fechaFin,
+        r.precioTotal,
+        e.NombreEstado
+      FROM reservas r
+      JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
+      JOIN estados e ON r.id_estado = e.id_estado
+      ORDER BY r.id_reserva
+    `);
     return resultado;
   } catch (error) {
     console.error(error);
@@ -103,25 +93,70 @@ async function crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, precio
   }
 }
 
-// Modificar reserva
-async function modificarReserva({ id, id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total }) {
+
+// Crear reserva
+async function crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado }) {
   try {
+    // 1. Obtener precio por día desde la tabla Cabañas
+    const cabana = await pool.query(
+      'SELECT precio FROM cabanas WHERE id_cabana = $1',
+      [id_cabana]
+    );
+    const precioPorDia = cabana.rows[0]?.precio || 0;
+
+    // 2. Calcular días
+    const dias = Math.ceil((new Date(fecha_fin) - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24));
+    const precio_total = dias * precioPorDia;
+
+    // 3. Insertar reserva con el precio calculado
     const resultado = await pool.query(`
-      UPDATE reservas
-      SET id_dni = $1,
-          id_cabana = $2,
-          fechaInicio = $3,
-          fechaFin = $4,
-          precioTotal = $5
-      WHERE id_reserva = $6
+      INSERT INTO reservas (id_dni, id_cabana, fechaInicio, fechaFin, precioTotal, id_estado)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id_reserva AS id
-    `, [id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total, id]);
+    `, [id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total, id_estado]);
+
     return resultado;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
+
+// Modificar reserva
+async function modificarReserva({ id, id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado }) {
+  try {
+    // 1. Obtener precio por día desde la tabla Cabañas
+    const cabana = await pool.query(
+      'SELECT precio FROM cabanas WHERE id_cabana = $1',
+      [id_cabana]
+    );
+    const precioPorDia = cabana.rows[0]?.precio || 0;
+
+    // 2. Calcular días
+    const dias = Math.ceil((new Date(fecha_fin) - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24));
+    const precio_total = dias * precioPorDia;
+
+    // 3. Actualizar la reserva
+    const resultado = await pool.query(`
+      UPDATE reservas
+      SET id_dni = $1,
+          id_cabana = $2,
+          fechaInicio = $3,
+          fechaFin = $4,
+          precioTotal = $5,
+          id_estado = $6
+      WHERE id_reserva = $7
+      RETURNING id_reserva AS id
+    `, [id_dni, id_cabana, fecha_inicio, fecha_fin, precio_total, id_estado, id]);
+
+    return resultado;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 
 // Eliminar reserva
 async function eliminarReserva(id) {
@@ -176,16 +211,29 @@ async function actualizarHuesped({ id_dni, nombre, gmail }) {
   }
 }
 
+// Obtener todos los estados
+async function obtenerEstados() {
+  try {
+    const resultado = await pool.query('SELECT * FROM Estados ORDER BY id_estado');
+    return resultado.rows;
+  } catch (error) {
+    console.error('Error al obtener estados:', error);
+    throw error;
+  }
+}
+
+
 
 
 //
 // ==== EXPORTACIONES ====
 export {
-  obtenerReservas,
-  obtenerReserva,
+  obtenerReservasConEstado,
+  obtenerReservaConEstadoPorId,
   crearReserva,
   modificarReserva,
   eliminarReserva,
   verificarOCrearHuesped,
-  actualizarHuesped 
+  actualizarHuesped,
+  obtenerEstados
 };
