@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión de Huéspedes</title>
+  <link rel="stylesheet" href="../css/estilo.css">
+  <script type="module" src="./js/index.js"></script>
+</head>
+
+<body>
+        <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="../reservas/index.html">Listado Reservas</a>
+                    <a href="../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="../cabanas/index.html">Listado Cabañas</a>
+                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                </li>
+            </ul>
+           
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="titulo-reservas">Gestión de Huéspedes</h1>
+        <div class="mensajes" id="mensajes"></div>
+
+        <form  class="form-group" id="form-huesped">
+            <input type="text" id="id_dni" placeholder="DNI" required />
+            <input type="text" id="nombre" placeholder="Nombre" required />
+            <input type="text" id="telefono" placeholder="Teléfono" />
+            <input type="email" id="gmail" placeholder="Email" required />
+            <button type="submit">Guardar</button>
+        </form>
+
+
+        <h2 class="subtitulo-reservas">Listado de Huéspedes</h2>
+        <table border="1">
+            <thead>
+            <tr><th>DNI</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr>
+            </thead>
+            <tbody id="tabla-huespedes"></tbody>
+        </table>
+    </main>
+    
+<script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/login.html';
+      })
+      .catch(error => {
+        console.error('Error al cerrar sesión:', error);
+      });
+  }
+</script>
+</body>
+
+</html>
+
+

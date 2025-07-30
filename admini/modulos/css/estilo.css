@@ -1,0 +1,604 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header .logo h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #45a049;
+}
+
+main {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Títulos */
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #007a49;
+}
+
+.h1titulo {
+    color: #4CAF50;
+}
+
+.titulo-reservas {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #006400;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitulo-reservas {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Contenedores */
+.contenedor-reservas,
+.admin-reservas {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Botones */
+button,
+.action-button,
+.add-cabana,
+.reserve-btn,
+.cabana button,
+.btn-ingresar,
+.btn-olvidar {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+}
+
+
+.action-button {
+    background-color: #abb9c9;
+    color: #fff;
+    font-weight: bold;
+}
+
+.action-button:hover {
+    background-color: #107aec;
+    transition: background-color 0.3s ease;
+}
+
+.add-cabana {
+    background-color: #4CAF50;
+    color: white;
+    float: right;
+}
+
+.add-cabana:hover {
+    background-color: #45a049;
+}
+
+.reserve-btn {
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+}
+
+.reserve-btn:hover,
+.cabana button:hover,
+.btn-ingresar:hover {
+    background-color: #007bff;
+}
+
+.editar {
+    background-color: #0703f1;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.btn-olvidar {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #333;
+    margin-top: 10px;
+}
+
+.btn-olvidar:hover {
+    background-color: #ddd;
+}
+
+/* Tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Imagenes */
+img {
+    width: 100px;
+    height: 160px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+img:hover {
+    opacity: 0.7;
+}
+
+/* Login */
+.login-container {
+    display: flex;
+    width: 70%;
+    max-width: 1200px;
+    height: 500px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: auto;
+}
+
+.login-form {
+    width: 50%;
+    padding: 40px;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-image {
+    width: 50%;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Otros */
+.search-bar {
+    margin: 20px 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.search-bar input {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+.search-bar button {
+    background-color: transparent;
+    border: none;
+    margin-left: -40px;
+    cursor: pointer;
+}
+
+.search-bar button img {
+    width: 25px;
+    height: 25px;
+}
+
+.mensajes {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 15px;
+    background-color: #eee;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #999;
+    font-style: italic;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo h1 {
+    margin: 0;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre logo e texto */
+}
+
+.imagenlogo {
+    width: 150px; /* Ajustalo a tu gusto */
+    height: auto;
+}
+
+.nombrelogo {
+    font-size: 20px;
+    font-weight: bold;
+    color: white; /* O el color que estés usando en el header */
+}
+
+nav ul li a:hover {
+    background-color: #45a049;
+}
+
+main {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.h1 {
+    color: #ffffff;
+    text-align: center;
+}
+.h1titulo{
+    color: #4CAF50;
+
+}
+.buttonAtras{
+    background-color: rgb(153, 19, 19);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+.eliminar{
+    background-color: #eb1212;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+.mensajes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 15px auto;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* Éxito (verde) */
+.mensajes.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Error (rojo) */
+.mensajes.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Info (celeste) */
+.mensajes.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.btn-logout {
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+.btn-logout:hover {
+  background-color: #e74c3c;
+}
+
+
+.action-btn {
+    cursor: pointer;
+    margin: 0 5px;
+    color: #333;
+    font-size: 18px;
+}
+
+.action-btn:hover {
+    color: #4CAF50;
+}
+.editar{
+    background-color: #0703f1;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+.editar:hover {
+    color: white;
+    background-color: #4CAF50;
+}
+#modalReserva {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 400px;
+}
+
+#modalReserva h2 {
+    margin-top: 0;
+    color: #4CAF50;
+}
+
+#modalReserva form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+#modalReserva form input {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#modalReserva button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+#modalReserva button:hover {
+    background-color: #45a049;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+img {
+    width: 100px;
+    height: 160px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+/**/
+
+.form-container {
+    max-width: 600px;
+    margin: 30px auto;
+    background: rgb(255, 255, 255);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #006400;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.form-container h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}

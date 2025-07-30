@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <style>
+
+
+        /* Contenedor principal */
+
+        .container {
+            max-width: 700px;
+            background-color: #fff;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); /* corregido "4p" a "4px" */
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 20px;
+            text-align: center;
+            margin: 50px auto 40px auto; /* margen superior agregado */
+        }
+
+
+        /* Estilos para el contenido */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .content img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content a {
+            margin-top: 10px;
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .content a:hover {
+            background-color: #0056b3;
+        }
+
+        .contact-info {
+            text-align: left;
+            background-color: #d1d1d1;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            max-width: 500px;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .contact-info p {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <div class="logo">
+
+            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+        </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="./index.html">Inicio</a></li>
+                <li><a href="./cabanas.html">Cabañas</a></li>
+                <li><a href="./servicios.html">Servicios</a></li>
+                <li><a href="./ubicacion.html">Ubicación</a></li>
+                <li><a href="./reservas.html">Mis Reservas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Ubicación</h1>
+        <h2>¿Cómo llegar?</h2>
+
+        <div class="content-ubicacion">
+            <img src="./recursos/ubicacion.png" alt="Ubicación de Costa Potrero">
+            <a class="link-mapa" href="https://www.google.com/maps/dir/-31.4703409,-64.2306435/costa+potrero/@-31.7201351,-64.7407235,10z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x942d4d7670ab8bef:0xc130069d6eb86b7!2m2!1d-64.5436248!2d-31.7901096?entry=ttu" target="_blank" rel="noopener noreferrer">
+                Ver en Google Maps
+            </a>
+        </div>
+
+        <div class="contact-info">
+            <h3>Contáctenos</h3>
+            <p>Av Costanera S/N</p>
+            <p>Potrero de Garay, Córdoba</p>
+            <p>Email: <a href="mailto:reservas@costapotrero.com">reservas@costapotrero.com</a></p>
+            <p>Teléfono: +54 3513550694</p>
+        </div>
+    </div>
+</body>
+
+
+   <footer class="footer">
+    <div class="footer-top">
+        <h2>El mejor lugar para vacacionar</h2>
+
+    </div>
+
+    <div class="footer-middle">
+        <div class="footer-col">
+            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+            <p>
+                Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                TV Satelital, Wifi, Ropa Blanca y Piscina.
+            </p>
+        </div>
+        <div class="footer-col">
+            <p><strong>Costa Potrero</strong><br>Cabaña & Suites</p>
+        </div>
+        <div class="footer-col">
+            <h4>Contáctenos</h4>
+            <p>Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
+            <p>Mail: <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
+            <p>+54 351 5 550 694</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>©2022 Arcowal Industries. All Rights Reserved.</p>
+        <p><a href="#">Terms of use</a> | <a href="#">Privacy Environmental Policy</a></p>
+    </div>
+</footer>
+<style>
+@media (max-width: 600px) {
+    .footer-top {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .footer-middle {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+}
+
+</style>
+</html>

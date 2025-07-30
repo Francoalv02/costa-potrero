@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Reserva</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <script type="module" src="./js/editar.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="../reservas/index.html">Listado Reservas</a>
+                    <a href="../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="../cabanas/index.html">Listado Cabañas</a>
+                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                </li>
+            </ul>
+           
+        </nav>
+    </header>
+    <hr>
+    <main>
+        <button class="buttonAtras" onclick="window.history.back()">Atrás</button>
+        <div class="form-container">
+        <h1 class="titulo-reservas">Reservas</h1>
+        <h2 class="subtitulo-reservas">Editar</h2>
+        <div class="mensajes" id="mensajes"></div>
+        <section>
+            <form class="form-group" id="form-editar">
+
+    <!-- ID de reserva (solo lectura) -->
+    <label for="id_reserva">
+        ID de la reserva:
+        <input type="text" name="id_reserva" id="id_reserva" readonly>
+    </label>
+
+    <label for="id_dni">
+        DNI del huésped:
+        <input type="text" name="id_dni" id="id_dni" required>
+    </label>
+
+    <label for="nombre">
+        Nombre del huésped:
+        <input type="text" name="nombre" id="nombre" required>
+    </label>
+
+    <label for="email">
+        Gmail del huésped:
+        <input type="email" name="email" id="email" required>
+    </label>
+
+    <label for="id_cabana">
+        Cabaña:
+        <select name="id_cabana" id="id_cabana" required>
+            <option value="">Seleccione una cabaña</option>
+        </select>
+
+    </label>
+
+    <label for="fecha_inicio">
+        Fecha de entrada:
+        <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+    </label>
+
+    <label for="fecha_fin">
+        Fecha de salida:
+        <input type="date" name="fecha_fin" id="fecha_fin" required>
+    </label>
+
+    <label for="precio_total">
+        Precio total:
+        <input type="number" name="precio_total" id="precio_total" required min="0">
+    </label>
+
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+
+
+        </section>
+    </div>
+    </main>
+    <script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/login.html';
+      })
+      .catch(error => {
+        console.error('Error al cerrar sesión:', error);
+      });
+  }
+</script>
+</body>
+</html>

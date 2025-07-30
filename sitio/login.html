@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+       <link rel="stylesheet" href="./css/estilo.css">
+
+</head>
+
+<body>
+    <div class="conteineruniversal">        
+        <div class="login-container">
+
+            <div class="login-form">
+       
+                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+
+                
+
+
+                <form id="form-login">
+                    <hr>
+                
+                    <label for="email" class="label">CORREO ELECTRÓNICO</label>
+                    <input type="email" id="email" class="input" placeholder="hola@tucorreo.co" required>
+    
+                    <label for="password" class="label">CLAVE</label>
+                    <input type="password" id="password" class="input" placeholder="******" required>
+    
+                    <button type="submit" class="btn-ingresar">Ingresar</button>
+                    <button type="button" class="btn-olvidar">Olvidé mi contraseña</button>
+                    <div id="mensaje" class="mensajes"></div>
+
+                </form>
+            </div>
+            <div class="login-image">
+                <img src="./recursos/indexPortada.jpg" alt="Imagen de Costa Potrero" class="image">
+            </div>
+        </div>
+    </div>
+    <script>
+  const form = document.getElementById('form-login');
+  const mensaje = document.getElementById('mensaje');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const datos = {
+      usuario: document.getElementById('email').value,
+      clave: document.getElementById('password').value
+    };
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+
+      const info = await res.json();
+
+      if (res.ok) {
+        if (info.rol === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/';
+        }
+      } else {
+        mensaje.textContent = info.mensaje;
+      }
+
+    } catch (error) {
+      console.error(error);
+      mensaje.textContent = 'Error al intentar iniciar sesión.';
+    }
+  });
+</script>
+
+
+</body>
+</html>

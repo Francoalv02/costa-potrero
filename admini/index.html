@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./modulos/css/estilo.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="./modulos/reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./admini/modulos/reservas/index.html">Listado Reservas</a>
+                    <a href="./admini/modulos/cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./admini/modulos/cabanas/index.html">Listado Cabañas</a>
+                    <a href="./admini/modulos/huespedes/index.html">Listado Huespedes</a>
+                   
+                </li>
+            </ul>
+
+        </nav>
+         
+    </header>
+    <main>
+        <h1>Bienvenidos al Sistema de Administracion de Reservas y Cabañas</h1>
+    </main>
+<script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/login.html';
+      })
+      .catch(error => {
+        console.error('Error al cerrar sesión:', error);
+      });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Reserva</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <script type="module" src="./js/editar.js"></script>
+</head>
+<body>
+
+ <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="../reservas/index.html">Listado Reservas</a>
+                    <a href="../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="../cabanas/index.html">Listado Cabañas</a>
+                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                </li>
+            </ul>
+           
+        </nav>
+    </header>
+    <hr>
+    <main>
+        
+        <button class="buttonAtras" onclick="window.history.back()" >Atrás</button>
+
+        <div class="form-container">
+        <h1 class="titulo-reservas">Cabañas</h1>
+        <h2 class="subtitulo-reservas">Editar</h2>
+        <div class="mensajes" id="mensajes"></div>
+        <section>
+            <form class="form-group" id="form-editarCabana">
+                <label for="nombre_cabana">
+                    Nombre de la Cabaña
+                    <input type="text" name="nombre_cabana" id="nombre_cabana" required>
+                </label>
+                <label for="descripcion">
+                    Descripcion
+                    <input type="text" name="descripcion" id="descripcion">
+                </label>
+                <label for="capacidad_personas">
+                    Capacidad de Personas
+                    <input type="number" name="capacidad_personas" id="capacidad_personas" required>
+                </label>
+
+                <button type="submit" >Guardar Cambios</button>
+            </form>
+        </section>
+        </div>
+    </main>
+    <script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/login.html';
+      })
+      .catch(error => {
+        console.error('Error al cerrar sesión:', error);
+      });
+  }
+</script>
+</body>
+</html>
