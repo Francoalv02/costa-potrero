@@ -1,45 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard - Costa Potrero</title>
     <link rel="stylesheet" href="./modulos/css/estilo.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="./js/dashboard.js"></script>
 </head>
 <body>
     <header>
         <div class="logo">
-            <h1 class="h1">Costa Potrero</h1>
-            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+            <h1 class="h1"> Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout"> Cerrar sesión</button>
         </div>
         <nav>
             <ul>
                 <li> 
                     <a href="./modulos/reservas/disponibilidad.html">Disponibilidad</a>
-                    <a href="./admini/modulos/reservas/index.html">Listado Reservas</a>
-                    <a href="./admini/modulos/cabanas/alta.html">Alta Cabaña</a>
-                    <a href="./admini/modulos/cabanas/index.html">Listado Cabañas</a>
-                    <a href="./admini/modulos/huespedes/index.html">Listado Huespedes</a>
-                   
+                    <a href="./modulos/reservas/index.html">Listado Reservas</a>
+                    <a href="./modulos/cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./modulos/cabanas/index.html">Listado Cabañas</a>
+                    <a href="./modulos/huespedes/index.html">Listado Huespedes</a>
+                    <a href="./modulos/pagos/pagos.html">Lista de Pagos</a>
                 </li>
             </ul>
-
         </nav>
-         
     </header>
-    <main>
-        <h1>Bienvenidos al Sistema de Administracion de Reservas y Cabañas</h1>
+
+    <main class="dashboard-main">
+        <!-- Sección de Bienvenida -->
+        <section class="welcome-section">
+            <div class="welcome-background"></div>
+            <div class="welcome-container">
+                <h1>🏖️ ¡Bienvenido al Sistema de Administración!</h1>
+                <p class="welcome-subtitle">Gestiona reservas, cabañas, huéspedes y pagos de Costa Potrero</p>
+                <div class="current-time">
+                    <span id="current-date"></span>
+                    <span id="current-time"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tarjetas de Acceso Rápido -->
+        <section class="quick-access-section">
+            <h2>🚀 Acceso Rápido</h2>
+            <div class="quick-access-grid">
+                <div class="quick-card" onclick="window.location.href='./modulos/reservas/disponibilidad.html'">
+                    <div class="card-icon">📅</div>
+                    <h3>Consultar Disponibilidad</h3>
+                    <p>Ver cabañas disponibles y crear reservas</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/reservas/index.html'">
+                    <div class="card-icon">📋</div>
+                    <h3>Gestionar Reservas</h3>
+                    <p>Ver, editar y administrar todas las reservas</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/cabanas/alta.html'">
+                    <div class="card-icon">🏠</div>
+                    <h3>Agregar Cabaña</h3>
+                    <p>Registrar nuevas cabañas en el sistema</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/huespedes/index.html'">
+                    <div class="card-icon">👥</div>
+                    <h3>Gestionar Huéspedes</h3>
+                    <p>Administrar información de huéspedes</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/pagos/pagos.html'">
+                    <div class="card-icon">💰</div>
+                    <h3>Control de Pagos</h3>
+                    <p>Gestionar pagos y ver estadísticas</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/cabanas/index.html'">
+                    <div class="card-icon">🏡</div>
+                    <h3>Ver Cabañas</h3>
+                    <p>Listado completo de todas las cabañas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas Generales -->
+        <section class="stats-section">
+            <h2>📊 Estadísticas Generales</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3>Total Reservas</h3>
+                        <p id="total-reservas">Cargando...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏡</div>
+                    <div class="stat-content">
+                        <h3>Cabañas Registradas</h3>
+                        <p id="total-cabanas">Cargando...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Huéspedes Registrados</h3>
+                        <p id="total-huespedes">Cargando...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Pagos Realizados</h3>
+                        <p id="total-pagos">Cargando...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <h3>Ingresos Totales</h3>
+                        <p id="ingresos-totales">Cargando...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <h3>Reservas Hoy</h3>
+                        <p id="reservas-hoy">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráficos y Análisis -->
+        <section class="charts-section">
+            <h2>📈 Análisis y Gráficos</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Reservas por Mes</h3>
+                    <canvas id="chart-reservas-mes"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Estado de Reservas</h3>
+                    <canvas id="chart-estado-cabanas"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Pagos por Método</h3>
+                    <canvas id="chart-pagos-metodo"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Ocupación Semanal</h3>
+                    <canvas id="chart-ocupacion-semanal"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actividad Reciente -->
+        <section class="recent-activity-section">
+            <h2>🕒 Actividad Reciente</h2>
+            <div class="activity-container">
+                <div class="activity-list" id="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">📋</div>
+                        <div class="activity-content">
+                            <h4>Nueva Reserva Creada</h4>
+                            <p>Reserva #123 para Cabaña Juvenil</p>
+                            <span class="activity-time">Hace 2 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💰</div>
+                        <div class="activity-content">
+                            <h4>Pago Registrado</h4>
+                            <p>Pago #45 - $15,000 por transferencia</p>
+                            <span class="activity-time">Hace 3 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">👥</div>
+                        <div class="activity-content">
+                            <h4>Nuevo Huésped</h4>
+                            <p>Ana Torres registrada en el sistema</p>
+                            <span class="activity-time">Hace 5 horas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Información del Sistema -->
+        <section class="system-info-section">
+            <h2>ℹ️ Información del Sistema</h2>
+            <div class="system-info-grid">
+                <div class="info-card">
+                    <h3>🖥️ Estado del Servidor</h3>
+                    <p id="server-status">Conectado</p>
+                    <p>Puerto: 4000</p>
+                </div>
+                <div class="info-card">
+                    <h3>📅 Próximas Reservas</h3>
+                    <div id="upcoming-reservations">
+                        <p>Cargando próximas reservas...</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h3>🔔 Notificaciones</h3>
+                    <div id="notifications">
+                        <p>No hay notificaciones pendientes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
-<script>
-  function cerrarSesion() {
-    fetch('/logout', { method: 'POST' })
-      .then(() => {
-        window.location.href = '/login.html';
-      })
-      .catch(error => {
-        console.error('Error al cerrar sesión:', error);
-      });
-  }
-</script>
+
+    <script>
+        function cerrarSesion() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/login.html';
+                })
+                .catch(error => {
+                    console.error('Error al cerrar sesión:', error);
+                });
+        }
+
+        // Actualizar fecha y hora
+        function updateDateTime() {
+            const now = new Date();
+            const dateElement = document.getElementById('current-date');
+            const timeElement = document.getElementById('current-time');
+            
+            dateElement.textContent = now.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            timeElement.textContent = now.toLocaleTimeString('es-ES');
+        }
+
+        // Actualizar cada segundo
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
 </body>
 </html>

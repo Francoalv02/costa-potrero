@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas Frecuentes - Costa Potrero</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header moderno -->
+    <header id="header">
+        <div class="logo">
+            <img src="./recursos/logo.png" alt="Costa Potrero Logo" class="imagenlogo">
+            <span class="nombrelogo">Costa Potrero</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="./index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
+                <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                <li><a href="./faq.html" class="active"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Hero Section -->
+        <section class="container" style="margin-top: 2rem;">
+            <div class="card glass-effect fade-in-up">
+                <h1 class="gradient-text" style="text-align: center; margin-bottom: 1rem; font-size: 2.5rem;">
+                    <i class="fas fa-question-circle"></i> Preguntas Frecuentes
+                </h1>
+                <p style="text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; margin-bottom: 2rem;">
+                    Encuentra respuestas a las preguntas más comunes sobre nuestros servicios
+                </p>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="container" style="margin-top: 3rem;">
+            <div class="faq-container">
+                
+                <!-- Reservas -->
+                <div class="card glass-effect slide-in-left">
+                    <h3 class="gradient-text" style="margin-bottom: 2rem;">
+                        <i class="fas fa-calendar-check"></i> Reservas y Check-in
+                    </h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-clock"></i> ¿Cuáles son los horarios de check-in y check-out?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>El check-in es a las 14:00 horas y el check-out a las 11:00 horas. Para horarios especiales, consulta con nosotros.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-credit-card"></i> ¿Qué métodos de pago aceptan?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Aceptamos efectivo, transferencias bancarias, tarjetas de crédito y débito, y pagos a través de plataformas digitales.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-calendar-times"></i> ¿Cuál es la política de cancelación?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Las cancelaciones con más de 48 horas de anticipación tienen reembolso completo. Cancelaciones con menos tiempo tienen cargo del 50%.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicios -->
+                <div class="card glass-effect slide-in-left">
+                    <h3 class="gradient-text" style="margin-bottom: 2rem;">
+                        <i class="fas fa-concierge-bell"></i> Servicios e Instalaciones
+                    </h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-wifi"></i> ¿Tienen WiFi gratuito?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sí, todas nuestras cabañas incluyen WiFi gratuito de alta velocidad para que puedas mantenerte conectado.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-swimming-pool"></i> ¿La piscina está disponible todo el año?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nuestra piscina está climatizada y disponible durante todo el año, con horarios de 8:00 a 20:00 horas.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-car"></i> ¿Hay estacionamiento disponible?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sí, contamos con estacionamiento gratuito y seguro para todos nuestros huéspedes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="card glass-effect slide-in-left">
+                    <h3 class="gradient-text" style="margin-bottom: 2rem;">
+                        <i class="fas fa-map-marker-alt"></i> Ubicación y Acceso
+                    </h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-route"></i> ¿Cómo llegar a Costa Potrero?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Estamos ubicados en Av. Costanera S/N, Potrero de Garay, Córdoba. A 15 minutos del centro de Villa Carlos Paz.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-bus"></i> ¿Hay transporte público cerca?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sí, hay líneas de colectivo que pasan cerca del complejo. También ofrecemos servicio de traslado desde el centro.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-store"></i> ¿Hay comercios cercanos?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>A 5 minutos hay supermercados, farmacias y restaurantes. También tenemos delivery de comidas disponible.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mascotas -->
+                <div class="card glass-effect slide-in-left">
+                    <h3 class="gradient-text" style="margin-bottom: 2rem;">
+                        <i class="fas fa-paw"></i> Políticas Especiales
+                    </h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-dog"></i> ¿Aceptan mascotas?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sí, aceptamos mascotas con un cargo adicional. Deben estar con correa en áreas comunes y ser responsables de su limpieza.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-smoking-ban"></i> ¿Está permitido fumar?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No está permitido fumar dentro de las cabañas. Hay áreas designadas para fumadores en el exterior.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h4><i class="fas fa-users"></i> ¿Cuál es la capacidad máxima por cabaña?</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Varía según la cabaña: Cabaña Ju (2 personas), Cabaña Lu (4 personas), Cabaña Pe (6 personas).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section class="container" style="margin-top: 4rem;">
+            <div class="card glass-effect">
+                <h3 class="gradient-text" style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">
+                    <i class="fas fa-phone"></i> ¿No encontraste tu respuesta?
+                </h3>
+                <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                    Contáctanos directamente y te responderemos en menos de 24 horas
+                </p>
+                <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                    <a href="https://wa.me/543515550694" class="btn-modern" target="_blank">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="mailto:reservas@costapotrero.com.ar" class="btn-modern">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="tel:+543515550694" class="btn-modern">
+                        <i class="fas fa-phone"></i> Llamar
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer moderno -->
+    <footer class="footer">
+        <div class="footer-top">
+            <h2>El mejor lugar para vacacionar</h2>
+        </div>
+
+        <div class="footer-middle">
+            <div class="footer-col">
+                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
+                <p>
+                    Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                    TV Satelital, Wifi, Ropa Blanca y Piscina.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fas fa-building"></i> Costa Potrero</h4>
+                <p>Cabaña & Suites</p>
+                <p style="margin-top: 1rem;">
+                    <i class="fas fa-clock"></i> Check-in: 14:00<br>
+                    <i class="fas fa-clock"></i> Check-out: 11:00
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fas fa-phone"></i> Contáctenos</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
+                <p><i class="fas fa-phone"></i> +54 351 5 550 694</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>©2024 Costa Potrero. Todos los derechos reservados.</p>
+            <p><a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a></p>
+        </div>
+    </footer>
+
+    <!-- Botón flotante de WhatsApp -->
+    <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+
+    <!-- JavaScript para efectos -->
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Función para toggle FAQ
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i.fas.fa-chevron-down, i.fas.fa-chevron-up');
+            
+            // Toggle active class
+            element.classList.toggle('active');
+            
+            // Toggle answer visibility
+            if (answer.style.maxHeight) {
+                answer.style.maxHeight = null;
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        // Animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        document.querySelectorAll('.card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+
+    <style>
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-radius: 10px;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .faq-question.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .faq-question h4 {
+            color: var(--white);
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .faq-question i {
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .faq-answer {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            padding: 1.5rem 0;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .faq-question h4 {
+                font-size: 1rem;
+            }
+            
+            .faq-question {
+                padding: 1rem;
+            }
+            
+            .faq-answer {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</body>
+</html> 

@@ -16,37 +16,177 @@
         <nav>
             <ul>
                 <li> 
-                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
-                    <a href="../reservas/index.html">Listado Reservas</a>
-                    <a href="../cabanas/alta.html">Alta Cabaña</a>
-                    <a href="../cabanas/index.html">Listado Cabañas</a>
-                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./../reservas/index.html">Listado Reservas</a>
+                    <a href="./../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./../cabanas/index.html">Listado Cabañas</a>
+                    <a href="./../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../pagos/pagos.html">Lista de Pagos</a>
                 </li>
             </ul>
            
         </nav>
     </header>
 
-    <main>
-        <h1 class="titulo-reservas">Gestión de Huéspedes</h1>
-        <div class="mensajes" id="mensajes"></div>
+    <!-- Botón flotante de búsqueda -->
+    <button id="btn-busqueda-flotante" class="btn-busqueda-flotante" title="Buscar un Huésped">
+        <span class="btn-busqueda-texto">🔍 Buscar un Huésped</span>
+    </button>
 
-        <form  class="form-group" id="form-huesped">
-            <input type="text" id="id_dni" placeholder="DNI" required />
-            <input type="text" id="nombre" placeholder="Nombre" required />
-            <input type="text" id="telefono" placeholder="Teléfono" />
-            <input type="email" id="gmail" placeholder="Email" required />
-            <button type="submit">Guardar</button>
-        </form>
+    <!-- Ventana emergente de búsqueda -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal">×</button>
+            <h3>🔍 Buscar Huésped por DNI</h3>
+            <form id="form-buscar-huesped" class="form-busqueda">
+                <div class="form-group">
+                    <label for="id_dni_buscar">DNI del Huésped:</label>
+                    <input type="text" id="id_dni_buscar" name="id_dni_buscar" placeholder="Ej: 12345678" required>
+                </div>
+                <button type="submit" class="btn-estadisticas">🔍 Buscar Huésped</button>
+            </form>
+            <div id="resultado-busqueda" class="resultado-busqueda"></div>
+        </div>
+    </div>
+
+    <!-- Ventana emergente para agregar huésped -->
+    <div id="modal-agregar-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-agregar">×</button>
+            <h3>👤 Agregar Nuevo Huésped</h3>
+            <form id="form-agregar-huesped" class="form-busqueda">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="agregar-dni">🆔 DNI:</label>
+                        <input type="text" id="agregar-dni" name="agregar-dni" placeholder="DNI" required>
+                    </div>
+                    <div class="form-col">
+                        <label for="agregar-nombre">👤 Nombre:</label>
+                        <input type="text" id="agregar-nombre" name="agregar-nombre" placeholder="Nombre completo" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="agregar-telefono">📞 Teléfono:</label>
+                        <input type="text" id="agregar-telefono" name="agregar-telefono" placeholder="Teléfono">
+                    </div>
+                    <div class="form-col">
+                        <label for="agregar-email">📧 Email:</label>
+                        <input type="email" id="agregar-email" name="agregar-email" placeholder="Email" required>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                                          <button type="submit" class="btn-estadisticas">Guardar Huésped</button>
+                                            <button type="button" id="btn-cancelar-agregar" class="btn-estadisticas" style="background: #6c757d;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ventana emergente para editar huésped -->
+    <div id="modal-editar-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-editar">×</button>
+            <h3>✏️ Editar Huésped</h3>
+            <form id="form-editar-huesped" class="form-busqueda">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="editar-dni">🆔 DNI:</label>
+                        <input type="text" id="editar-dni" name="editar-dni" placeholder="DNI" required>
+                    </div>
+                    <div class="form-col">
+                        <label for="editar-nombre">👤 Nombre:</label>
+                        <input type="text" id="editar-nombre" name="editar-nombre" placeholder="Nombre completo" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="editar-telefono">📞 Teléfono:</label>
+                        <input type="text" id="editar-telefono" name="editar-telefono" placeholder="Teléfono">
+                    </div>
+                    <div class="form-col">
+                        <label for="editar-email">📧 Email:</label>
+                        <input type="email" id="editar-email" name="editar-email" placeholder="Email" required>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                                          <button type="submit" class="btn-estadisticas">Actualizar Huésped</button>
+                                            <button type="button" id="btn-cancelar-editar" class="btn-estadisticas" style="background: #6c757d;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ventana emergente de confirmación para DNI duplicado -->
+    <div id="modal-confirmacion-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-confirmacion">×</button>
+            <h3>⚠️ DNI Ya Registrado</h3>
+            <div id="confirmacion-content" class="form-busqueda">
+                <div class="mensajes warning">
+                    <p>El DNI <strong id="dni-duplicado"></strong> ya está registrado con los siguientes datos:</p>
+                </div>
+                <div class="datos-existente">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>👤 Nombre:</label>
+                            <input type="text" id="nombre-existente" readonly>
+                        </div>
+                        <div class="form-col">
+                            <label>📞 Teléfono:</label>
+                            <input type="text" id="telefono-existente" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>📧 Email:</label>
+                            <input type="text" id="email-existente" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                                          <button type="button" id="btn-modificar-existente" class="btn-estadisticas" style="background: #28a745;">Modificar Datos</button>
+                                            <button type="button" id="btn-cancelar-confirmacion" class="btn-estadisticas" style="background: #6c757d;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Sección: Grilla de Huéspedes con Filtros Integrados -->
+        <section class="section-grilla">
+            <h1 class="titulo-reservas">Gestión de Huéspedes</h1>
+            <div class="mensajes" id="mensajes"></div>
+            <h2 class="subtitulo-reservas">Listado de Huéspedes Registrados</h2>
 
 
-        <h2 class="subtitulo-reservas">Listado de Huéspedes</h2>
-        <table border="1">
-            <thead>
-            <tr><th>DNI</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr>
-            </thead>
-            <tbody id="tabla-huespedes"></tbody>
-        </table>
+
+           
+
+            <!-- Botón para agregar huésped -->
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="btn-agregar-huesped" class="btn-busqueda-flotante" style="position: static; transform: none; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                    <span class="btn-busqueda-texto">👤 Agregar Nuevo Huésped</span>
+                </button>
+                <!-- Botón para generar reporte -->
+                <button id="btn-reporte-huespedes" class="btn-estadisticas" style="margin-left: 10px; background: #17a2b8;">
+                    📄 Generar Reporte
+                </button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-huespedes"></tbody>
+            </table>
+        </section>
     </main>
     
 <script>

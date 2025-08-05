@@ -24,7 +24,66 @@
     border-radius: 8px;
     background-color: #f8f8f8;
 }
+h2 {
+  text-align: center;
+  color: #087f23; /* verde fuerte */
+  margin-bottom: 20px;
+}
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+input[type="date"],
+button,
+select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #087f23;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #065c1f;
+}
+
+.contenedor-consulta {
+  background-color: white;
+  max-width: 450px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.disponible {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #e6f5ea;
+  border: 1px solid #b2dfdb;
+  border-radius: 6px;
+}
+
+.disponible button {
+  margin-top: 8px;
+  background-color: #0288d1;
+}
+
+.disponible button:hover {
+  background-color: #0277bd;
+}
 </style>
 <body>
     <header>
@@ -38,7 +97,7 @@
                 <li><a href="./cabanas.html">Cabañas</a></li>
                 <li><a href="./servicios.html">Servicios</a></li>
                 <li><a href="./ubicacion.html">Ubicación</a></li>
-                <li><a href="./reservas.html">Mis Reservas</a></li>
+                <li><a href="./login.html">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -46,8 +105,9 @@
 
  <main>
     <section>
+        
         <div class="form-container">
-            <h1 class="titulo-reservas">Consultar Disponibilidad</h1>
+            <h2>Consultar Disponibilidad</h2>
             <form class="form-group" id="form-disponibilidad">
                 <label>Fecha Inicio:
                     <input type="date" id="fecha_inicio" required>
@@ -61,11 +121,39 @@
         </div>
     </section>
 
+
  </main>
 
- <footer>
+   <footer class="footer">
+    <div class="footer-top">
+        <h2>El mejor lugar para vacacionar</h2>
 
- </footer>
+    </div>
+
+    <div class="footer-middle">
+        <div class="footer-col">
+            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+            <p>
+                Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                TV Satelital, Wifi, Ropa Blanca y Piscina.
+            </p>
+        </div>
+        <div class="footer-col">
+            <p><strong>Costa Potrero</strong><br>Cabaña & Suites</p>
+        </div>
+        <div class="footer-col">
+            <h4>Contáctenos</h4>
+            <p>Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
+            <p>Mail: <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
+            <p>+54 351 5 550 694</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>©2022 Arcowal Industries. All Rights Reserved.</p>
+        <p><a href="#">Terms of use</a> | <a href="#">Privacy Environmental Policy</a></p>
+    </div>
+</footer>
  <script>
   function cerrarSesion() {
     fetch('/logout', { method: 'POST' })

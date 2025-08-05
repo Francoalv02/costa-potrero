@@ -3,29 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-        <link rel="stylesheet" href="../css/estilo.css">
+    <title>Consultar Disponibilidad - Costa Potrero</title>
+    <link rel="stylesheet" href="../css/estilo.css">
     <script type="module" src="./js/consultar.js"></script>
 </head>
-<style>
-    .consulta-container {
-    background: #fff;
-    padding: 20px;
-    max-width: 700px;
-    margin: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.cabana-disponible {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    background-color: #f8f8f8;
-}
-
-</style>
 <body>
  <header>
      <div class="logo">
@@ -35,11 +16,12 @@
         <nav>
             <ul>
                 <li> 
-                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
-                    <a href="../reservas/index.html">Listado Reservas</a>
-                    <a href="../cabanas/alta.html">Alta Cabaña</a>
-                    <a href="../cabanas/index.html">Listado Cabañas</a>
-                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./../reservas/index.html">Listado Reservas</a>
+                    <a href="./../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./../cabanas/index.html">Listado Cabañas</a>
+                    <a href="./../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../pagos/pagos.html">Lista de Pagos</a>
                 </li>
             </ul>
            
@@ -48,26 +30,36 @@
 
  <main>
     <section>
-        <div class="form-container">
-            <h1 class="titulo-reservas">Consultar Disponibilidad</h1>
-            <form class="form-group" id="form-disponibilidad">
-                <label>Fecha Inicio:
-                    <input type="date" id="fecha_inicio" required>
-                </label>
-                <label>Fecha Fin:
-                    <input type="date" id="fecha_fin" required>
-                </label>
-                <button type="submit" >Consultar</button>
+        <div class="disponibilidad-form-container">
+            <h1 class="titulo-reservas">🏠 Consultar Disponibilidad</h1>
+            <p class="subtitulo-info">Selecciona las fechas para ver las cabañas disponibles</p>
+            
+            <form class="disponibilidad-form-group" id="form-disponibilidad">
+                <div class="disponibilidad-form-row">
+                    <div class="disponibilidad-form-col">
+                        <label for="fecha_inicio">Fecha de Llegada:</label>
+                        <input type="date" id="fecha_inicio" required min="">
+                    </div>
+                    <div class="disponibilidad-form-col">
+                        <label for="fecha_fin">Fecha de Salida:</label>
+                        <input type="date" id="fecha_fin" required min="">
+                    </div>
+                </div>
+                <div class="disponibilidad-form-row">
+                    <div class="disponibilidad-form-col">
+                        <button type="submit" class="btn-estadisticas">🔍 Consultar Disponibilidad</button>
+                    </div>
+                    <div class="disponibilidad-form-col">
+                        <button type="button" id="btn-limpiar" class="btn-estadisticas" style="background: #6c757d;">🗑️ Limpiar</button>
+                    </div>
+                </div>
             </form>
+            
             <div id="resultado"></div>
         </div>
     </section>
-
  </main>
 
- <footer>
-
- </footer>
  <script>
   function cerrarSesion() {
     fetch('/logout', { method: 'POST' })
@@ -78,6 +70,30 @@
         console.error('Error al cerrar sesión:', error);
       });
   }
+  
+  // Establecer fecha mínima como hoy
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fecha_inicio').min = today;
+  document.getElementById('fecha_fin').min = today;
+  
+  // Validar que fecha fin sea después de fecha inicio
+  document.getElementById('fecha_inicio').addEventListener('change', function() {
+    const fechaInicio = this.value;
+    const fechaFinInput = document.getElementById('fecha_fin');
+    fechaFinInput.min = fechaInicio;
+    
+    if (fechaFinInput.value && fechaFinInput.value <= fechaInicio) {
+      fechaFinInput.value = '';
+    }
+  });
+  
+  // Limpiar formulario
+  document.getElementById('btn-limpiar').addEventListener('click', function() {
+    document.getElementById('form-disponibilidad').reset();
+    document.getElementById('resultado').innerHTML = '';
+    document.getElementById('fecha_inicio').min = today;
+    document.getElementById('fecha_fin').min = today;
+  });
 </script>
 </body>
 </html>

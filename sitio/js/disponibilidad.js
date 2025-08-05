@@ -23,7 +23,7 @@ form.addEventListener('submit', async (e) => {
         resultado.innerHTML += `
           <div>
             <p>Disponible: ${cabana.nombre_cabana} (ID: ${cabana.id_cabana})</p>
-            <button onclick="window.location.href='index.html?id=${cabana.id_cabana}&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}'">Reservar</button>
+            <button onclick="">Contactar</button>
           </div>
         `;
       });

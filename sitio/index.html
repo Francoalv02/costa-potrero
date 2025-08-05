@@ -1,97 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Costa Potrero - Cabañas & Suites</title>
     <link rel="stylesheet" href="./css/estilo.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
-    <header>
+    <!-- Header moderno con glassmorphism -->
+    <header id="header">
         <div class="logo">
-
-            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+            <img src="./recursos/logo.png" alt="Costa Potrero Logo" class="imagenlogo">
+            <span class="nombrelogo">Costa Potrero</span>
         </div>
         <nav>
             <ul>
-                <li><a href="./index.html">Inicio</a></li>
-                <li><a href="./cabanas.html">Cabañas</a></li>
-                <li><a href="./servicios.html">Servicios</a></li>
-                <li><a href="./ubicacion.html">Ubicación</a></li>
-                <li><a href="./reservas.html">Mis Reservas</a></li>
+                <li><a href="./index.html" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
+                <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                <li><a href="./faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             </ul>
         </nav>
     </header>
     
-    
+    <!-- Main content -->
     <main>
-        <section class="intro">
+        <!-- Hero Section moderna -->
+        <section class="intro fade-in-up">
             <div class="text-box">
-                <h2>Tómense un descanso en nuestras cabañas</h2>
+                <h2 class="gradient-text">Tómense un descanso en nuestras cabañas</h2>
                 <p>Todas nuestras unidades cuentan con Cochera, Baño Privado, Agua Caliente, Aire Acondicionado, TV Satelital, Wifi, Ropa Blanca y Piscina.</p>
-                <a href="./disponibilidad.html" class="reserve-btn">Reservar</a>
+                <a href="./disponibilidad.html" class="reserve-btn pulse">
+                    <i class="fas fa-calendar-check"></i> Reservar Ahora
+                </a>
             </div>
-            <div class="image-box">
+            <div class="image-box slide-in-left">
                 <img src="./recursos/indexPortada.jpg" alt="Imagen de cabañas y piscina">
             </div>
         </section>
+
+        <!-- Sección de características -->
+        <section class="container" style="margin-top: 4rem;">
+            <div class="card glass-effect">
+                <h3 class="gradient-text" style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">
+                    <i class="fas fa-star"></i> ¿Por qué elegirnos?
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                    <div style="text-align: center; padding: 1rem;">
+                        <i class="fas fa-wifi" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">WiFi Gratis</h4>
+                        <p style="color: rgba(255, 255, 255, 0.8);">Conexión de alta velocidad en todas las cabañas</p>
+                    </div>
+                    <div style="text-align: center; padding: 1rem;">
+                        <i class="fas fa-swimming-pool" style="font-size: 2.5rem; color: var(--success-color); margin-bottom: 1rem;"></i>
+                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Piscina</h4>
+                        <p style="color: rgba(255, 255, 255, 0.8);">Piscina climatizada disponible todo el año</p>
+                    </div>
+                    <div style="text-align: center; padding: 1rem;">
+                        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--warning-color); margin-bottom: 1rem;"></i>
+                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Seguridad 24/7</h4>
+                        <p style="color: rgba(255, 255, 255, 0.8);">Vigilancia y seguridad las 24 horas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
-    
 
-   <footer class="footer">
-    <div class="footer-top">
-        <h2>El mejor lugar para vacacionar</h2>
-
-    </div>
-
-    <div class="footer-middle">
-        <div class="footer-col">
-            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
-            <p>
-                Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
-                TV Satelital, Wifi, Ropa Blanca y Piscina.
-            </p>
+    <!-- Footer moderno -->
+    <footer class="footer">
+        <div class="footer-top">
+            <h2>El mejor lugar para vacacionar</h2>
         </div>
-        <div class="footer-col">
-            <p><strong>Costa Potrero</strong><br>Cabaña & Suites</p>
+
+        <div class="footer-middle">
+            <div class="footer-col">
+                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
+                <p>
+                    Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                    TV Satelital, Wifi, Ropa Blanca y Piscina.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fas fa-building"></i> Costa Potrero</h4>
+                <p>Cabaña & Suites</p>
+                <p style="margin-top: 1rem;">
+                    <i class="fas fa-clock"></i> Check-in: 14:00<br>
+                    <i class="fas fa-clock"></i> Check-out: 11:00
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fas fa-phone"></i> Contáctenos</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
+                <p><i class="fas fa-phone"></i> +54 351 5 550 694</p>
+            </div>
         </div>
-        <div class="footer-col">
-            <h4>Contáctenos</h4>
-            <p>Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
-            <p>Mail: <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
-            <p>+54 351 5 550 694</p>
+
+        <div class="footer-bottom">
+            <p>©2024 Costa Potrero. Todos los derechos reservados.</p>
+            <p><a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a></p>
         </div>
-    </div>
+    </footer>
 
-    <div class="footer-bottom">
-        <p>©2022 Arcowal Industries. All Rights Reserved.</p>
-        <p><a href="#">Terms of use</a> | <a href="#">Privacy Environmental Policy</a></p>
-    </div>
-</footer>
-<style>
-@media (max-width: 600px) {
-    .footer-top {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
+    <!-- Botón flotante de WhatsApp -->
+    <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </button>
 
-    .footer-middle {
-        flex-direction: column;
-        align-items: center;
-    }
+    <!-- JavaScript para efectos -->
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
-    .footer-bottom {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        text-align: center;
-    }
-}
+        // Animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-</style>
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
 
+        // Observar elementos para animación
+        document.querySelectorAll('.card, .text-box, .image-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto de typing para el título
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Aplicar efecto de typing al título principal
+        const titleElement = document.querySelector('.text-box h2');
+        if (titleElement) {
+            const originalText = titleElement.textContent;
+            setTimeout(() => {
+                typeWriter(titleElement, originalText, 50);
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

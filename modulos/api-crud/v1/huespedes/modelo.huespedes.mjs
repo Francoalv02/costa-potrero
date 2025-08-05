@@ -19,6 +19,14 @@ export async function insertarOActualizar({ id_dni, nombre, telefono, gmail }) {
   `, [id_dni, nombre, telefono, gmail]);
 }
 
+export async function actualizar(dniOriginal, { id_dni, nombre, telefono, gmail }) {
+  return await pool.query(`
+    UPDATE Huespedes 
+    SET id_dni = $1, nombre = $2, telefono = $3, gmail = $4
+    WHERE id_dni = $5
+  `, [id_dni, nombre, telefono, gmail, dniOriginal]);
+}
+
 export async function eliminar(id_dni) {
   // Primero, verificar si tiene reservas asociadas
   const reservas = await pool.query('SELECT 1 FROM reservas WHERE id_dni = $1 LIMIT 1', [id_dni]);

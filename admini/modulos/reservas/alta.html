@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alta Reserva</title>
+    <title>Alta Reserva - Costa Potrero</title>
     <link rel="stylesheet" href="../css/estilo.css">
     <script type="module" src="./js/alta.js"></script>
 </head>
@@ -17,84 +17,140 @@
         <nav>
             <ul>
                 <li> 
-                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
-                    <a href="../reservas/index.html">Listado Reservas</a>
-                    <a href="../cabanas/alta.html">Alta Cabaña</a>
-                    <a href="../cabanas/index.html">Listado Cabañas</a>
-                    <a href="../huespedes/index.html">Listado Huespedes</a>
-                </li>
+                    <a href="./../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./../reservas/index.html">Listado Reservas</a>
+                    <a href="./../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./../cabanas/index.html">Listado Cabañas</a>
+                    <a href="./../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../pagos/pagos.html">Lista de Pagos</a>
                 </li>
             </ul>
-           
         </nav>
     </header>
-    <hr>
+    
     <main>
         <div class="form-container">
-        <h1 class="titulo-reservas">Reservas</h1>
-        <h2 class="subtitulo-reservas">Alta</h2>
-        <div class="mensajes" id="mensajes"></div>
+            <h1 class="titulo-reservas">Nueva Reserva</h1>
+            <div class="mensajes" id="mensajes"></div>
 
-       <section>
+            <div id="info-cabana" class="info-cabana" style="display: none;">
+                <h3>🏠 Información de la Cabaña</h3>
+                <div id="detalles-cabana"></div>
+            </div>
+
             <form class="form-group" id="form-alta">
-                <label for="id_dni">
-                    DNI del huésped:
-                    <input type="text" name="id_dni" id="id_dni" required>
-                </label>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="id_dni">
+                            🆔 DNI del huésped:
+                            <input type="text" name="id_dni" id="id_dni" required 
+                                   pattern="[0-9]{7,8}" title="DNI debe tener 7 u 8 dígitos">
+                        </label>
+                    </div>
+                    <div class="form-col">
+                        <label for="nombre">
+                            👤 Nombre del huésped:
+                            <input type="text" name="nombre" id="nombre" required>
+                        </label>
+                    </div>
+                </div>
 
-                <label for="nombre">
-                    Nombre del huésped:
-                    <input type="text" name="nombre" id="nombre" required>
-                </label>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="gmail">
+                            Email:
+                            <input type="email" name="gmail" id="gmail" required>
+                        </label>
+                    </div>
+                    <div class="form-col">
+                        <label for="id_cabana">
+                            Tipo de cabaña:
+                            <select name="id_cabana" id="id_cabana" required>
+                                <option value="">Seleccione una cabaña</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
 
-                <label for="gmail">
-                    gmail:
-                    <input type="gmail" name="gmail" id="gmail" required>
-                </label>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="fecha_inicio">
+                            Fecha de llegada:
+                            <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+                        </label>
+                    </div>
+                    <div class="form-col">
+                        <label for="fecha_fin">
+                            Fecha de salida:
+                            <input type="date" name="fecha_fin" id="fecha_fin" required>
+                        </label>
+                    </div>
+                </div>
 
-                <label for="id_cabana">
-                    Tipo de cabaña:
-                    <select name="id_cabana" id="id_cabana" required>
-                        <option value="">Seleccione una cabaña</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="precio_total">
+                            Precio Total:
+                            <input type="number" name="precio_total" id="precio_total" readonly required>
+                        </label>
+                    </div>
+                    <div class="form-col">
+                        <label for="estado">
+                            Estado:
+                            <select id="estado" name="estado" required>
+                                <option value="">Seleccione estado</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
 
-                </label>
-
-                <label for="fecha_inicio">
-                    Fecha de entrada:
-                    <input type="date" name="fecha_inicio" id="fecha_inicio" required>
-                </label>
-
-                <label for="fecha_fin">
-                    Fecha de salida:
-                    <input type="date" name="fecha_fin" id="fecha_fin" required>
-                </label>
-
-                <label for="precio_total">
-                    Precio Total:
-                    <input type="number" name="precio_total" id="precio_total" readonly required>
-                </label>
-
-                <label for="estado">Estado</label>
-                <select id="estado" name="estado" required></select>
-
-
-
-                <button type="submit">Crear Reserva</button>
+                <div class="form-row">
+                    <div class="form-col">
+                        <button type="submit" class="btn-estadisticas">Crear Reserva</button>
+                    </div>
+                    <div class="form-col">
+                        <button type="button" id="btn-limpiar" class="btn-estadisticas" style="background: #6c757d;">Limpiar</button>
+                    </div>
+                </div>
             </form>
-        </section>
-
+        </div>
     </main>
+
     <script>
-  function cerrarSesion() {
-    fetch('/logout', { method: 'POST' })
-      .then(() => {
-        window.location.href = '/login.html';
-      })
-      .catch(error => {
-        console.error('Error al cerrar sesión:', error);
-      });
-  }
-</script>
+        function cerrarSesion() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/login.html';
+                })
+                .catch(error => {
+                    console.error('Error al cerrar sesión:', error);
+                });
+        }
+        
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha_inicio').min = today;
+        document.getElementById('fecha_fin').min = today;
+        
+        // Validar que fecha fin sea después de fecha inicio
+        document.getElementById('fecha_inicio').addEventListener('change', function() {
+            const fechaInicio = this.value;
+            const fechaFinInput = document.getElementById('fecha_fin');
+            fechaFinInput.min = fechaInicio;
+            
+            if (fechaFinInput.value && fechaFinInput.value <= fechaInicio) {
+                fechaFinInput.value = '';
+            }
+        });
+        
+        // Limpiar formulario
+        document.getElementById('btn-limpiar').addEventListener('click', function() {
+            document.getElementById('form-alta').reset();
+            document.getElementById('precio_total').value = '';
+            document.getElementById('info-cabana').style.display = 'none';
+            document.getElementById('fecha_inicio').min = today;
+            document.getElementById('fecha_fin').min = today;
+        });
+    </script>
 </body>
 </html>

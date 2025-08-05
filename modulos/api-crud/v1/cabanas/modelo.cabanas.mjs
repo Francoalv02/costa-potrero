@@ -18,10 +18,18 @@ async function obtenerCabanas() {
 
 async function obtenerCabana(id_cabana) {
     try {
-        const resultado = await pool.query(
-            'SELECT * FROM cabanas WHERE id_cabana = $1',
-            [id_cabana]
-        );
+        // Consulta simple sin JOIN, ya que la tabla cabanas puede no tener id_estado
+        const resultado = await pool.query(`
+            SELECT 
+                id_cabana,
+                nombre_cabana,
+                descripcion,
+                capacidad_personas,
+                precio,
+                'Disponible' as estado
+            FROM cabanas
+            WHERE id_cabana = $1
+        `, [id_cabana]);
         return resultado;
     } catch (error) {
         console.log(error);

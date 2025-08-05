@@ -1,82 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-       <link rel="stylesheet" href="./css/estilo.css">
-
+    <title>Login - Costa Potrero</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <div class="conteineruniversal">        
-        <div class="login-container">
+    <!-- Header moderno -->
+    <header id="header">
+        <div class="logo">
+            <img src="./recursos/logo.png" alt="Costa Potrero Logo" class="imagenlogo">
+            <span class="nombrelogo">Costa Potrero</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="./index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
+                <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                <li><a href="./login.html" class="active"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <div class="login-form">
-       
-                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
-
-                
-
-
-                <form id="form-login">
-                    <hr>
-                
-                    <label for="email" class="label">CORREO ELECTRÓNICO</label>
-                    <input type="email" id="email" class="input" placeholder="hola@tucorreo.co" required>
-    
-                    <label for="password" class="label">CLAVE</label>
-                    <input type="password" id="password" class="input" placeholder="******" required>
-    
-                    <button type="submit" class="btn-ingresar">Ingresar</button>
-                    <button type="button" class="btn-olvidar">Olvidé mi contraseña</button>
-                    <div id="mensaje" class="mensajes"></div>
-
-                </form>
+    <!-- Login Container moderno -->
+    <div class="login-container">
+        <div class="login-form fade-in-up">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
+                <h2 class="gradient-text">Iniciar Sesión</h2>
+                <p style="color: rgba(255, 255, 255, 0.8); margin-top: 0.5rem;">Accede a tu cuenta de administración</p>
             </div>
-            <div class="login-image">
-                <img src="./recursos/indexPortada.jpg" alt="Imagen de Costa Potrero" class="image">
-            </div>
+
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Correo Electrónico
+                    </label>
+                    <input type="email" id="email" placeholder="hola@tucorreo.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-ingresar">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar
+                </button>
+
+                <button type="button" class="btn-modern" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.3); margin-top: 1rem;">
+                    <i class="fas fa-key"></i> Olvidé mi contraseña
+                </button>
+
+                <div id="mensaje" class="notification" style="margin-top: 1rem; display: none;"></div>
+
+                <hr style="border: none; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 2rem 0;">
+
+                <button type="button" onclick="location.href='./index.html'" class="btn-modern" style="background: linear-gradient(45deg, var(--accent-color), var(--success-color));">
+                    <i class="fas fa-home"></i> Volver al Inicio
+                </button>
+            </form>
         </div>
     </div>
+
+    <!-- Botón flotante de WhatsApp -->
+    <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+
     <script>
-  const form = document.getElementById('form-login');
-  const mensaje = document.getElementById('mensaje');
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+        // Form handling
+        const form = document.getElementById('form-login');
+        const mensaje = document.getElementById('mensaje');
 
-    const datos = {
-      usuario: document.getElementById('email').value,
-      clave: document.getElementById('password').value
-    };
-
-    try {
-      const res = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
-
-      const info = await res.json();
-
-      if (res.ok) {
-        if (info.rol === 'admin') {
-          window.location.href = '/admin';
-        } else {
-          window.location.href = '/';
+        // Función para mostrar notificaciones
+        function showNotification(message, type = 'info') {
+            mensaje.textContent = message;
+            mensaje.className = `notification ${type} show`;
+            mensaje.style.display = 'block';
+            
+            setTimeout(() => {
+                mensaje.style.display = 'none';
+            }, 5000);
         }
-      } else {
-        mensaje.textContent = info.mensaje;
-      }
 
-    } catch (error) {
-      console.error(error);
-      mensaje.textContent = 'Error al intentar iniciar sesión.';
-    }
-  });
-</script>
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
+            // Validación básica
+            if (!email || !password) {
+                showNotification('Por favor, completa todos los campos', 'error');
+                return;
+            }
+
+            const datos = {
+                usuario: email,
+                clave: password
+            };
+
+            try {
+                // Mostrar loader
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando...';
+                submitBtn.disabled = true;
+
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const info = await res.json();
+
+                if (res.ok) {
+                    showNotification('Iniciando sesión...', 'success');
+                    setTimeout(() => {
+                        if (info.rol === 'admin') {
+                            window.location.href = '/admin';
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }, 1000);
+                } else {
+                    showNotification(info.mensaje || 'Credenciales incorrectas', 'error');
+                }
+
+            } catch (error) {
+                console.error(error);
+                showNotification('Error de conexión. Intenta nuevamente.', 'error');
+            } finally {
+                // Restaurar botón
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Efectos de focus en inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animación de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.querySelector('.login-form');
+            loginForm.style.opacity = '0';
+            loginForm.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                loginForm.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                loginForm.style.opacity = '1';
+                loginForm.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
 </body>
 </html>

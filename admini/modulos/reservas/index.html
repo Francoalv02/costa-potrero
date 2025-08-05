@@ -16,24 +16,92 @@
         <nav>
             <ul>
                 <li> 
-                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
-                    <a href="../reservas/index.html">Listado Reservas</a>
-                    <a href="../cabanas/alta.html">Alta Cabaña</a>
-                    <a href="../cabanas/index.html">Listado Cabañas</a>
-                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./../reservas/index.html">Listado Reservas</a>
+                    <a href="./../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./../cabanas/index.html">Listado Cabañas</a>
+                    <a href="./../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../pagos/pagos.html">Lista de Pagos</a>
                 </li>
             </ul>
-           
-
         </nav>
     </header>
-    <main>
-        <h1 class="titulo-reservas">Reservas</h1>
-        <h2 class="subtitulo-reservas">Listado de Reservas Registradas</h2>
 
-    
+    <!-- Botón flotante de búsqueda -->
+    <button id="btn-busqueda-flotante" class="btn-busqueda-flotante" title="Buscar una Reserva">
+        <span class="btn-busqueda-texto">🔍 Buscar una Reserva</span>
+    </button>
 
-            <section>
+    <!-- Ventana emergente de búsqueda -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal">×</button>
+            <h3>🔍 Buscar Reserva por ID</h3>
+            <form id="form-buscar-reserva" class="form-busqueda">
+                <div class="form-group">
+                    <label for="id_reserva">ID de Reserva:</label>
+                    <input type="number" id="id_reserva" name="id_reserva" min="1" placeholder="Ej: 1, 2, 3..." required>
+                </div>
+                <button type="submit" class="btn-estadisticas">Buscar Reserva</button>
+            </form>
+            <div id="resultado-busqueda" class="resultado-busqueda"></div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Sección 1: Grilla de Reservas con Filtros Integrados -->
+        <section class="section-grilla">
+            <h1 class="titulo-reservas">Reservas</h1>
+            <h2 class="subtitulo-reservas">Listado de Reservas Registradas</h2>
+
+            <!-- Filtros Integrados -->
+            <div class="filtros-integrados">
+                <div class="filtros-header">
+                    <h3>Filtros de Búsqueda</h3>
+                    <button id="btn-toggle-filtros" class="btn-toggle-filtros">▼</button>
+                </div>
+                
+                <div class="filtros-content" id="filtros-content">
+                    <div class="filtros-grid">
+                        <div class="filtro-grupo">
+                            <label for="filtro-fecha-inicio">Fecha de Entrada Desde:</label>
+                            <input type="date" id="filtro-fecha-inicio" />
+                        </div>
+
+                        <div class="filtro-grupo">
+                            <label for="filtro-fecha-fin">Fecha de Entrada Hasta:</label>
+                            <input type="date" id="filtro-fecha-fin" />
+                        </div>
+
+                        <div class="filtro-grupo">
+                            <label for="filtro-estado">Estado:</label>
+                            <select id="filtro-estado">
+                                <option value="">Todos los estados</option>
+                            </select>
+                        </div>
+
+                        <div class="filtro-grupo">
+                            <label for="filtro-cabana">Cabaña:</label>
+                            <select id="filtro-cabana">
+                                <option value="">Todas las cabañas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filtro-botones">
+                        <button id="btn-aplicar-filtros" class="btn-estadisticas">Aplicar Filtros</button>
+                        <button id="btn-limpiar-filtros" class="btn-estadisticas" style="background: #6c757d;">Limpiar Filtros</button>
+                        <button id="btn-reporte-reservas" class="btn-estadisticas" style="background: #17a2b8;">Generar Reporte</button>
+                    </div>
+
+                    <div class="filtro-info">
+                        <p id="info-filtros">Mostrando todas las reservas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mensajes"></div>
+
             <table>
                 <thead>
                     <tr>
@@ -47,7 +115,6 @@
                         <th>Precio Total</th>
                         <th>Estado</th>
                         <th>Acciones</th>
-
                     </tr>
                 </thead>
                 <tbody id="contenedor-reservas">
@@ -55,7 +122,6 @@
                 </tbody>
             </table>
         </section>
-
     </main>
 
    <script>

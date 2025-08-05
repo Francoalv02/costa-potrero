@@ -9,7 +9,8 @@ dotenv.config();
 
 // Módulos
 import modulosAp1 from './modulos/modulos.mjs';
-import rutaLogin from './modulos/auth/ruta.login.mjs'; // ✅ nueva ruta
+import rutaLogin from './modulos/auth/ruta.login.mjs'; // nueva ruta
+import rutasPagos from './modulos/api-crud/v1/pagos/rutas.pagos.mjs'; // módulo pagos
 
 // Instanciamos Express
 const app = express();
@@ -21,19 +22,19 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configuración de sesión
 app.use(session({
-  secret: 'secreto123', // ⚠️ podés mover esto a .env
+  secret: 'secreto123', 
   resave: false,
   saveUninitialized: true
 }));
 
 // API y módulos existentes
 app.use(modulosAp1);
+app.use(rutasPagos);
 
 // Rutas del sistema de login
-app.use('/', rutaLogin); // POST /login y /logout
-
+app.use('/', rutaLogin); 
 // Frontends
-app.use('/admin', verificarSesionAdmin, express.static('admini')); // ✅ protegido
+app.use('/admin', verificarSesionAdmin, express.static('admini')); // protegido
 app.use('/', express.static('sitio')); // público
 
 // Middleware de autenticación

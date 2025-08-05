@@ -7,12 +7,19 @@ import pool from '../../../../conexion/conexion.db.mjs';
 // Obtener cabañas disponibles en el rango de fechas
 export async function obtenerCabanasDisponibles(inicio, fin) {
   const query = `
-    SELECT * FROM cabanas c
+    SELECT 
+      c.id_cabana,
+      c.nombre_cabana,
+      c.descripcion,
+      c.capacidad_personas,
+      c.precio
+    FROM cabanas c
     WHERE NOT EXISTS (
       SELECT 1 FROM reservas r
       WHERE r.id_cabana = c.id_cabana
       AND ($1, $2) OVERLAPS (r.fechainicio, r.fechafin)
     )
+    ORDER BY c.precio ASC
   `;
   const result = await pool.query(query, [inicio, fin]);
   return result.rows;
@@ -50,13 +57,13 @@ async function obtenerReservaConEstadoPorId(id) {
         h.nombre,
         h.gmail AS email,
         r.id_cabana,
-        r.fechaInicio,
-        r.fechaFin,
-        r.precioTotal,
-        e.NombreEstado
+        r.fechaInicio AS fechainicio,
+        r.fechaFin AS fechafin,
+        r.precioTotal AS preciototal,
+        e.nombreestado AS NombreEstado
       FROM reservas r
       JOIN huespedes h ON r.id_dni = h.id_dni
-      JOIN Estados e ON r.ID_Estado = e.ID_Estado
+      JOIN Estados e ON r.id_estado = e.id_estado
       WHERE r.id_reserva = $1
     `, [id]);
     return resultado;
@@ -79,11 +86,11 @@ async function obtenerReservasConEstado() {
         r.fechaInicio,
         r.fechaFin,
         r.precioTotal,
-        e.NombreEstado
+        e.nombreestado AS NombreEstado
       FROM reservas r
       JOIN huespedes h ON r.id_dni = h.id_dni
       JOIN cabanas c ON r.id_cabana = c.id_cabana
-      JOIN estados e ON r.id_estado = e.id_estado
+      JOIN Estados e ON r.id_estado = e.id_estado
       ORDER BY r.id_reserva
     `);
     return resultado;
@@ -222,7 +229,62 @@ async function obtenerEstados() {
   }
 }
 
+export async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana }) {
+  const condiciones = [];
+  const valores = [];
+  let contador = 1;
 
+  // Filtro por fechas
+  if (fechaInicio) {
+    condiciones.push(`r.fechaInicio >= $${contador}`);
+    valores.push(fechaInicio);
+    contador++;
+  }
+  
+  if (fechaFin) {
+    condiciones.push(`r.fechaInicio <= $${contador}`);
+    valores.push(fechaFin);
+    contador++;
+  }
+
+  // Filtro por estado
+  if (estado) {
+    condiciones.push(`LOWER(e.nombreestado) = LOWER($${contador})`);
+    valores.push(estado);
+    contador++;
+  }
+
+  // Filtro por cabaña
+  if (cabana) {
+    condiciones.push(`c.nombre_cabana = $${contador}`);
+    valores.push(cabana);
+    contador++;
+  }
+
+  const where = condiciones.length ? `WHERE ${condiciones.join(' AND ')}` : '';
+
+  const query = `
+    SELECT 
+      r.id_reserva AS id,
+      h.id_dni,
+      h.nombre,
+      h.gmail AS email,
+      c.nombre_cabana,
+      r.fechaInicio,
+      r.fechaFin,
+      r.precioTotal,
+      e.nombreestado AS NombreEstado
+    FROM reservas r
+    JOIN huespedes h ON r.id_dni = h.id_dni
+    JOIN cabanas c ON r.id_cabana = c.id_cabana
+    JOIN Estados e ON r.id_estado = e.id_estado
+    ${where}
+    ORDER BY r.id_reserva DESC
+  `;
+
+  const resultado = await pool.query(query, valores);
+  return resultado;
+}
 
 
 //
