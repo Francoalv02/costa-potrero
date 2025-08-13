@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes de Reserva - Costa Potrero</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="../reservas/index.html">Listado Reservas</a>
+                    <a href="../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="../cabanas/index.html">Listado Cabañas</a>
+                    <a href="../huespedes/index.html">Listado Huespedes</a>
+                    <a href="../pagos/pagos.html">Lista de Pagos</a>
+                    <a href="../solicitudes/index.html">Solicitudes</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="section-grilla">
+            <h2>📋 Solicitudes de Reserva</h2>
+            <div id="mensajes"></div>
+
+            <!-- Botón de actualizar -->
+            <div style="margin-bottom: 1rem;">
+                <button id="btn-actualizar" class="btn-estadisticas">
+                    🔄 Actualizar Lista
+                </button>
+            </div>
+
+            <!-- Tabla de solicitudes -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Contacto</th>
+                        <th>Cabaña</th>
+                        <th>Fechas</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-solicitudes">
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 2rem; color: #6c757d;">
+                            <div class="loader"></div>
+                            <p>Cargando solicitudes...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        function cerrarSesion() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/login.html';
+                })
+                .catch(error => {
+                    console.error('Error al cerrar sesión:', error);
+                });
+        }
+    </script>
+    <script src="js/index.js"></script>
+</body>
+</html> 

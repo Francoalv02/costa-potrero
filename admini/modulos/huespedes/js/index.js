@@ -176,14 +176,14 @@ document.addEventListener('keydown', (e) => {
 async function cargarHuespedes() {
   try {
     console.log('Cargando huéspedes...');
-    const res = await fetch('/api/v1/huespedes');
+  const res = await fetch('/api/v1/huespedes');
     console.log('Respuesta de la API:', res.status);
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     
-    const datos = await res.json();
+  const datos = await res.json();
     console.log('Datos recibidos:', datos);
     mostrarHuespedes(datos);
   } catch (error) {
@@ -331,10 +331,10 @@ formAgregarHuesped.addEventListener('submit', async (e) => {
     } else {
       // El DNI no existe, crear nuevo huésped
       const response = await fetch('/api/v1/huespedes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  });
 
       if (response.ok) {
         mostrarMensaje('✅ Huésped agregado exitosamente', 'success');
@@ -379,7 +379,7 @@ formEditarHuesped.addEventListener('submit', async (e) => {
       mostrarMensaje('✅ Huésped actualizado exitosamente', 'success');
       modalEditarOverlay.classList.remove('active');
       formEditarHuesped.reset();
-      cargarHuespedes();
+  cargarHuespedes();
       dniEditando = null;
     } else {
       const errorData = await response.json();
@@ -403,14 +403,14 @@ window.editarHuesped = async (dni) => {
       return;
     }
     
-    const res = await fetch(`/api/v1/huespedes/${dni}`);
+  const res = await fetch(`/api/v1/huespedes/${dni}`);
     console.log('Respuesta de la API:', res.status);
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     
-    const h = await res.json();
+  const h = await res.json();
     console.log('Datos del huésped:', h);
     
     // Llenar formulario de edición con datos del huésped
@@ -462,7 +462,7 @@ window.eliminarHuesped = async (dni) => {
     
     if (response.ok) {
       mostrarMensaje('✅ Huésped eliminado exitosamente', 'success');
-      cargarHuespedes();
+  cargarHuespedes();
     } else {
       const errorData = await response.json();
       mostrarMensaje(`❌ Error: ${errorData.mensaje || 'Error al eliminar'}`, 'error');

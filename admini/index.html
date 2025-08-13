@@ -23,6 +23,7 @@
                     <a href="./modulos/cabanas/index.html">Listado Cabañas</a>
                     <a href="./modulos/huespedes/index.html">Listado Huespedes</a>
                     <a href="./modulos/pagos/pagos.html">Lista de Pagos</a>
+                    <a href="./modulos/solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
         </nav>
@@ -111,20 +112,7 @@
                         <p id="total-pagos">Cargando...</p>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-content">
-                        <h3>Ingresos Totales</h3>
-                        <p id="ingresos-totales">Cargando...</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-content">
-                        <h3>Reservas Hoy</h3>
-                        <p id="reservas-hoy">Cargando...</p>
-                    </div>
-                </div>
+
             </div>
         </section>
 
@@ -209,16 +197,16 @@
         </section>
     </main>
 
-    <script>
-        function cerrarSesion() {
-            fetch('/logout', { method: 'POST' })
-                .then(() => {
-                    window.location.href = '/login.html';
-                })
-                .catch(error => {
-                    console.error('Error al cerrar sesión:', error);
-                });
-        }
+<script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/login.html';
+      })
+      .catch(error => {
+        console.error('Error al cerrar sesión:', error);
+      });
+  }
 
         // Actualizar fecha y hora
         function updateDateTime() {
@@ -239,6 +227,6 @@
         // Actualizar cada segundo
         setInterval(updateDateTime, 1000);
         updateDateTime();
-    </script>
+</script>
 </body>
 </html>

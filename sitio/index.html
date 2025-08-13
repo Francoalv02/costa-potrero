@@ -7,104 +7,349 @@
     <link rel="stylesheet" href="./css/estilo.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos mejorados para el carrusel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 500px;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin: 2rem auto 3rem auto;
+            box-shadow: var(--shadow);
+        }
+
+        .carousel {
+            display: flex;
+            width: 600%;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .carousel-slide {
+            width: 16.666%;
+            height: 100%;
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 2rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .carousel-overlay h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .carousel-overlay p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-btn.prev {
+            left: 30px;
+        }
+
+        .carousel-btn.next {
+            right: 30px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .indicator.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .indicator:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .carousel-container {
+                height: 350px;
+                margin: 1rem auto 2rem auto;
+            }
+            
+            .carousel-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .carousel-btn.prev {
+                left: 15px;
+            }
+
+            .carousel-btn.next {
+                right: 15px;
+            }
+
+            .carousel-overlay {
+                padding: 1.5rem 1rem 1rem;
+            }
+
+            .carousel-overlay h3 {
+                font-size: 1.2rem;
+            }
+
+            .carousel-overlay p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel-container {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header moderno con glassmorphism -->
+    <!-- Header moderno con navegación mejorada -->
     <header id="header">
+        <div class="header-container">
         <div class="logo">
-            <img src="./recursos/logo.png" alt="Costa Potrero Logo" class="imagenlogo">
-            <span class="nombrelogo">Costa Potrero</span>
+                <span class="nombrelogo">Costa Potrero</span>
+            </div>
+            
+            <!-- Menú hamburguesa para móviles -->
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
         </div>
-        <nav>
-            <ul>
-                <li><a href="./index.html" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
-                <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
-                <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
-                <li><a href="./faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-                <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            
+            <!-- Navegación -->
+            <nav id="nav">
+                <ul>
+                    <li><a href="./index.html" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
+                    <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                    <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                    <li><a href="./faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             </ul>
         </nav>
+        </div>
+        
+        <!-- Overlay para cerrar menú móvil -->
+        <div class="nav-overlay" id="navOverlay"></div>
     </header>
     
     <!-- Main content -->
     <main>
-        <!-- Hero Section moderna -->
+        
+
+        <!-- Hero Section profesional -->
         <section class="intro fade-in-up">
             <div class="text-box">
-                <h2 class="gradient-text">Tómense un descanso en nuestras cabañas</h2>
+                <h2>Tómense un descanso en nuestras cabañas</h2>
                 <p>Todas nuestras unidades cuentan con Cochera, Baño Privado, Agua Caliente, Aire Acondicionado, TV Satelital, Wifi, Ropa Blanca y Piscina.</p>
-                <a href="./disponibilidad.html" class="reserve-btn pulse">
+                <a href="./disponibilidad.html" class="reserve-btn">
                     <i class="fas fa-calendar-check"></i> Reservar Ahora
                 </a>
             </div>
             <div class="image-box slide-in-left">
-                <img src="./recursos/indexPortada.jpg" alt="Imagen de cabañas y piscina">
+                <img src="./recursos/2023-01-17.jpg" alt="Imagen de cabañas y piscina">
             </div>
         </section>
 
+
+         <!-- Carrusel de Imágenes Mejorado -->
+          <section class="container" style="margin-top: 2rem;">
+              <div class="carousel-container">
+                  <div class="carousel" id="carousel">
+                      <div class="carousel-slide">
+                          <img src="./recursos/cabanaLu.JPG" alt="Cabaña Lu - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Cabaña Lu</h3>
+                              <p>Ideal para familias pequeñas</p>
+                          </div>
+                      </div>
+                      <div class="carousel-slide">
+                          <img src="./recursos/cabanaJu.JPG" alt="Cabaña Ju - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Cabaña Ju</h3>
+                              <p>Perfecta para parejas</p>
+                          </div>
+                      </div>
+                      <div class="carousel-slide">
+                          <img src="./recursos/cabanaPeques.jpg" alt="Cabaña Pe - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Cabaña Pe</h3>
+                              <p>Ideal para grupos grandes</p>
+                          </div>
+                      </div>
+                      <div class="carousel-slide">
+                          <img src="./recursos/portada cabaña2 (1).JPG" alt="Piscina - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Piscina Climatizada</h3>
+                              <p>Disfruta todo el año</p>
+                          </div>
+                      </div>
+                      <div class="carousel-slide">
+                          <img src="./recursos/portada cabaña2 (2).JPG" alt="Vista del Lago - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Vista al Lago</h3>
+                              <p>Paisajes increíbles</p>
+                          </div>
+                      </div>
+                      <div class="carousel-slide">
+                          <img src="./recursos/portadacabaña3.JPG" alt="Área Común - Costa Potrero">
+                          <div class="carousel-overlay">
+                              <h3>Áreas Comunes</h3>
+                              <p>Espacios para disfrutar</p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <button class="carousel-btn prev" onclick="changeSlide(-1)">
+                      <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button class="carousel-btn next" onclick="changeSlide(1)">
+                      <i class="fas fa-chevron-right"></i>
+                  </button>
+                  
+                  <div class="carousel-indicators">
+                      <span class="indicator active" onclick="goToSlide(0)"></span>
+                      <span class="indicator" onclick="goToSlide(1)"></span>
+                      <span class="indicator" onclick="goToSlide(2)"></span>
+                      <span class="indicator" onclick="goToSlide(3)"></span>
+                      <span class="indicator" onclick="goToSlide(4)"></span>
+                      <span class="indicator" onclick="goToSlide(5)"></span>
+                  </div>
+              </div>
+          </section>
+
         <!-- Sección de características -->
         <section class="container" style="margin-top: 4rem;">
-            <div class="card glass-effect">
-                <h3 class="gradient-text" style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem; color: var(--primary-color);">
                     <i class="fas fa-star"></i> ¿Por qué elegirnos?
                 </h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-wifi" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">WiFi Gratis</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Conexión de alta velocidad en todas las cabañas</p>
+                <div class="service-grid">
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <h4 class="service-title">WiFi Gratis</h4>
+                        <p class="service-description">Conexión de alta velocidad en todas las cabañas</p>
                     </div>
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-swimming-pool" style="font-size: 2.5rem; color: var(--success-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Piscina</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Piscina climatizada disponible todo el año</p>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-swimming-pool"></i>
+                        </div>
+                        <h4 class="service-title">Piscina</h4>
+                        <p class="service-description">Piscina climatizada disponible todo el año</p>
                     </div>
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--warning-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Seguridad 24/7</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Vigilancia y seguridad las 24 horas</p>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4 class="service-title">Seguridad 24/7</h4>
+                        <p class="service-description">Vigilancia y seguridad las 24 horas</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+    
+    <!-- Footer profesional -->
+   <footer class="footer">
+    <div class="footer-top">
+        <h2>El mejor lugar para vacacionar</h2>
+    </div>
 
-    <!-- Footer moderno -->
-    <footer class="footer">
-        <div class="footer-top">
-            <h2>El mejor lugar para vacacionar</h2>
-        </div>
-
-        <div class="footer-middle">
-            <div class="footer-col">
+    <div class="footer-middle">
+        <div class="footer-col">
                 <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
-                <p>
-                    Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
-                    TV Satelital, Wifi, Ropa Blanca y Piscina.
-                </p>
-            </div>
-            <div class="footer-col">
+            <p>
+                Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                TV Satelital, Wifi, Ropa Blanca y Piscina.
+            </p>
+        </div>
+        <div class="footer-col">
                 <h4><i class="fas fa-building"></i> Costa Potrero</h4>
                 <p>Cabaña & Suites</p>
                 <p style="margin-top: 1rem;">
                     <i class="fas fa-clock"></i> Check-in: 14:00<br>
                     <i class="fas fa-clock"></i> Check-out: 11:00
                 </p>
-            </div>
-            <div class="footer-col">
+        </div>
+        <div class="footer-col">
                 <h4><i class="fas fa-phone"></i> Contáctenos</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
                 <p><i class="fas fa-envelope"></i> <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
                 <p><i class="fas fa-phone"></i> +54 351 5 550 694</p>
             </div>
-        </div>
+    </div>
 
-        <div class="footer-bottom">
+    <div class="footer-bottom">
             <p>©2024 Costa Potrero. Todos los derechos reservados.</p>
             <p><a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a></p>
-        </div>
-    </footer>
+    </div>
+</footer>
 
     <!-- Botón flotante de WhatsApp -->
     <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
@@ -113,6 +358,83 @@
 
     <!-- JavaScript para efectos -->
     <script>
+        // Variables del carrusel
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalSlides = slides.length;
+        let autoPlayInterval;
+
+        // Función para cambiar slide
+        function changeSlide(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        // Función para ir a un slide específico
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+
+        // Función para actualizar el carrusel
+        function updateCarousel() {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 16.666}%)`;
+            
+            // Actualizar indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Función para auto-play
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                changeSlide(1);
+            }, 5000); // Cambiar cada 5 segundos
+        }
+
+        // Función para detener auto-play
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        // Event listeners para el carrusel
+        document.querySelector('.carousel-container').addEventListener('mouseenter', stopAutoPlay);
+        document.querySelector('.carousel-container').addEventListener('mouseleave', startAutoPlay);
+
+        // Iniciar auto-play
+        startAutoPlay();
+
+        // Navegación móvil
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('nav');
+        const navOverlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners para el menú móvil
+        menuToggle.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', closeMenu);
+
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
         // Header scroll effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -159,29 +481,6 @@
                 }
             });
         });
-
-        // Efecto de typing para el título
-        function typeWriter(element, text, speed = 100) {
-            let i = 0;
-            element.innerHTML = '';
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-
-        // Aplicar efecto de typing al título principal
-        const titleElement = document.querySelector('.text-box h2');
-        if (titleElement) {
-            const originalText = titleElement.textContent;
-            setTimeout(() => {
-                typeWriter(titleElement, originalText, 50);
-            }, 1000);
-        }
     </script>
 </body>
 </html>

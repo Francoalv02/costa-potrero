@@ -66,7 +66,7 @@ function calcularPrecio() {
 
   if (!isNaN(idCabana) && fechaInicio && fechaFin && fechaFin > fechaInicio) {
     const dias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-    const precioUnitario = preciosCabanas[idCabana] || 0;
+    const precioUnitario = parseFloat(preciosCabanas[idCabana]) || 0;
     const precioTotal = dias * precioUnitario;
     precioInput.value = precioTotal.toFixed(2);
     
@@ -103,12 +103,28 @@ function mostrarInfoCabana(idCabana, dias = null, precioTotal = null) {
 async function cargarOpcionesCabana() {
   try {
     const res = await fetch('/api/v1/cabanas');
-    const cabanas = await res.json();
-    
-    cabanas.forEach(c => {
-      preciosCabanas[c.id_cabana] = c.precio; // Guardar precio
-      cabanasInfo[c.id_cabana] = c; // Guardar información completa
-      
+    const json = await res.json();
+
+    // Normalizar: aceptar array directo o { success, data }
+    const lista = Array.isArray(json) ? json : (json?.data || []);
+
+    // Mapear al formato del formulario
+    const cabanasNormalizadas = lista.map(c => ({
+      id_cabana: c.id ?? c.id_cabana,
+      nombre_cabana: c.nombre ?? c.nombre_cabana,
+      descripcion: c.descripcion ?? '',
+      capacidad_personas: c.capacidad ?? c.capacidad_personas ?? '',
+      precio: c.precio ?? 0
+    }));
+
+    // Limpiar select
+    selectCabana.innerHTML = '<option value="">Seleccione una cabaña</option>';
+
+    // Llenar estructuras auxiliares y el select
+    cabanasNormalizadas.forEach(c => {
+      preciosCabanas[c.id_cabana] = c.precio;
+      cabanasInfo[c.id_cabana] = c;
+
       const opcion = document.createElement('option');
       opcion.value = c.id_cabana;
       opcion.textContent = `${c.nombre_cabana} - $${c.precio}/día`;
@@ -136,6 +152,7 @@ formulario.addEventListener('submit', async (evento) => {
     id_dni: datosFormulario.id_dni,
     nombre: datosFormulario.nombre,
     gmail: datosFormulario.gmail,
+    telefono: datosFormulario.telefono || '',
     id_cabana: parseInt(datosFormulario.id_cabana),
     fecha_inicio: datosFormulario.fecha_inicio,
     fecha_fin: datosFormulario.fecha_fin,
@@ -154,7 +171,8 @@ formulario.addEventListener('submit', async (evento) => {
       body: JSON.stringify({
         id_dni: datosTransformados.id_dni,
         nombre: datosTransformados.nombre,
-        gmail: datosTransformados.gmail
+        gmail: datosTransformados.gmail,
+        telefono: datosTransformados.telefono
       })
     });
 
@@ -166,20 +184,20 @@ formulario.addEventListener('submit', async (evento) => {
     const resReserva = await altaRegistro('/api/v1/reservas', 'POST', datosTransformados);
     const datos = await resReserva.json();
     
-    mostrarMensaje(mensajes, `✅ ${datos.mensaje}`, 'success');
-    
-    // Limpiar formulario después de éxito
-    setTimeout(() => {
-      formulario.reset();
-      precioInput.value = '';
-      infoCabana.style.display = 'none';
-    }, 2000);
-    
+    if (!resReserva.ok) {
+      throw new Error(datos?.mensaje || 'Error al crear la reserva');
+    }
+
+    // Redirigir a Alta de Pago con id_reserva
+    window.location.href = `../pagos/alta.html?id_reserva=${encodeURIComponent(datos.id_reserva)}`;
+
   } catch (error) {
     console.error(error);
     mostrarMensaje(mensajes, '❌ Error al crear la reserva. Verifica los datos e intenta nuevamente.', 'error');
   }
 });
+
+// Eliminar todo lo relacionado al modal de pago
 
 async function cargarEstados() {
   try {

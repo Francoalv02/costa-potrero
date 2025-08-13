@@ -23,6 +23,7 @@
                     <a href="./../cabanas/index.html">Listado Cabañas</a>
                     <a href="./../huespedes/index.html">Listado Huespedes</a>
                     <a href="./../pagos/pagos.html">Lista de Pagos</a>
+                    <a href="./../solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
         </nav>
@@ -98,48 +99,7 @@
     </div>
 
     <main class="main-content">
-        <!-- Sección 1: Registrar Pago (con flecha desplegable) -->
-        <section class="section-formularios">
-            <div class="gestion-pagos">
-                <div class="form-toggle-container">
-                    <h2>Registrar Pago</h2>
-                    <button id="btn-toggle-formulario" class="btn-toggle-formulario">▼</button>
-                </div>
-                <form id="formulario-pago" class="form-group" style="display: none;">
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="id_reserva">Reserva:</label>
-                            <select id="id_reserva" name="id_reserva" required></select>
-                        </div>
-                        <div class="form-col">
-                            <label for="estado_pago">Estado de Pago:</label>
-                            <select id="estado_pago" name="estado_pago" required></select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="metodo_pago">Método de Pago:</label>
-                            <select id="metodo_pago" name="metodo_pago" required>
-                                <option value="">Seleccione un método</option>
-                                <option value="Efectivo">Efectivo</option>
-                                <option value="Transferencia">Transferencia</option>
-                                <option value="MercadoPago">Mercado Pago</option>
-                                <option value="Tarjeta">Tarjeta</option>
-                            </select>
-                        </div>
-                        <div class="form-col">
-                            <label for="observacion">Observación:</label>
-                            <textarea id="observacion" name="observacion" rows="3" placeholder="Observaciones adicionales..."></textarea>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <button type="submit" class="btn-estadisticas">Registrar Pago</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </section>
+        
 
         <!-- Sección 2: Grilla de Pagos -->
         <section class="section-grilla">

@@ -185,49 +185,71 @@ async function eliminarCabana(id) {
   }
   
   try {
-    const response = await fetch(`/api/v1/cabanas/${id}`, {
-      method: 'DELETE'
-    });
+    const response = await eliminarRegistro(`/api/v1/cabanas/${id}`);
+    const datos = await response.json();
     
     if (response.ok) {
-      mostrarMensaje(mensajes, 'Cabaña eliminada exitosamente', 'success');
+      mostrarMensaje(mensajes, '✅ Cabaña eliminada exitosamente', 'success');
       // Recargar la tabla
       await cargarCabanas();
       // Limpiar búsqueda
       resultado.innerHTML = '';
     } else {
-      mostrarMensaje(mensajes, 'Error al eliminar la cabaña', 'error');
+      // Manejar diferentes tipos de error
+      if (datos.tipo === 'RESERVAS_ASOCIADAS') {
+        mostrarMensaje(mensajes, `❌ ${datos.mensaje}`, 'error');
+        if (datos.detalle) {
+          mostrarMensaje(mensajes, `ℹ️ ${datos.detalle}`, 'info');
+        }
+      } else if (datos.tipo === 'NO_ENCONTRADA') {
+        mostrarMensaje(mensajes, `❌ ${datos.mensaje}`, 'error');
+      } else {
+        mostrarMensaje(mensajes, `❌ ${datos.mensaje || 'Error al eliminar la cabaña'}`, 'error');
+      }
     }
   } catch (error) {
-    console.error(error);
-    mostrarMensaje(mensajes, 'Error al eliminar la cabaña', 'error');
+    console.error('Error al eliminar cabaña:', error);
+    mostrarMensaje(mensajes, '❌ Error de conexión al eliminar la cabaña', 'error');
   }
 }
 
 // Mostrar las cabañas
 async function cargarCabanas() {
   try {
-    const cabanas = await traerRegistro('/api/v1/cabanas/');
-    
-         // Crear HTML de una vez para mejor rendimiento
-     const html = cabanas.map(cabana => `
-       <tr>
-         <td>${cabana.id_cabana}</td>
-         <td>${cabana.nombre_cabana}</td>
-         <td>${cabana.descripcion}</td>
-         <td>${cabana.capacidad_personas}</td>
-         <td>$${cabana.precio?.toLocaleString('es-AR') ?? 'Sin precio'}</td>
-         <td>
-           <button class="btn-eliminar-reserva" data-id="${cabana.id_cabana}">🗑️ Eliminar</button>
-           <a class="btn-editar-reserva" href="editar.html?id=${cabana.id_cabana}">✏️ Editar</a>
-         </td>
-       </tr>
-     `).join('');
-    
-    contenedorCabanas.innerHTML = html;
+    const respuesta = await traerRegistro('/api/v1/cabanas');
+
+    // Normalizar respuesta: puede venir como array directo o como { success, data }
+    const lista = Array.isArray(respuesta) ? respuesta : (respuesta?.data || []);
+
+    // Mapear al formato que espera la grilla
+    const cabanasNormalizadas = lista.map(c => ({
+      id_cabana: c.id ?? c.id_cabana,
+      nombre_cabana: c.nombre ?? c.nombre_cabana,
+      descripcion: c.descripcion ?? '',
+      capacidad_personas: c.capacidad ?? c.capacidad_personas ?? '',
+      precio: c.precio ?? 0
+    }));
+
+    // Crear HTML de una vez para mejor rendimiento
+    const html = cabanasNormalizadas.map(cabana => `
+      <tr>
+        <td>${cabana.id_cabana}</td>
+        <td>${cabana.nombre_cabana}</td>
+        <td>${cabana.descripcion}</td>
+        <td>${cabana.capacidad_personas}</td>
+        <td>$${(parseFloat(cabana.precio) || 0).toLocaleString('es-AR')}</td>
+        <td>
+          <button class="btn-eliminar-reserva" data-id="${cabana.id_cabana}">🗑️ Eliminar</button>
+          <a class="btn-editar-reserva" href="editar.html?id=${cabana.id_cabana}">✏️ Editar</a>
+        </td>
+      </tr>
+    `).join('');
+
+    contenedorCabanas.innerHTML = html || '<tr><td colspan="6" style="text-align:center;">Sin cabañas para mostrar</td></tr>';
   } catch (error) {
     console.log(error);
     mostrarMensaje(document.getElementById('mensajes'), 'No se pudo cargar el listado de cabañas');
+    contenedorCabanas.innerHTML = '<tr><td colspan="6" style="text-align:center;">Error al cargar cabañas</td></tr>';
   }
 }
 
@@ -244,15 +266,27 @@ contenedorCabanas.addEventListener('click', async (evento) => {
     try {
       const respuesta = await eliminarRegistro(`/api/v1/cabanas/${idCabana}`);
       const datos = await respuesta.json();
+      
       if (respuesta.ok) {
-        evento.target.closest('tr').remove();
-        mostrarMensaje(document.getElementById('mensajes'), datos.mensaje);
+        mostrarMensaje(document.getElementById('mensajes'), `✅ ${datos.mensaje}`, 'success');
+        // Recargar la tabla para reflejar los cambios
+        await cargarCabanas();
       } else {
-        mostrarMensaje(document.getElementById('mensajes'), 'No se pudo eliminar la cabaña');
+        // Manejar diferentes tipos de error
+        if (datos.tipo === 'RESERVAS_ASOCIADAS') {
+          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje}`, 'error');
+          if (datos.detalle) {
+            mostrarMensaje(document.getElementById('mensajes'), `ℹ️ ${datos.detalle}`, 'info');
+          }
+        } else if (datos.tipo === 'NO_ENCONTRADA') {
+          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje}`, 'error');
+        } else {
+          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje || 'No se pudo eliminar la cabaña'}`, 'error');
+        }
       }
     } catch (error) {
-      console.log(error);
-      mostrarMensaje(document.getElementById('mensajes'), 'Error al eliminar la cabaña');
+      console.error('Error al eliminar cabaña:', error);
+      mostrarMensaje(document.getElementById('mensajes'), '❌ Error de conexión al eliminar la cabaña', 'error');
     }
   }
 });

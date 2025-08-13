@@ -5,12 +5,14 @@ const router = express.Router();
 router.use(express.json());
 
 // Rutas API pagos
-router.get('/api/v1/estadopago', controlador.obtenerEstadosPago);
-router.post('/api/v1/pagos', controlador.crearPago);
-router.get('/api/v1/pagos', controlador.obtenerPagos);
-router.get('/api/v1/pagos/:id', controlador.obtenerPago);
-router.put('/api/v1/pagos/:id', controlador.actualizarPago);
-router.delete('/api/v1/pagos/:id', controlador.eliminarPago);
-router.post('/api/v1/pagos/reporte', controlador.generarReportePagos);
+router.get('/estadopago', controlador.obtenerEstadosPago);
+router.get('/metodospago', controlador.obtenerMetodos);
+router.post('/', controlador.crearPago);
+router.get('/', controlador.obtenerPagos);
+router.get('/:id', controlador.obtenerPago);
+router.put('/:id', controlador.actualizarPago);
+router.delete('/:id', controlador.eliminarPago);
+router.post('/reporte', controlador.generarReportePagos);
+router.get('/reporte', controlador.generarReportePagos);
 
 export default router;

@@ -22,16 +22,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     await cargarEstados();
 
     const reserva = await traerRegistro(`/api/v1/reservas/${id}`);
+    console.log('Datos de la reserva cargados:', reserva);
 
     formulario.id_dni.value = reserva.id_dni;
     formulario.nombre.value = reserva.nombre;
     formulario.email.value = reserva.email;
+    formulario.telefono.value = reserva.telefono || '';
     formulario.id_cabana.value = reserva.id_cabana;
-    formulario.fecha_inicio.value = new Date(reserva.fechainicio).toISOString().split('T')[0];
-    formulario.fecha_fin.value = new Date(reserva.fechafin).toISOString().split('T')[0];
+    formulario.fecha_inicio.value = reserva.fechainicio ? new Date(reserva.fechainicio).toISOString().split('T')[0] : '';
+    formulario.fecha_fin.value = reserva.fechafin ? new Date(reserva.fechafin).toISOString().split('T')[0] : '';
     formulario.precio_total.value = reserva.preciototal;
     formulario.id_reserva.value = reserva.id;
-    formulario.estado.value = reserva.id_estado;
+    formulario.estado.value = reserva.id_estado || '';
 
     calcularPrecio(); // Calcular por si hay diferencias
   } catch (error) {
@@ -61,11 +63,20 @@ async function cargarOpcionesCabana() {
   try {
     const res = await fetch('/api/v1/cabanas');
     const cabanas = await res.json();
-    cabanas.forEach(c => {
-      preciosCabanas[c.id_cabana] = c.precio;
+    console.log('Cabañas cargadas:', cabanas);
+    
+    // Normalizar respuesta si viene como { success, data }
+    const listaCabanas = Array.isArray(cabanas) ? cabanas : (cabanas?.data || []);
+    
+    listaCabanas.forEach(c => {
+      const idCabana = c.id || c.id_cabana;
+      const nombreCabana = c.nombre || c.nombre_cabana;
+      const precio = c.precio || 0;
+      
+      preciosCabanas[idCabana] = precio;
       const opcion = document.createElement('option');
-      opcion.value = c.id_cabana;
-      opcion.textContent = c.nombre_cabana;
+      opcion.value = idCabana;
+      opcion.textContent = nombreCabana;
       selectCabana.appendChild(opcion);
     });
   } catch (error) {
@@ -78,6 +89,7 @@ async function cargarEstados() {
   try {
     const res = await fetch('/api/v1/estados');
     const estados = await res.json();
+    console.log('Estados cargados:', estados);
     selectEstado.innerHTML = '';
 
     estados.forEach(est => {
@@ -94,6 +106,7 @@ async function cargarEstados() {
 formulario.addEventListener('submit', async (evento) => {
   evento.preventDefault();
   const datosFormulario = procesarFormulario(formulario);
+  console.log('Datos del formulario:', datosFormulario);
 
   const datosEditados = {
     id_dni: datosFormulario.id_dni,
@@ -103,13 +116,23 @@ formulario.addEventListener('submit', async (evento) => {
     precio_total: parseFloat(datosFormulario.precio_total),
     nombre: datosFormulario.nombre,
     gmail: datosFormulario.email,
+    telefono: datosFormulario.telefono,
     id_estado: parseInt(datosFormulario.estado)
   };
+  console.log('Datos a enviar:', datosEditados);
 
   try {
     const respuesta = await editarRegistro(`/api/v1/reservas/${id}`, 'PUT', datosEditados);
     const datos = await respuesta.json();
+    console.log('Respuesta del servidor:', datos);
     mostrarMensaje(mensajes, datos.mensaje);
+    
+    // Redirigir después de editar exitosamente
+    if (respuesta.ok) {
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    }
   } catch (error) {
     console.error(error);
     mostrarMensaje(mensajes, 'No se pudo editar la reserva');

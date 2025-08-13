@@ -1,20 +1,23 @@
 import express from 'express';
 import * as controlador from './controlador.reservas.mjs';
 
-const rutasReservas = express.Router();
-rutasReservas.use(express.json());
+const router = express.Router();
 
+// Rutas para reservas
+router.get('/', controlador.obtenerReservas);
+router.get('/activas', controlador.obtenerReservasActivas);
+router.get('/ultima', controlador.obtenerUltimaReserva);
+router.get('/filtros', controlador.obtenerReservasConFiltros); // MOVER ANTES DE /:id
+router.get('/reporte', controlador.generarReporteReservas);
 
+// Rutas con parámetros (deben ir DESPUÉS de las rutas específicas)
+router.get('/:id', controlador.obtenerReserva);
+router.post('/', controlador.crearReservaHandler);
+router.put('/:id', controlador.modificarReserva);
+router.patch('/:id/estado', controlador.actualizarEstadoCiclo);
+router.delete('/:id', controlador.eliminarReserva);
 
-// CRUD Reservas
-rutasReservas.get('/api/v1/reservas', controlador.obtenerReservas);
-rutasReservas.get('/api/v1/reservas/filtros', controlador.obtenerReservasConFiltros);
-rutasReservas.get('/api/v1/reservas/reporte', controlador.generarReporteReservas);
-rutasReservas.get('/api/v1/reservas/:id', controlador.obtenerReserva);
-rutasReservas.put('/api/v1/reservas/:id', controlador.modificarReserva);
-rutasReservas.delete('/api/v1/reservas/:id', controlador.eliminarReserva);
-rutasReservas.post('/api/v1/reservas', controlador.crearReservaHandler);
-rutasReservas.post('/api/v1/disponibilidad', controlador.consultarDisponibilidad);
-rutasReservas.get('/api/v1/estados', controlador.obtenerEstados);
+// Rutas adicionales
+router.post('/disponibilidad/consultar', controlador.consultarDisponibilidad);
 
-export default rutasReservas;
+export default router;

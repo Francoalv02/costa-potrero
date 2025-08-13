@@ -9,202 +9,136 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header moderno -->
+    <!-- Header moderno con navegación mejorada -->
     <header id="header">
-        <div class="logo">
-            <img src="./recursos/logo.png" alt="Costa Potrero Logo" class="imagenlogo">
-            <span class="nombrelogo">Costa Potrero</span>
+        <div class="header-container">
+            <div class="logo">
+                <span class="nombrelogo">Costa Potrero</span>
+            </div>
+            
+            <!-- Menú hamburguesa para móviles -->
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
         </div>
-        <nav>
-            <ul>
-                <li><a href="./index.html"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="./cabanas.html" class="active"><i class="fas fa-bed"></i> Cabañas</a></li>
-                <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
-                <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
-                <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            
+            <!-- Navegación -->
+            <nav id="nav">
+                <ul>
+                    <li><a href="./index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="./cabanas.html" class="active"><i class="fas fa-bed"></i> Cabañas</a></li>
+                    <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                    <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                    <li><a href="./faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             </ul>
         </nav>
+        </div>
+        
+        <!-- Overlay para cerrar menú móvil -->
+        <div class="nav-overlay" id="navOverlay"></div>
     </header>
     
     <main>
         <!-- Hero Section -->
         <section class="container" style="margin-top: 2rem;">
-            <div class="card glass-effect fade-in-up">
-                <h1 class="gradient-text" style="text-align: center; margin-bottom: 1rem; font-size: 2.5rem;">
+            <div class="card fade-in-up">
+                <h1 style="text-align: center; margin-bottom: 1rem; font-size: 2.5rem; color: var(--primary-color);">
                     <i class="fas fa-bed"></i> Nuestras Cabañas
                 </h1>
-                <p style="text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; margin-bottom: 2rem;">
+                <p style="text-align: center; color: var(--gray-dark); font-size: 1.1rem; margin-bottom: 2rem;">
                     Descubre nuestras cómodas cabañas equipadas con todo lo necesario para tu estadía perfecta
                 </p>
-            </div>
+        </div>
         </section>
 
-        <!-- Grid de Cabañas -->
+        <!-- Grid de Cabañas - Cargado dinámicamente -->
         <section class="container" style="margin-top: 3rem;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-                
-                <!-- Cabaña Lu -->
-                <div class="card glass-effect slide-in-left" style="text-align: center; padding: 0; overflow: hidden;">
-                    <div style="position: relative; overflow: hidden;">
-                        <img src="./recursos/cabanaLu.JPG" alt="Cabaña Lu" style="width: 100%; height: 250px; object-fit: cover; transition: var(--transition);">
-                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)); opacity: 0; transition: var(--transition);"></div>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="color: var(--white); margin-bottom: 1rem; font-size: 1.5rem;">
-                            <i class="fas fa-home"></i> Cabaña Lu
-                        </h3>
-                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; line-height: 1.6;">
-                            Cabaña equipada con televisión, cable, aire acondicionado y dos habitaciones. 
-                            Ideal para familias pequeñas.
-                        </p>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-tv"></i> TV Cable
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-snowflake"></i> A/C
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-bed"></i> 2 Habitaciones
-                            </span>
-                        </div>
-                        <a href="./cabanaPeques.html" class="reserve-btn">
-                            <i class="fas fa-eye"></i> Ver Detalles
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Cabaña Ju -->
-                <div class="card glass-effect slide-in-left" style="text-align: center; padding: 0; overflow: hidden;">
-                    <div style="position: relative; overflow: hidden;">
-                        <img src="./recursos/cabanaJu.JPG" alt="Cabaña Ju" style="width: 100%; height: 250px; object-fit: cover; transition: var(--transition);">
-                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)); opacity: 0; transition: var(--transition);"></div>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="color: var(--white); margin-bottom: 1rem; font-size: 1.5rem;">
-                            <i class="fas fa-home"></i> Cabaña Ju
-                        </h3>
-                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; line-height: 1.6;">
-                            Cabaña equipada con televisión, cable, aire acondicionado y una habitación. 
-                            Perfecta para parejas.
-                        </p>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-tv"></i> TV Cable
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-snowflake"></i> A/C
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-bed"></i> 1 Habitación
-                            </span>
-                        </div>
-                        <a href="./cabanaPeques.html" class="reserve-btn">
-                            <i class="fas fa-eye"></i> Ver Detalles
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Cabaña Pe -->
-                <div class="card glass-effect slide-in-left" style="text-align: center; padding: 0; overflow: hidden;">
-                    <div style="position: relative; overflow: hidden;">
-                        <img src="./recursos/cabanaPeques.jpg" alt="Cabaña Pe" style="width: 100%; height: 250px; object-fit: cover; transition: var(--transition);">
-                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)); opacity: 0; transition: var(--transition);"></div>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="color: var(--white); margin-bottom: 1rem; font-size: 1.5rem;">
-                            <i class="fas fa-home"></i> Cabaña Pe
-                        </h3>
-                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; line-height: 1.6;">
-                            Cabaña equipada con televisión, cable, aire acondicionado y tres habitaciones. 
-                            Ideal para grupos grandes.
-                        </p>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-tv"></i> TV Cable
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-snowflake"></i> A/C
-                            </span>
-                            <span style="background: rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white);">
-                                <i class="fas fa-bed"></i> 3 Habitaciones
-                            </span>
-                        </div>
-                        <a href="./cabanaPeques.html" class="reserve-btn">
-                            <i class="fas fa-eye"></i> Ver Detalles
-                        </a>
-                    </div>
+            <div id="cabanas-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                <!-- Las cabañas se cargarán dinámicamente aquí -->
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loader" style="margin: 0 auto;"></div>
+                    <p style="color: var(--gray-dark); margin-top: 1rem;">Cargando cabañas...</p>
                 </div>
             </div>
         </section>
 
         <!-- Sección de características -->
         <section class="container" style="margin-top: 4rem;">
-            <div class="card glass-effect">
-                <h3 class="gradient-text" style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem; color: var(--primary-color);">
                     <i class="fas fa-star"></i> Todas nuestras cabañas incluyen:
                 </h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-wifi" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">WiFi Gratis</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Conexión de alta velocidad</p>
+                <div class="service-grid">
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <h4 class="service-title">WiFi Gratis</h4>
+                        <p class="service-description">Conexión de alta velocidad</p>
                     </div>
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-snowflake" style="font-size: 2.5rem; color: var(--success-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Aire Acondicionado</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Climatización completa</p>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <h4 class="service-title">Aire Acondicionado</h4>
+                        <p class="service-description">Climatización completa</p>
                     </div>
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-tv" style="font-size: 2.5rem; color: var(--warning-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">TV Satelital</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Entretenimiento garantizado</p>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-tv"></i>
+                        </div>
+                        <h4 class="service-title">TV Satelital</h4>
+                        <p class="service-description">Entretenimiento garantizado</p>
                     </div>
-                    <div style="text-align: center; padding: 1rem;">
-                        <i class="fas fa-bath" style="font-size: 2.5rem; color: var(--danger-color); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--white); margin-bottom: 0.5rem;">Baño Privado</h4>
-                        <p style="color: rgba(255, 255, 255, 0.8);">Comodidad total</p>
-                    </div>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="fas fa-bath"></i>
+                        </div>
+                        <h4 class="service-title">Baño Privado</h4>
+                        <p class="service-description">Comodidad total</p>
+                </div>
                 </div>
             </div>
         </section>
     </main>
+    
+    <!-- Footer profesional -->
+   <footer class="footer">
+    <div class="footer-top">
+        <h2>El mejor lugar para vacacionar</h2>
+    </div>
 
-    <!-- Footer moderno -->
-    <footer class="footer">
-        <div class="footer-top">
-            <h2>El mejor lugar para vacacionar</h2>
-        </div>
-
-        <div class="footer-middle">
-            <div class="footer-col">
+    <div class="footer-middle">
+        <div class="footer-col">
                 <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
-                <p>
-                    Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
-                    TV Satelital, Wifi, Ropa Blanca y Piscina.
-                </p>
-            </div>
-            <div class="footer-col">
+            <p>
+                Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
+                TV Satelital, Wifi, Ropa Blanca y Piscina.
+            </p>
+        </div>
+        <div class="footer-col">
                 <h4><i class="fas fa-building"></i> Costa Potrero</h4>
                 <p>Cabaña & Suites</p>
                 <p style="margin-top: 1rem;">
                     <i class="fas fa-clock"></i> Check-in: 14:00<br>
                     <i class="fas fa-clock"></i> Check-out: 11:00
                 </p>
-            </div>
-            <div class="footer-col">
+        </div>
+        <div class="footer-col">
                 <h4><i class="fas fa-phone"></i> Contáctenos</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
                 <p><i class="fas fa-envelope"></i> <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
                 <p><i class="fas fa-phone"></i> +54 351 5 550 694</p>
             </div>
-        </div>
+    </div>
 
-        <div class="footer-bottom">
+    <div class="footer-bottom">
             <p>©2024 Costa Potrero. Todos los derechos reservados.</p>
             <p><a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a></p>
-        </div>
-    </footer>
+    </div>
+</footer>
 
     <!-- Botón flotante de WhatsApp -->
     <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
@@ -212,7 +146,36 @@
     </button>
 
     <!-- JavaScript para efectos -->
+    <script src="./js/cabanas.js"></script>
     <script>
+        // Navegación móvil
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('nav');
+        const navOverlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners para el menú móvil
+        menuToggle.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', closeMenu);
+
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
         // Header scroll effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -223,7 +186,7 @@
             }
         });
 
-        // Animaciones al hacer scroll
+        // Animaciones al hacer scroll para elementos estáticos
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -238,30 +201,12 @@
             });
         }, observerOptions);
 
-        // Observar elementos para animación
+        // Observar elementos estáticos para animación
         document.querySelectorAll('.card').forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
-        });
-
-        // Efectos hover en las cards de cabañas
-        document.querySelectorAll('.card').forEach(card => {
-            const img = card.querySelector('img');
-            const overlay = card.querySelector('div[style*="position: absolute"]');
-            
-            if (img && overlay) {
-                card.addEventListener('mouseenter', () => {
-                    img.style.transform = 'scale(1.05)';
-                    overlay.style.opacity = '1';
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    img.style.transform = 'scale(1)';
-                    overlay.style.opacity = '0';
-                });
-            }
         });
     </script>
 </body>

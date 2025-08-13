@@ -4,12 +4,20 @@ import express from 'express';
 import rutasReservasV1 from './api-crud/v1/reservas/rutas.reservas.mjs';
 import rutasHuespedesV1 from './api-crud/v1/huespedes/rutas.huespedes.mjs';
 import rutasCabanasV1 from './api-crud/v1/cabanas/rutas.cabanas.mjs'; // Importación de rutas de cabañas
+import rutasPagosV1 from './api-crud/v1/pagos/rutas.pagos.mjs';
+import rutasSolicitudesV1 from './api-crud/v1/solicitudes/rutas.solicitudes.mjs'; // Importación de rutas de solicitudes
+import * as controladorReservas from './api-crud/v1/reservas/controlador.reservas.mjs';
 
 const modulosApi = express.Router();
 
-// Agregamos las rutas a la API
-modulosApi.use(rutasReservasV1);
-modulosApi.use(rutasCabanasV1); // Activamos las rutas de cabañas
-modulosApi.use(rutasHuespedesV1);
+// Agregamos las rutas a la API con prefijos
+modulosApi.use('/api/v1/reservas', rutasReservasV1);
+modulosApi.use('/api/v1/cabanas', rutasCabanasV1); // Activamos las rutas de cabañas
+modulosApi.use('/api/v1/huespedes', rutasHuespedesV1);
+modulosApi.use('/api/v1/pagos', rutasPagosV1);
+modulosApi.use('/api/v1/solicitudes', rutasSolicitudesV1); // Activamos las rutas de solicitudes
+
+// Ruta directa para estados
+modulosApi.get('/api/v1/estados', controladorReservas.obtenerEstados);
 
 export default modulosApi;

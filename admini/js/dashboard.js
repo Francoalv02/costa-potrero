@@ -8,25 +8,37 @@ function mostrarMensaje(mensaje, tipo = 'info') {
 // Cargar estadísticas generales
 async function cargarEstadisticas() {
     try {
-        console.log('Cargando estadísticas...');
+        console.log('📊 Iniciando carga de estadísticas...');
         
         // Cargar datos de reservas
+        console.log('📡 Cargando reservas...');
         const reservasResponse = await fetch('/api/v1/reservas');
-        const reservas = await reservasResponse.json();
+        const reservasData = await reservasResponse.json();
+        const reservas = Array.isArray(reservasData) ? reservasData : (reservasData.data || []);
+        console.log('✅ Reservas cargadas:', reservas.length);
         
         // Cargar datos de cabañas
+        console.log('📡 Cargando cabañas...');
         const cabanasResponse = await fetch('/api/v1/cabanas');
-        const cabanas = await cabanasResponse.json();
+        const cabanasData = await cabanasResponse.json();
+        const cabanas = Array.isArray(cabanasData) ? cabanasData : (cabanasData.data || []);
+        console.log('✅ Cabañas cargadas:', cabanas.length);
         
         // Cargar datos de huéspedes
+        console.log('📡 Cargando huéspedes...');
         const huespedesResponse = await fetch('/api/v1/huespedes');
-        const huespedes = await huespedesResponse.json();
+        const huespedesData = await huespedesResponse.json();
+        const huespedes = Array.isArray(huespedesData) ? huespedesData : (huespedesData.data || []);
+        console.log('✅ Huéspedes cargados:', huespedes.length);
         
         // Cargar datos de pagos
+        console.log('📡 Cargando pagos...');
         const pagosResponse = await fetch('/api/v1/pagos');
-        const pagos = await pagosResponse.json();
+        const pagosData = await pagosResponse.json();
+        const pagos = Array.isArray(pagosData) ? pagosData : (pagosData.data || []);
+        console.log('✅ Pagos cargados:', pagos.length);
         
-        console.log('Datos cargados para estadísticas:', {
+        console.log('📊 Datos cargados para estadísticas:', {
             reservas: reservas.length,
             cabanas: cabanas.length,
             huespedes: huespedes.length,
@@ -39,7 +51,7 @@ async function cargarEstadisticas() {
         ) : [];
         
         const cabanasValidas = cabanas ? cabanas.filter(cabana => 
-            cabana && typeof cabana === 'object' && cabana.id_cabana
+            cabana && typeof cabana === 'object' && (cabana.id_cabana || cabana.id)
         ) : [];
         
         // Calcular cabañas activas (con estado activo)
@@ -55,7 +67,7 @@ async function cargarEstadisticas() {
             pago && typeof pago === 'object' && pago.id_pago
         ) : [];
         
-        console.log('Datos válidos filtrados:', {
+        console.log('📊 Datos válidos filtrados:', {
             reservas: reservasValidas.length,
             cabanas: cabanasValidas.length,
             huespedes: huespedesValidos.length,
@@ -70,10 +82,35 @@ async function cargarEstadisticas() {
         const ingresosTotales = document.getElementById('ingresos-totales');
         const reservasHoy = document.getElementById('reservas-hoy');
         
-        if (totalReservas) totalReservas.textContent = reservasValidas.length;
-        if (totalCabanas) totalCabanas.textContent = cabanasValidas.length; // Mostrar total de cabañas registradas
-        if (totalHuespedes) totalHuespedes.textContent = huespedesValidos.length;
-        if (totalPagos) totalPagos.textContent = pagosValidos.length;
+        console.log('🎯 Actualizando elementos del DOM...');
+        
+        if (totalReservas) {
+            totalReservas.textContent = reservasValidas.length;
+            console.log('✅ Total reservas actualizado:', reservasValidas.length);
+        } else {
+            console.log('❌ Elemento total-reservas no encontrado');
+        }
+        
+        if (totalCabanas) {
+            totalCabanas.textContent = cabanasValidas.length;
+            console.log('✅ Total cabañas actualizado:', cabanasValidas.length);
+        } else {
+            console.log('❌ Elemento total-cabanas no encontrado');
+        }
+        
+        if (totalHuespedes) {
+            totalHuespedes.textContent = huespedesValidos.length;
+            console.log('✅ Total huéspedes actualizado:', huespedesValidos.length);
+        } else {
+            console.log('❌ Elemento total-huespedes no encontrado');
+        }
+        
+        if (totalPagos) {
+            totalPagos.textContent = pagosValidos.length;
+            console.log('✅ Total pagos actualizado:', pagosValidos.length);
+        } else {
+            console.log('❌ Elemento total-pagos no encontrado');
+        }
         
         // Calcular ingresos totales con validación
         if (ingresosTotales && pagosValidos.length > 0) {
@@ -82,8 +119,12 @@ async function cargarEstadisticas() {
                 return total + (isNaN(monto) ? 0 : monto);
             }, 0);
             ingresosTotales.textContent = `$${ingresos.toLocaleString()}`;
+            console.log('✅ Ingresos totales actualizados:', ingresos);
         } else if (ingresosTotales) {
             ingresosTotales.textContent = '$0';
+            console.log('✅ Ingresos totales establecidos en $0');
+        } else {
+            console.log('❌ Elemento ingresos-totales no encontrado');
         }
         
         // Calcular reservas de hoy con validación
@@ -98,8 +139,12 @@ async function cargarEstadisticas() {
                 }
             }).length;
             reservasHoy.textContent = reservasHoyCount;
+            console.log('✅ Reservas de hoy actualizadas:', reservasHoyCount);
         } else if (reservasHoy) {
             reservasHoy.textContent = '0';
+            console.log('✅ Reservas de hoy establecidas en 0');
+        } else {
+            console.log('❌ Elemento reservas-hoy no encontrado');
         }
         
         mostrarMensaje('Estadísticas cargadas correctamente', 'success');
@@ -127,6 +172,17 @@ async function cargarGraficos(reservas, cabanas, pagos) {
     try {
         console.log('Cargando gráficos con datos:', { reservas: reservas.length, cabanas: cabanas.length, pagos: pagos.length });
         
+        // Asegurar que los datos sean arrays
+        const reservasArray = Array.isArray(reservas) ? reservas : (reservas.data || []);
+        const cabanasArray = Array.isArray(cabanas) ? cabanas : (cabanas.data || []);
+        const pagosArray = Array.isArray(pagos) ? pagos : (pagos.data || []);
+        
+        console.log('Datos procesados para gráficos:', { 
+            reservas: reservasArray.length, 
+            cabanas: cabanasArray.length, 
+            pagos: pagosArray.length 
+        });
+        
         // Gráfico de reservas por mes (datos reales)
         const ctxReservas = document.getElementById('chart-reservas-mes');
         if (ctxReservas) {
@@ -140,8 +196,8 @@ async function cargarGraficos(reservas, cabanas, pagos) {
                     reservasPorMes[mes] = 0;
                 });
                 
-                if (reservas && reservas.length > 0) {
-                    reservas.forEach(reserva => {
+                if (reservasArray && reservasArray.length > 0) {
+                    reservasArray.forEach(reserva => {
                         if (reserva && reserva.fechainicio) {
                             try {
                                 const fecha = new Date(reserva.fechainicio);
@@ -203,8 +259,8 @@ async function cargarGraficos(reservas, cabanas, pagos) {
                 let reservasCompletadas = 0;
                 let reservasPendientes = 0;
                 
-                if (reservas && reservas.length > 0) {
-                    reservas.forEach(reserva => {
+                if (reservasArray && reservasArray.length > 0) {
+                    reservasArray.forEach(reserva => {
                         if (reserva && reserva.fechainicio && reserva.fechafin) {
                             try {
                                 const inicio = new Date(reserva.fechainicio);
@@ -255,8 +311,8 @@ async function cargarGraficos(reservas, cabanas, pagos) {
         if (ctxPagos) {
             try {
                 const metodosPago = {};
-                if (pagos && pagos.length > 0) {
-                    pagos.forEach(pago => {
+                if (pagosArray && pagosArray.length > 0) {
+                    pagosArray.forEach(pago => {
                         const metodo = pago.metodo_pago || 'No especificado';
                         metodosPago[metodo] = (metodosPago[metodo] || 0) + 1;
                     });
@@ -306,10 +362,10 @@ async function cargarGraficos(reservas, cabanas, pagos) {
                 const hoy = new Date();
                 
                 // Obtener todas las cabañas (no solo activas) para el cálculo
-                const totalCabanas = cabanas ? cabanas.length : 0;
+                const totalCabanas = cabanasArray ? cabanasArray.length : 0;
                 console.log('Total de cabañas:', totalCabanas);
                 
-                if (reservas && reservas.length > 0 && totalCabanas > 0) {
+                if (reservasArray && reservasArray.length > 0 && totalCabanas > 0) {
                     // Para cada día de la semana, calcular cuántas cabañas están ocupadas
                     for (let i = 0; i < 7; i++) {
                         const fecha = new Date(hoy);
@@ -320,7 +376,7 @@ async function cargarGraficos(reservas, cabanas, pagos) {
                         
                         const cabanasOcupadasSet = new Set();
                         
-                        reservas.forEach(reserva => {
+                        reservasArray.forEach(reserva => {
                             if (reserva && reserva.fechainicio && reserva.fechafin) {
                                 try {
                                     const inicio = new Date(reserva.fechainicio);

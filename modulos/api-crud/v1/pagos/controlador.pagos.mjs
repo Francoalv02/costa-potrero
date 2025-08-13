@@ -1,5 +1,6 @@
 import * as modelo from './modelo.pagos.mjs';
 import PDFDocument from 'pdfkit';
+import pool from '../../../../conexion/conexion.db.mjs';
 
 // Obtener estados de pago
 async function obtenerEstadosPago(req, res) {
@@ -12,10 +13,44 @@ async function obtenerEstadosPago(req, res) {
   }
 }
 
+// Obtener métodos de pago (distintos ya existentes)
+async function obtenerMetodos(req, res) {
+  try {
+    const metodos = await modelo.obtenerMetodosPago();
+    res.json(metodos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al obtener métodos de pago' });
+  }
+}
+
+// Obtener última reserva creada
+async function obtenerUltimaReserva(req, res) {
+  try {
+    const r = await pool.query(`
+      SELECT r.id_reserva,
+             h.nombre AS huesped,
+             h.id_dni,
+             c.nombre_cabana,
+             r.precioTotal AS preciototal
+      FROM reservas r
+      JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
+      ORDER BY r.id_reserva DESC
+      LIMIT 1
+    `);
+    if (r.rows.length === 0) return res.status(404).json({ mensaje: 'Sin reservas' });
+    res.json(r.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al obtener última reserva' });
+  }
+}
+
 // Crear nuevo pago
 async function crearPago(req, res) {
   try {
-    const { id_reserva, id_estado_pago, metodo_pago, observacion } = req.body;
+    const { id_reserva, id_estado_pago, metodo_pago, observacion, monto, fecha_pago } = req.body;
     if (!id_reserva || !id_estado_pago) {
       return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
     }
@@ -24,7 +59,9 @@ async function crearPago(req, res) {
       id_reserva,
       id_estado_pago: parseInt(id_estado_pago),
       metodo_pago,
-      observacion
+      observacion,
+      monto,
+      fecha_pago
     });
 
     res.status(201).json({ mensaje: `Pago registrado (ID ${resultado.rows[0].id_pago})` });
@@ -303,5 +340,7 @@ export {
   obtenerPago,
   actualizarPago,
   eliminarPago,
-  generarReportePagos
+  generarReportePagos,
+  obtenerMetodos,
+  obtenerUltimaReserva
 };

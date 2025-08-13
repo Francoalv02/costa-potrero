@@ -2999,3 +2999,49 @@ form {
         padding: 20px;
     }
 }
+
+/* Estilos para botones de estado de ciclo de vida */
+.btn-siguiente-estado {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background-color 0.3s;
+}
+
+.btn-siguiente-estado:hover {
+  background: #218838;
+}
+
+.estado-actual {
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.estado-actual:hover {
+  color: #0056b3;
+}
+
+.estado-final {
+  font-weight: bold;
+  color: #6c757d;
+  font-style: italic;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.estado-final:hover {
+  color: #495057;
+}
+
+/* Ajustar el ancho de la tabla para la nueva columna */
+table th:nth-child(9),
+table td:nth-child(9) {
+  min-width: 150px;
+}

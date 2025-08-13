@@ -5,19 +5,26 @@ import {
 } from '../../../recursos/js/utilidades.js';
 import { cargarEstadisticas, exportarEstadisticasPDF } from './estadisticas.js';
 
+// Función para formatear fechas (solo fecha, sin hora)
+function formatearFecha(fecha) {
+  if (!fecha) return 'N/A';
+  try {
+    const date = new Date(fecha);
+    if (isNaN(date.getTime())) return 'N/A';
+    return date.toLocaleDateString('es-ES');
+  } catch (error) {
+    console.error('Error formateando fecha:', error);
+    return 'N/A';
+  }
+}
+
 const tablaPagos = document.getElementById('tabla-pagos');
-const estadoPagoSelect = document.getElementById('estado_pago');
 const filtroEstadoSelect = document.getElementById('filtro-estado');
-const reservaSelect = document.getElementById('id_reserva');
 const mensajeDiv = document.getElementById('mensajes');
-const formulario = document.getElementById('formulario-pago');
 const resultado = document.getElementById('resultado-busqueda');
 const modalOverlay = document.getElementById('modal-overlay');
 const btnBusquedaFlotante = document.getElementById('btn-busqueda-flotante');
 const btnCerrarModal = document.getElementById('btn-cerrar-modal');
-
-// Elementos para el toggle del formulario
-const btnToggleFormulario = document.getElementById('btn-toggle-formulario');
 
 // Elementos para el modal de edición
 const modalEditarOverlay = document.getElementById('modal-editar-overlay');
@@ -25,91 +32,129 @@ const btnCerrarModalEditar = document.getElementById('btn-cerrar-modal-editar');
 const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
 const formEditarPago = document.getElementById('form-editar-pago');
 
-// Cargar estados de pago
+// Cargar estados de pago (para filtro y modal de edición)
 async function cargarEstadosPago() {
   try {
-    const res = await fetch('/api/v1/estadopago');
+    console.log('Iniciando cargarEstadosPago...');
+    
+    // Verificar que los elementos del DOM existan
+    if (!filtroEstadoSelect) {
+      console.error('filtroEstadoSelect no encontrado');
+      return;
+    }
+    
+    console.log('Elementos del DOM encontrados correctamente');
+    
+    const res = await fetch('/api/v1/pagos/estadopago');
+    console.log('Respuesta de la API estados:', res.status);
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
     const estados = await res.json();
+    console.log('Estados recibidos:', estados);
 
-    estadoPagoSelect.innerHTML = '<option value="">Seleccione</option>';
     filtroEstadoSelect.innerHTML = '<option value="">Todos los estados</option>';
     
     // Cargar estados en el modal de edición
     const editarEstadoSelect = document.getElementById('editar-estado_pago');
-    editarEstadoSelect.innerHTML = '<option value="">Seleccione un estado</option>';
+    if (editarEstadoSelect) {
+      editarEstadoSelect.innerHTML = '<option value="">Seleccione un estado</option>';
+    } else {
+      console.error('editar-estado_pago no encontrado');
+    }
 
-    estados.forEach((estado) => {
-      const option1 = document.createElement('option');
-      option1.value = estado.id_estado_pago;
-      option1.textContent = estado.nombre_estado_pago;
-      estadoPagoSelect.appendChild(option1);
-
-      const option2 = document.createElement('option');
-      option2.value = estado.nombre_estado_pago.toLowerCase();
-      option2.textContent = estado.nombre_estado_pago;
-      filtroEstadoSelect.appendChild(option2);
+    if (Array.isArray(estados)) {
+      estados.forEach((estado) => {
+        console.log('Procesando estado:', estado);
+        
+        // Opción para el filtro
+        const option2 = document.createElement('option');
+        option2.value = estado.nombre_estado_pago.toLowerCase();
+        option2.textContent = estado.nombre_estado_pago;
+        filtroEstadoSelect.appendChild(option2);
+        
+        // Opción para el modal de edición
+        if (editarEstadoSelect) {
+          const option3 = document.createElement('option');
+          option3.value = estado.id_estado_pago;
+          option3.textContent = estado.nombre_estado_pago;
+          editarEstadoSelect.appendChild(option3);
+        }
+      });
       
-      // Agregar opción al modal de edición
-      const option3 = document.createElement('option');
-      option3.value = estado.id_estado_pago;
-      option3.textContent = estado.nombre_estado_pago;
-      editarEstadoSelect.appendChild(option3);
-    });
+      console.log('Estados cargados correctamente en filtro:', filtroEstadoSelect.children.length, 'opciones');
+    } else {
+      console.error('Formato de estados inválido:', estados);
+    }
   } catch (error) {
     console.error('Error al cargar estados de pago:', error);
-  }
-}
-
-// Cargar reservas
-async function cargarReservas() {
-  try {
-    const res = await fetch('/api/v1/reservas');
-    const reservas = await res.json();
-
-    reservaSelect.innerHTML = '<option value="">Seleccione una reserva</option>';
-    reservas.forEach((r) => {
-      const option = document.createElement('option');
-      option.value = r.id;
-      option.textContent = `#${r.id} - ${r.nombre} (${r.nombre_cabana})`;
-      reservaSelect.appendChild(option);
-    });
-  } catch (error) {
-    console.error('Error al cargar reservas:', error);
   }
 }
 
 // Mostrar pagos en tabla
 async function cargarPagos() {
   try {
+    console.log('Iniciando cargarPagos...');
+    
+    // Verificar que los elementos del DOM existan
+    if (!tablaPagos) {
+      console.error('tablaPagos no encontrado');
+      return;
+    }
+    
+    if (!filtroEstadoSelect) {
+      console.error('filtroEstadoSelect no encontrado');
+      return;
+    }
+    
+    console.log('Elementos del DOM encontrados correctamente');
+    
     const res = await fetch('/api/v1/pagos');
+    console.log('Respuesta de la API pagos:', res.status);
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
     const pagos = await res.json();
+    console.log('Pagos recibidos:', pagos);
 
     const filtro = filtroEstadoSelect.value.toLowerCase();
+    console.log('Filtro aplicado:', filtro);
+    
     tablaPagos.innerHTML = '';
 
-    pagos
-      .filter(p => !filtro || p.nombre_estado_pago.toLowerCase() === filtro)
-      .forEach(p => {
+    if (Array.isArray(pagos)) {
+      const pagosFiltrados = pagos.filter(p => !filtro || p.nombre_estado_pago.toLowerCase() === filtro);
+      console.log('Pagos filtrados:', pagosFiltrados.length, 'de', pagos.length);
+      
+      pagosFiltrados.forEach(p => {
         tablaPagos.innerHTML += `
           <tr>
             <td>${p.id_pago}</td>
             <td>#${p.id_reserva}</td>
             <td>${p.huesped}</td>
-            <td>${p.fecha_pago}</td>
+            <td>${formatearFecha(p.fecha_pago)}</td>
             <td>$${p.monto}</td>
             <td>${p.nombre_estado_pago}</td>
             <td>${p.metodo_pago ?? '-'}</td>
             <td>${p.observacion ?? '-'}</td>
             <td>
               <button class="btn-editar-reserva" onclick="editarPago(${p.id_pago})">✏️ Editar</button>
-              <button class="btn-eliminar-reserva" onclick="eliminarPago(${p.id_pago})">🗑️ Eliminar</button>
+              <button class="btn-eliminar-reserva" data-id="${p.id_pago}">🗑️ Eliminar</button>
             </td>
           </tr>
         `;
       });
+    } else {
+      console.error('Formato de pagos inválido:', pagos);
+    }
 
     // Actualizar estadísticas después de cargar pagos
     await cargarEstadisticas();
+    console.log('Pagos cargados correctamente');
   } catch (error) {
     console.error('Error al cargar pagos:', error);
     mostrarMensaje(mensajeDiv, 'No se pudo cargar el listado de pagos');
@@ -157,7 +202,7 @@ document.addEventListener('keydown', (e) => {
 const formBuscar = document.getElementById('form-buscar-pago');
 formBuscar.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const idPago = document.getElementById('id_pago').value;
   
   if (!idPago || idPago < 1) {
@@ -229,7 +274,7 @@ formBuscar.addEventListener('submit', async (e) => {
             </div>
             <div class="form-col">
               <label>Fecha de Pago:</label>
-              <input type="text" value="${data.fecha_pago || 'N/A'}" readonly>
+              <input type="text" value="${formatearFecha(data.fecha_pago)}" readonly>
             </div>
           </div>
           
@@ -241,8 +286,8 @@ formBuscar.addEventListener('submit', async (e) => {
             <div class="form-col">
               <label>Datos de la Reserva:</label>
               <div style="display: flex; flex-direction: column; gap: 8px;">
-                <input type="text" value="Fecha Inicio: ${data.fechainicio || 'N/A'}" readonly style="font-size: 13px; padding: 10px 12px; border-radius: 15px; border: 2px solid #e9ecef; background: #f8f9fa; color: #2c3e50;">
-                <input type="text" value="Fecha Fin: ${data.fechafin || 'N/A'}" readonly style="font-size: 13px; padding: 10px 12px; border-radius: 15px; border: 2px solid #e9ecef; background: #f8f9fa; color: #2c3e50;">
+                <input type="text" value="Fecha Inicio: ${formatearFecha(data.fechainicio)}" readonly style="font-size: 13px; padding: 10px 12px; border-radius: 15px; border: 2px solid #e9ecef; background: #f8f9fa; color: #2c3e50;">
+                <input type="text" value="Fecha Fin: ${formatearFecha(data.fechafin)}" readonly style="font-size: 13px; padding: 10px 12px; border-radius: 15px; border: 2px solid #e9ecef; background: #f8f9fa; color: #2c3e50;">
                 <input type="text" value="Precio Total: $${data.preciototal || '0'}" readonly style="font-size: 13px; padding: 10px 12px; border-radius: 15px; border: 2px solid #e9ecef; background: #f8f9fa; color: #2c3e50;">
               </div>
             </div>
@@ -267,7 +312,7 @@ formBuscar.addEventListener('submit', async (e) => {
       `;
       
       mostrarMensaje(mensajeDiv, 'Pago encontrado exitosamente', 'success');
-    } else {
+  } else {
       // Mostrar mensaje de error dentro del modal
       resultado.innerHTML = `
         <div class="mensajes error">
@@ -316,56 +361,15 @@ async function eliminarPago(id) {
   }
 }
 
-// Eliminar un pago
+// Eliminar un pago (delegación en la grilla)
 tablaPagos.addEventListener('click', async (evento) => {
-  if (evento.target.classList.contains('eliminar')) {
+  if (evento.target.classList.contains('btn-eliminar-reserva')) {
     const idPago = evento.target.dataset.id;
-    try {
-      const respuesta = await eliminarRegistro(`/api/v1/pagos/${idPago}`);
-      const datos = await respuesta.json();
-      if (respuesta.ok) {
-        evento.target.closest('tr').remove();
-        mostrarMensaje(mensajeDiv, datos.mensaje);
-        await cargarEstadisticas(); // Actualizar estadísticas
-      } else {
-        mostrarMensaje(mensajeDiv, 'No se pudo eliminar el pago');
-      }
-    } catch (error) {
-      console.log(error);
-      mostrarMensaje(mensajeDiv, 'Error al eliminar el pago');
-    }
+    if (!idPago) return;
+    await eliminarPago(idPago);
   }
 });
 
-// Registrar un nuevo pago
-formulario.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const formData = new FormData(formulario);
-  const datos = {
-    id_reserva: formData.get('id_reserva'),
-    id_estado_pago: formData.get('estado_pago'),
-    metodo_pago: formData.get('metodo_pago'),
-    observacion: formData.get('observacion')
-  };
-
-  try {
-    const respuesta = await altaRegistro('/api/v1/pagos', datos);
-    const resultado = await respuesta.json();
-    
-    if (respuesta.ok) {
-      mostrarMensaje(mensajeDiv, resultado.mensaje, 'success');
-      formulario.reset();
-      await cargarPagos(); // Recargar tabla
-      await cargarEstadisticas(); // Actualizar estadísticas
-    } else {
-      mostrarMensaje(mensajeDiv, resultado.mensaje || 'Error al registrar el pago', 'error');
-    }
-  } catch (error) {
-    console.error(error);
-    mostrarMensaje(mensajeDiv, 'Error al registrar el pago', 'error');
-  }
-});
 
 // Generar Reportes
 document.getElementById('btn-reporte-pagos').addEventListener('click', async () => {
@@ -441,21 +445,11 @@ document.getElementById('btn-exportar-estadisticas').addEventListener('click', a
 });
 
 // Filtro de estado
-filtroEstadoSelect.addEventListener('change', cargarPagos);
-
-// Toggle del formulario de registro de pago
-btnToggleFormulario.addEventListener('click', () => {
-  const formulario = document.getElementById('formulario-pago');
-  const btnToggle = document.getElementById('btn-toggle-formulario');
-  
-  if (formulario.style.display === 'none' || formulario.style.display === '') {
-    formulario.style.display = 'block';
-    btnToggle.textContent = '▲';
-  } else {
-    formulario.style.display = 'none';
-    btnToggle.textContent = '▼';
-  }
+filtroEstadoSelect.addEventListener('change', async (e) => {
+  console.log('Filtro de estado cambiado a:', e.target.value);
+  await cargarPagos();
 });
+
 
 // Funciones para el modal de edición
 btnCerrarModalEditar.addEventListener('click', () => {
@@ -552,7 +546,19 @@ formEditarPago.addEventListener('submit', async (e) => {
 
 // Inicializar página
 window.addEventListener('load', async () => {
-  await cargarEstadosPago();
-  await cargarReservas();
-  await cargarPagos();
+  console.log('Página de pagos cargada, iniciando...');
+  
+  try {
+    console.log('Llamando a cargarEstadosPago...');
+    await cargarEstadosPago();
+    console.log('Estados de pago cargados');
+    
+    console.log('Llamando a cargarPagos...');
+    await cargarPagos();
+    console.log('Pagos cargados');
+    
+    console.log('Inicialización completada');
+  } catch (error) {
+    console.error('Error en la inicialización:', error);
+  }
 });

@@ -5,13 +5,11 @@ const rutasCabanas = express.Router();
 rutasCabanas.use(express.json());
 
 // Rutas para cabañas
-rutasCabanas.get('/api/v1/cabanas', controlador.obtenerCabanas);
-rutasCabanas.get('/api/v1/cabanas/reporte', controlador.generarReporteCabanas);
-rutasCabanas.get('/api/v1/cabanas/:id', controlador.obtenerCabana);
-rutasCabanas.post('/api/v1/cabanas', controlador.crearCabana);
-rutasCabanas.put('/api/v1/cabanas/:id', controlador.modificarCabana);
-rutasCabanas.delete('/api/v1/cabanas/:id', controlador.eliminarCabana);
-
-
+rutasCabanas.get('/', controlador.obtenerCabanas);
+rutasCabanas.get('/reporte', controlador.generarReporteCabanas);
+rutasCabanas.get('/:id', controlador.obtenerCabana);
+rutasCabanas.post('/', controlador.crearCabana);
+rutasCabanas.put('/:id', controlador.modificarCabana);
+rutasCabanas.delete('/:id', controlador.eliminarCabana);
 
 export default rutasCabanas;

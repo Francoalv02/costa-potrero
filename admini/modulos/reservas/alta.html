@@ -23,6 +23,7 @@
                     <a href="./../cabanas/index.html">Listado Cabañas</a>
                     <a href="./../huespedes/index.html">Listado Huespedes</a>
                     <a href="./../pagos/pagos.html">Lista de Pagos</a>
+                    <a href="./../solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
         </nav>
@@ -62,6 +63,15 @@
                             <input type="email" name="gmail" id="gmail" required>
                         </label>
                     </div>
+                    <div class="form-col">
+                        <label for="telefono">
+                            📞 Teléfono:
+                            <input type="tel" name="telefono" id="telefono" pattern="[0-9 +()-]{6,20}">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-col">
                         <label for="id_cabana">
                             Tipo de cabaña:
@@ -116,6 +126,63 @@
         </div>
     </main>
 
+    <!-- Modal Alta de Pago (bloqueante) -->
+    <div id="modal-pago-overlay" class="modal-overlay">
+      <div class="modal-busqueda" style="max-width: 720px;">
+        <h3>Registrar Pago de la Reserva</h3>
+        <div id="pago-resumen" class="mensajes info" style="margin-bottom: 10px;"></div>
+        <form id="form-alta-pago" class="form-busqueda">
+          <div class="form-row">
+            <div class="form-col">
+              <label>ID Reserva</label>
+              <input type="number" id="pago-id-reserva" readonly>
+            </div>
+            <div class="form-col">
+              <label>Huésped</label>
+              <input type="text" id="pago-huesped" readonly>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label>Fecha de Pago</label>
+              <input type="date" id="pago-fecha" required>
+            </div>
+            <div class="form-col">
+              <label>Método</label>
+              <select id="pago-metodo" required>
+                <option value="">Seleccione método</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="MercadoPago">MercadoPago</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label>Estado</label>
+              <select id="pago-estado" required></select>
+            </div>
+            <div class="form-col">
+              <label>Monto (ARS)</label>
+              <input type="number" id="pago-monto" min="0" step="0.01" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col" style="width:100%">
+              <label>Observación</label>
+              <textarea id="pago-observacion" rows="3" placeholder="Detalle del pago"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col" style="width:100%">
+              <button type="submit" class="btn-estadisticas">Guardar Pago</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+ 
     <script>
         function cerrarSesion() {
             fetch('/logout', { method: 'POST' })
@@ -152,5 +219,5 @@
             document.getElementById('fecha_fin').min = today;
         });
     </script>
-</body>
+  </body>
 </html>

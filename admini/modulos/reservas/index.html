@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservas - Administración</title>
     <link rel="stylesheet" href="../css/estilo.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script type="module" src="./js/index.js"></script>
 </head>
 <body>
@@ -22,6 +24,7 @@
                     <a href="./../cabanas/index.html">Listado Cabañas</a>
                     <a href="./../huespedes/index.html">Listado Huespedes</a>
                     <a href="./../pagos/pagos.html">Lista de Pagos</a>
+                    <a href="./../solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
         </nav>
@@ -36,13 +39,35 @@
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal-busqueda">
             <button class="btn-cerrar-modal" id="btn-cerrar-modal">×</button>
-            <h3>🔍 Buscar Reserva por ID</h3>
+            <h3>Buscar Reserva</h3>
             <form id="form-buscar-reserva" class="form-busqueda">
-                <div class="form-group">
-                    <label for="id_reserva">ID de Reserva:</label>
-                    <input type="number" id="id_reserva" name="id_reserva" min="1" placeholder="Ej: 1, 2, 3..." required>
+                <div class="form-row">
+                  <div class="form-col">
+                    <label for="tipo_busqueda">Tipo de Búsqueda</label>
+                    <select id="tipo_busqueda" name="tipo_busqueda">
+                      <option value="id">Por ID</option>
+                      <option value="dni">Por DNI</option>
+                      <option value="nombre">Por Nombre</option>
+                    </select>
+                  </div>
                 </div>
-                <button type="submit" class="btn-estadisticas">Buscar Reserva</button>
+
+                <div class="form-group" id="grupo-buscar-id">
+                    <label for="id_reserva">ID de Reserva:</label>
+                    <input type="number" id="id_reserva" name="id_reserva" min="1" placeholder="Ej: 1, 2, 3...">
+                </div>
+
+                <div class="form-group" id="grupo-buscar-dni" style="display:none;">
+                    <label for="dni_buscar">DNI:</label>
+                    <input type="text" id="dni_buscar" name="dni_buscar" placeholder="Ej: 30123456">
+                </div>
+
+                <div class="form-group" id="grupo-buscar-nombre" style="display:none;">
+                    <label for="nombre_buscar">Nombre:</label>
+                    <input type="text" id="nombre_buscar" name="nombre_buscar" placeholder="Ej: Juan">
+                </div>
+
+                <button type="submit" class="btn-estadisticas">Buscar</button>
             </form>
             <div id="resultado-busqueda" class="resultado-busqueda"></div>
         </div>
@@ -51,8 +76,8 @@
     <main class="main-content">
         <!-- Sección 1: Grilla de Reservas con Filtros Integrados -->
         <section class="section-grilla">
-            <h1 class="titulo-reservas">Reservas</h1>
-            <h2 class="subtitulo-reservas">Listado de Reservas Registradas</h2>
+        <h1 class="titulo-reservas">Reservas</h1>
+        <h2 class="subtitulo-reservas">Listado de Reservas Registradas</h2>
 
             <!-- Filtros Integrados -->
             <div class="filtros-integrados">
@@ -86,6 +111,14 @@
                                 <option value="">Todas las cabañas</option>
                             </select>
                         </div>
+
+                        <div class="filtro-grupo">
+                            <label for="vista-reservas">Vista:</label>
+                            <select id="vista-reservas">
+                                <option value="activas" selected>Solo Activas</option>
+                                <option value="todas">Todas las Reservas</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="filtro-botones">
@@ -113,7 +146,7 @@
                         <th>Fecha Salida</th>
                         <th>Cabaña</th>
                         <th>Precio Total</th>
-                        <th>Estado</th>
+                        <th>Ciclo de Vida</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -121,6 +154,47 @@
                     
                 </tbody>
             </table>
+        </section>
+        
+        <!-- Sección: Estadísticas y Gráficos de Reservas -->
+        <section class="section-estadisticas">
+            <h2>Estadísticas y Gráficos</h2>
+            <div class="estadisticas-container">
+                <!-- Tarjetas de resumen -->
+                <div class="tarjetas-resumen">
+                    <div class="tarjeta">
+                        <h3>Total de Reservas</h3>
+                        <p id="res-total">0</p>
+                    </div>
+                    <div class="tarjeta">
+                        <h3>Monto Total De Reservas</h3>
+                        <p id="res-ingresos">$0</p>
+                    </div>
+
+                </div>
+
+                <!-- Gráficos -->
+                <div class="graficos-container">
+                    <div class="grafico-item">
+                        <h3>Reservas por Mes</h3>
+                        <canvas id="res-grafico-mes"></canvas>
+                    </div>
+                    <div class="grafico-item">
+                        <h3>Estado de Reservas</h3>
+                        <canvas id="res-grafico-estado"></canvas>
+                    </div>
+                    <div class="grafico-item">
+                        <h3>Cabañas más Reservadas</h3>
+                        <canvas id="res-grafico-cabanas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-container">
+                <button id="btn-actualizar-res-estadisticas" class="btn-estadisticas">Actualizar Estadísticas</button>
+                <button id="btn-exportar-res-estadisticas" class="btn-estadisticas">Exportar Estadísticas (PDF)</button>
+            </div>
         </section>
     </main>
 

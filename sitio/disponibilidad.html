@@ -1,169 +1,578 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-        <link rel="stylesheet" href="./css/estilo.css">
-    <script type="module" src="./js/disponibilidad.js"></script>
+    <title>Disponibilidad - Costa Potrero</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos para el modal de solicitud -->
+    <style>
+        /* Modal de solicitud */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-cabana-info {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .modal-cabana-info h4 {
+            color: var(--primary-color);
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .modal-cabana-info p {
+            margin: 0.5rem 0;
+            color: var(--gray-dark);
+        }
+
+        .modal-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 58, 64, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: var(--light-color);
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .modal-btn-secondary:hover {
+            background: #c1c7cd;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-overlay.active .modal-content {
+            animation: modalFadeIn 0.3s ease forwards;
+        }
+    </style>
+    
+    <script src="./js/disponibilidad.js"></script>
 </head>
-<style>
-    .consulta-container {
-    background: #c53535;
-    padding: 20px;
-    max-width: 700px;
-    margin: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.cabana-disponible {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    background-color: #f8f8f8;
-}
-h2 {
-  text-align: center;
-  color: #087f23; /* verde fuerte */
-  margin-bottom: 20px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-input[type="date"],
-button,
-select {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #087f23;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #065c1f;
-}
-
-.contenedor-consulta {
-  background-color: white;
-  max-width: 450px;
-  margin: 60px auto;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.disponible {
-  margin: 10px 0;
-  padding: 12px;
-  background-color: #e6f5ea;
-  border: 1px solid #b2dfdb;
-  border-radius: 6px;
-}
-
-.disponible button {
-  margin-top: 8px;
-  background-color: #0288d1;
-}
-
-.disponible button:hover {
-  background-color: #0277bd;
-}
-</style>
 <body>
-    <header>
+    <!-- Header moderno con navegación mejorada -->
+    <header id="header">
+        <div class="header-container">
         <div class="logo">
-
-            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+                <span class="nombrelogo">Costa Potrero</span>
+            </div>
+            
+            <!-- Menú hamburguesa para móviles -->
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
         </div>
-        <nav>
-            <ul>
-                <li><a href="./index.html">Inicio</a></li>
-                <li><a href="./cabanas.html">Cabañas</a></li>
-                <li><a href="./servicios.html">Servicios</a></li>
-                <li><a href="./ubicacion.html">Ubicación</a></li>
-                <li><a href="./login.html">Login</a></li>
+            
+            <!-- Navegación -->
+            <nav id="nav">
+                <ul>
+                    <li><a href="./index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="./cabanas.html"><i class="fas fa-bed"></i> Cabañas</a></li>
+                    <li><a href="./servicios.html"><i class="fas fa-concierge-bell"></i> Servicios</a></li>
+                    <li><a href="./ubicacion.html"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
+                    <li><a href="./faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="./login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             </ul>
         </nav>
+        </div>
+        
+        <!-- Overlay para cerrar menú móvil -->
+        <div class="nav-overlay" id="navOverlay"></div>
     </header>
-    
 
  <main>
-    <section>
-        
-        <div class="form-container">
-            <h2>Consultar Disponibilidad</h2>
-            <form class="form-group" id="form-disponibilidad">
-                <label>Fecha Inicio:
-                    <input type="date" id="fecha_inicio" required>
+        <!-- Hero Section -->
+        <section class="container" style="margin-top: 2rem;">
+            <div class="card fade-in-up">
+                <h1 style="text-align: center; margin-bottom: 1rem; font-size: 2.5rem; color: var(--primary-color);">
+                    <i class="fas fa-calendar-check"></i> Consultar Disponibilidad
+                </h1>
+                <p style="text-align: center; color: var(--gray-dark); font-size: 1.1rem; margin-bottom: 2rem;">
+                    Verifica las fechas disponibles para tu estadía perfecta
+                </p>
+            </div>
+        </section>
+
+        <!-- Formulario de Consulta -->
+        <section class="container" style="margin-top: 3rem;">
+            <div class="card slide-in-left">
+                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem; color: var(--primary-color);">
+                    <i class="fas fa-search"></i> Selecciona tus fechas
+                </h3>
+                <form id="form-disponibilidad" style="max-width: 500px; margin: 0 auto;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <div class="form-group">
+                            <label for="fecha_inicio" style="color: var(--primary-color); font-weight: 500; margin-bottom: 0.5rem; display: block;">
+                                <i class="fas fa-calendar-plus"></i> Fecha de Llegada
                 </label>
-                <label>Fecha Fin:
-                    <input type="date" id="fecha_fin" required>
+                            <input type="date" id="fecha_inicio" required style="width: 100%; padding: 0.8rem; border: 2px solid var(--gray-light); border-radius: var(--border-radius); font-size: 1rem;">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_fin" style="color: var(--primary-color); font-weight: 500; margin-bottom: 0.5rem; display: block;">
+                                <i class="fas fa-calendar-minus"></i> Fecha de Salida
                 </label>
-                <button type="submit" >Consultar</button>
+                            <input type="date" id="fecha_fin" required style="width: 100%; padding: 0.8rem; border: 2px solid var(--gray-light); border-radius: var(--border-radius); font-size: 1rem;">
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn-modern" style="background: var(--primary-color); border-color: var(--primary-color); padding: 1rem 2rem; font-size: 1.1rem;">
+                            <i class="fas fa-search"></i> Consultar Disponibilidad
+                        </button>
+                    </div>
             </form>
-            <div id="resultado"></div>
         </div>
     </section>
 
+        <!-- Resultados de Disponibilidad -->
+        <section class="container" style="margin-top: 3rem;">
+            <div id="resultado" style="display: none;">
+                <div class="card slide-in-left">
+                    <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem; color: var(--primary-color);">
+                        <i class="fas fa-check-circle"></i> Cabañas Disponibles
+                    </h3>
+                    <div id="cabanas-disponibles" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                        <!-- Las cards de cabañas se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Información Adicional -->
+        <section class="container" style="margin-top: 3rem;">
+            <div class="card slide-in-left">
+                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem; color: var(--primary-color);">
+                    <i class="fas fa-info-circle"></i> Información Importante
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div style="text-align: center; padding: 2rem; background: var(--light-color); border-radius: var(--border-radius);">
+                        <div class="service-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4 class="service-title">Horarios</h4>
+                        <p class="service-description">
+                            <strong>Check-in:</strong> 14:00 horas<br>
+                            <strong>Check-out:</strong> 11:00 horas
+                        </p>
+                    </div>
+                    <div style="text-align: center; padding: 2rem; background: var(--light-color); border-radius: var(--border-radius);">
+                        <div class="service-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h4 class="service-title">Reserva</h4>
+                        <p class="service-description">
+                            Se requiere un depósito del 50% para confirmar la reserva
+                        </p>
+                    </div>
+                    <div style="text-align: center; padding: 2rem; background: var(--light-color); border-radius: var(--border-radius);">
+                        <div class="service-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h4 class="service-title">Contacto</h4>
+                        <p class="service-description">
+                            Para consultas especiales, contáctanos directamente
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
  </main>
 
+    <!-- Footer profesional -->
    <footer class="footer">
     <div class="footer-top">
         <h2>El mejor lugar para vacacionar</h2>
-
     </div>
 
     <div class="footer-middle">
         <div class="footer-col">
-            <img src="./recursos/logo.png" alt="Logo" class="imagenlogo">
+                <img src="./recursos/logo.png" alt="Logo" class="imagenlogo" style="width: 80px; margin-bottom: 1rem;">
             <p>
                 Todas nuestras unidades cuentan con Cochera, Baño Privado, Aire Acondicionado,
                 TV Satelital, Wifi, Ropa Blanca y Piscina.
             </p>
         </div>
         <div class="footer-col">
-            <p><strong>Costa Potrero</strong><br>Cabaña & Suites</p>
+                <h4><i class="fas fa-building"></i> Costa Potrero</h4>
+                <p>Cabaña & Suites</p>
+                <p style="margin-top: 1rem;">
+                    <i class="fas fa-clock"></i> Check-in: 14:00<br>
+                    <i class="fas fa-clock"></i> Check-out: 11:00
+                </p>
         </div>
         <div class="footer-col">
-            <h4>Contáctenos</h4>
-            <p>Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
-            <p>Mail: <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
-            <p>+54 351 5 550 694</p>
-        </div>
+                <h4><i class="fas fa-phone"></i> Contáctenos</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Av Costanera S/N<br>Potrero de Garay<br>Córdoba</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:reservas@costapotrero.com.ar">reservas@costapotrero.com.ar</a></p>
+                <p><i class="fas fa-phone"></i> +54 351 5 550 694</p>
+            </div>
     </div>
 
     <div class="footer-bottom">
-        <p>©2022 Arcowal Industries. All Rights Reserved.</p>
-        <p><a href="#">Terms of use</a> | <a href="#">Privacy Environmental Policy</a></p>
+            <p>©2024 Costa Potrero. Todos los derechos reservados.</p>
+            <p><a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a></p>
     </div>
 </footer>
+
+    <!-- Botón flotante de WhatsApp -->
+    <button class="floating-btn" onclick="window.open('https://wa.me/543515550694', '_blank')" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+
+    <!-- JavaScript para efectos -->
  <script>
-  function cerrarSesion() {
-    fetch('/logout', { method: 'POST' })
-      .then(() => {
-        window.location.href = '/login.html';
-      })
-      .catch(error => {
-        console.error('Error al cerrar sesión:', error);
-      });
-  }
+        // Navegación móvil
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('nav');
+        const navOverlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners para el menú móvil
+        menuToggle.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', closeMenu);
+
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        document.querySelectorAll('.card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Función para crear cards de cabañas disponibles
+        function crearCardCabana(cabana) {
+            const card = document.createElement('div');
+            card.className = 'cabana-card slide-in-left';
+            card.style.cssText = `
+                background: linear-gradient(135deg, var(--white) 0%, var(--light-color) 100%);
+                border: 2px solid var(--primary-color);
+                border-radius: var(--border-radius);
+                padding: 2rem;
+                box-shadow: var(--shadow);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            `;
+
+            // Determinar la imagen basada en el nombre de la cabaña
+            let imagenSrc = './recursos/cabanaLu.JPG'; // imagen por defecto
+            if (cabana.nombre.toLowerCase().includes('ju')) {
+                imagenSrc = './recursos/cabanaJu.JPG';
+            } else if (cabana.nombre.toLowerCase().includes('pe')) {
+                imagenSrc = './recursos/cabanaPeques.jpg';
+            }
+
+            // Formatear precio si existe
+            const precioFormateado = cabana.precio ? 
+                new Intl.NumberFormat('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS',
+                    minimumFractionDigits: 0
+                }).format(parseFloat(cabana.precio)) : '';
+
+            card.innerHTML = `
+                <div style="position: relative; margin-bottom: 1.5rem;">
+                    <img src="${imagenSrc}" alt="${cabana.nombre}" style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--border-radius);">
+                    <div style="position: absolute; top: 10px; right: 10px; background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas fa-check-circle"></i> Disponible
+                    </div>
+                </div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.5rem;">
+                    <i class="fas fa-home"></i> ${cabana.nombre}
+                </h3>
+                <p style="color: var(--gray-dark); margin-bottom: 1.5rem; line-height: 1.6;">
+                    ${cabana.descripcion || 'Cabaña equipada con todas las comodidades necesarias para tu estadía perfecta.'}
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <span style="background: var(--light-color); color: var(--primary-color); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                        <i class="fas fa-tv"></i> TV Cable
+                    </span>
+                    <span style="background: var(--light-color); color: var(--primary-color); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                        <i class="fas fa-snowflake"></i> A/C
+                    </span>
+                    <span style="background: var(--light-color); color: var(--primary-color); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                        <i class="fas fa-bed"></i> ${cabana.capacidad || '2'} Personas
+                    </span>
+                    ${cabana.precio ? `<span style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas fa-dollar-sign"></i> ${precioFormateado}
+                    </span>` : ''}
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="abrirModalSolicitud('${cabana.id}', '${cabana.nombre}', '${cabana.precio || ''}', '${document.getElementById('fecha_inicio').value}', '${document.getElementById('fecha_fin').value}')" class="btn-modern" style="background: var(--success-color); border-color: var(--success-color); width: 100%; padding: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-calendar-check"></i> Reservar Ahora
+                    </button>
+                </div>
+            `;
+
+            // Efecto hover
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow)';
+            });
+
+            return card;
+        }
+
+        // Función para mostrar cabañas disponibles
+        function mostrarCabanasDisponibles(cabanas) {
+            const container = document.getElementById('cabanas-disponibles');
+            const resultado = document.getElementById('resultado');
+            
+            if (!container || !resultado) return;
+
+            container.innerHTML = '';
+            
+            if (cabanas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; grid-column: 1 / -1;">
+                        <i class="fas fa-calendar-times" style="font-size: 4rem; color: var(--gray-light); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--gray-dark); margin-bottom: 1rem;">No hay disponibilidad</h3>
+                        <p style="color: var(--gray-dark);">No hay cabañas disponibles para las fechas seleccionadas. Intenta con otras fechas.</p>
+                    </div>
+                `;
+            } else {
+                cabanas.forEach(cabana => {
+                    const card = crearCardCabana(cabana);
+                    container.appendChild(card);
+                });
+            }
+
+            resultado.style.display = 'block';
+            
+            // Aplicar animaciones a las nuevas cards
+            setTimeout(() => {
+                document.querySelectorAll('.cabana-card').forEach((el, index) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 100);
+        }
+
+        // Exponer funciones globalmente para el módulo JS
+        window.mostrarCabanasDisponibles = mostrarCabanasDisponibles;
 </script>
 </body>
 </html>

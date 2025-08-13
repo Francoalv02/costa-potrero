@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modal - Costa Potrero</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .test-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px;
+        }
+        
+        .test-button:hover {
+            background: #218838;
+        }
+        
+        /* Estilos para el modal de solicitud */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #343a40, #6c757d);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-cabana-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #343a40;
+        }
+
+        .modal-cabana-info h4 {
+            color: #343a40;
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .modal-cabana-info p {
+            margin: 0.5rem 0;
+            color: #495057;
+        }
+
+        .modal-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #343a40;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #343a40;
+            box-shadow: 0 0 0 3px rgba(52, 58, 64, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test del Modal de Solicitud</h1>
+    
+    <button class="test-button" onclick="abrirModalSolicitud('1', 'Cabaña de Prueba', '50000', '2025-08-15', '2025-08-20')">
+        🏠 Abrir Modal de Solicitud
+    </button>
+    
+    <button class="test-button" onclick="abrirModalSolicitud('2', 'Cabaña Grande', '75000', '2025-08-25', '2025-08-30')">
+        🏡 Abrir Modal con Otra Cabaña
+    </button>
+
+    <script>
+        // Función para abrir el modal de solicitud
+        function abrirModalSolicitud(cabanaId, cabanaNombre, precio, fechaInicio, fechaFin) {
+            console.log('Abriendo modal para:', { cabanaId, cabanaNombre, precio, fechaInicio, fechaFin });
+            
+            // Crear el modal si no existe
+            if (!document.getElementById('modal-solicitud')) {
+                crearModalSolicitud();
+            }
+            
+            // Llenar la información de la cabaña
+            document.getElementById('modal-cabana-nombre').textContent = cabanaNombre;
+            document.getElementById('modal-cabana-precio').textContent = precio ? 
+                new Intl.NumberFormat('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS',
+                    minimumFractionDigits: 0
+                }).format(parseFloat(precio)) : 'Consultar';
+            document.getElementById('modal-fechas').textContent = `${fechaInicio} - ${fechaFin}`;
+            
+            // Establecer valores en el formulario
+            document.getElementById('modal-cabana-id').value = cabanaId;
+            document.getElementById('modal-fecha-inicio').value = fechaInicio;
+            document.getElementById('modal-fecha-fin').value = fechaFin;
+            document.getElementById('modal-precio-estimado').value = precio || '';
+            
+            // Mostrar el modal
+            document.getElementById('modal-solicitud').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para crear el modal de solicitud
+        function crearModalSolicitud() {
+            const modalHTML = `
+                <div id="modal-solicitud" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">
+                                📅 Solicitar Reserva
+                            </h3>
+                            <button class="modal-close" onclick="cerrarModalSolicitud()">
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="modal-cabana-info">
+                                <h4>🏠 Información de la Cabaña</h4>
+                                <p><strong>Cabaña:</strong> <span id="modal-cabana-nombre"></span></p>
+                                <p><strong>Precio:</strong> <span id="modal-cabana-precio"></span></p>
+                                <p><strong>Fechas:</strong> <span id="modal-fechas"></span></p>
+                            </div>
+                            
+                            <form id="form-solicitud" class="modal-form">
+                                <input type="hidden" id="modal-cabana-id">
+                                <input type="hidden" id="modal-fecha-inicio">
+                                <input type="hidden" id="modal-fecha-fin">
+                                <input type="hidden" id="modal-precio-estimado">
+                                
+                                <div class="form-group">
+                                    <label for="modal-nombre">
+                                        👤 Nombre Completo *
+                                    </label>
+                                    <input type="text" id="modal-nombre" required placeholder="Tu nombre completo">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="modal-email">
+                                        📧 Email *
+                                    </label>
+                                    <input type="email" id="modal-email" required placeholder="tu@email.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="modal-telefono">
+                                        📞 Teléfono *
+                                    </label>
+                                    <input type="tel" id="modal-telefono" required placeholder="+54 351 123 4567">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="modal-observaciones">
+                                        💬 Observaciones (opcional)
+                                    </label>
+                                    <textarea id="modal-observaciones" rows="3" placeholder="Comentarios adicionales, horarios especiales, etc."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button class="modal-btn modal-btn-secondary" onclick="cerrarModalSolicitud()">
+                                ❌ Cancelar
+                            </button>
+                            <button class="modal-btn modal-btn-primary" onclick="enviarSolicitud()">
+                                📤 Enviar Solicitud
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Agregar event listener para cerrar con ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cerrarModalSolicitud();
+                }
+            });
+            
+            // Agregar event listener para cerrar haciendo clic fuera del modal
+            document.getElementById('modal-solicitud').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModalSolicitud();
+                }
+            });
+        }
+
+        // Función para cerrar el modal
+        function cerrarModalSolicitud() {
+            const modal = document.getElementById('modal-solicitud');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Función para enviar la solicitud
+        async function enviarSolicitud() {
+            const nombre = document.getElementById('modal-nombre').value.trim();
+            const email = document.getElementById('modal-email').value.trim();
+            const telefono = document.getElementById('modal-telefono').value.trim();
+            const observaciones = document.getElementById('modal-observaciones').value.trim();
+            const cabanaId = document.getElementById('modal-cabana-id').value;
+            const fechaInicio = document.getElementById('modal-fecha-inicio').value;
+            const fechaFin = document.getElementById('modal-fecha-fin').value;
+            const precioEstimado = document.getElementById('modal-precio-estimado').value;
+            
+            // Validar campos requeridos
+            if (!nombre || !email || !telefono) {
+                alert('Por favor, completa todos los campos obligatorios.');
+                return;
+            }
+            
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Por favor, ingresa un email válido.');
+                return;
+            }
+            
+            try {
+                const datos = {
+                    nombre,
+                    gmail: email,
+                    telefono,
+                    id_cabana: cabanaId,
+                    fecha_inicio: fechaInicio,
+                    fecha_fin: fechaFin,
+                    precio_estimado: precioEstimado || null,
+                    observaciones: observaciones || null
+                };
+                
+                console.log('Enviando solicitud:', datos);
+                
+                const response = await fetch('/api/v1/solicitudes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('¡Solicitud enviada exitosamente! Te contactaremos pronto para confirmar los detalles.');
+                    cerrarModalSolicitud();
+                    
+                    // Limpiar formulario
+                    document.getElementById('form-solicitud').reset();
+                } else {
+                    alert('Error al enviar la solicitud: ' + (result.mensaje || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error al enviar solicitud:', error);
+                alert('Error al enviar la solicitud. Por favor, intenta nuevamente.');
+            }
+        }
+    </script>
+</body>
+</html>

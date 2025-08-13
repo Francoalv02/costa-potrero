@@ -1,7 +1,8 @@
 import * as modelo from './modelo.huespedes.mjs';
 import PDFDocument from 'pdfkit';
 
-export async function obtenerHuespedes(req, res) {
+// --- OBTENER TODOS LOS HUÉSPEDES ---
+async function obtenerHuespedes(req, res) {
   try {
     const resultado = await modelo.obtenerTodos();
     res.json(resultado.rows);
@@ -11,7 +12,8 @@ export async function obtenerHuespedes(req, res) {
   }
 }
 
-export async function obtenerUno(req, res) {
+// --- OBTENER UN HUÉSPED ---
+async function obtenerUno(req, res) {
   try {
     const resultado = await modelo.obtenerPorDNI(req.params.id_dni);
     if (resultado.rows.length === 0) return res.status(404).json({ mensaje: 'No encontrado' });
@@ -22,7 +24,8 @@ export async function obtenerUno(req, res) {
   }
 }
 
-export async function crearOActualizar(req, res) {
+// --- CREAR O ACTUALIZAR HUÉSPED ---
+async function crearOActualizar(req, res) {
   try {
     const { id_dni, nombre, telefono, gmail } = req.body;
     if (!id_dni || !nombre || !gmail) return res.status(400).json({ mensaje: 'Datos incompletos' });
@@ -35,7 +38,8 @@ export async function crearOActualizar(req, res) {
   }
 }
 
-export async function actualizar(req, res) {
+// --- ACTUALIZAR HUÉSPED ---
+async function actualizar(req, res) {
   try {
     const { id_dni, nombre, telefono, gmail } = req.body;
     const dniOriginal = req.params.id_dni;
@@ -46,7 +50,7 @@ export async function actualizar(req, res) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
 
-    const resultado = await modelo.actualizar(dniOriginal, { id_dni, nombre, telefono, gmail });
+    const resultado = await modelo.actualizar(dniOriginal, { nombre, gmail, telefono });
     
     if (resultado.rowCount === 0) {
       return res.status(404).json({ mensaje: 'Huésped no encontrado' });
@@ -59,7 +63,8 @@ export async function actualizar(req, res) {
   }
 }
 
-export async function eliminar(req, res) {
+// --- ELIMINAR HUÉSPED ---
+async function eliminar(req, res) {
   try {
     const resultado = await modelo.eliminar(req.params.id_dni);
     if (resultado.rowCount === 0)
@@ -76,7 +81,8 @@ export async function eliminar(req, res) {
   }
 }
 
-export async function generarReporteHuespedes(req, res) {
+// --- GENERAR REPORTE DE HUÉSPEDES ---
+async function generarReporteHuespedes(req, res) {
   try {
     const resultado = await modelo.obtenerTodos();
     const huespedes = resultado.rows;
@@ -251,3 +257,13 @@ export async function generarReporteHuespedes(req, res) {
     res.status(500).json({ mensaje: 'Error al generar reporte' });
   }
 }
+
+// --- EXPORTACIONES ---
+export {
+  obtenerHuespedes,
+  obtenerUno,
+  crearOActualizar,
+  actualizar,
+  eliminar,
+  generarReporteHuespedes
+};

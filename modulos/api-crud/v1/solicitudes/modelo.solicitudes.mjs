@@ -45,7 +45,7 @@ async function inicializarTabla() {
 inicializarTabla();
 
 // Obtener todas las solicitudes
-export async function obtenerSolicitudes() {
+async function obtenerSolicitudes() {
   try {
     const query = `
       SELECT 
@@ -73,8 +73,8 @@ export async function obtenerSolicitudes() {
   }
 }
 
-// Obtener una solicitud por ID
-export async function obtenerSolicitudPorId(id) {
+// Obtener solicitud por ID
+async function obtenerSolicitudPorId(id) {
   try {
     const query = `
       SELECT 
@@ -103,7 +103,7 @@ export async function obtenerSolicitudPorId(id) {
 }
 
 // Crear nueva solicitud
-export async function crearSolicitud(datos) {
+async function crearSolicitud(datos) {
   try {
     const { nombre, gmail, telefono, id_cabana, fecha_inicio, fecha_fin, precio_estimado } = datos;
     
@@ -126,7 +126,7 @@ export async function crearSolicitud(datos) {
 }
 
 // Actualizar estado de solicitud
-export async function actualizarEstadoSolicitud(id, estado, observaciones = null) {
+async function actualizarEstadoSolicitud(id, estado, observaciones = null) {
   try {
     const query = `
       UPDATE solicitudes_reserva 
@@ -144,7 +144,7 @@ export async function actualizarEstadoSolicitud(id, estado, observaciones = null
 }
 
 // Eliminar solicitud
-export async function eliminarSolicitud(id) {
+async function eliminarSolicitud(id) {
   try {
     const query = `
       DELETE FROM solicitudes_reserva 
@@ -161,7 +161,7 @@ export async function eliminarSolicitud(id) {
 }
 
 // Obtener estadísticas de solicitudes
-export async function obtenerEstadisticasSolicitudes() {
+async function obtenerEstadisticasSolicitudes() {
   try {
     const query = `
       SELECT 
@@ -179,3 +179,13 @@ export async function obtenerEstadisticasSolicitudes() {
     throw error;
   }
 } 
+
+// Exportaciones
+export {
+  obtenerSolicitudes,
+  obtenerSolicitudPorId,
+  crearSolicitud,
+  actualizarEstadoSolicitud,
+  eliminarSolicitud,
+  obtenerEstadisticasSolicitudes
+}; 

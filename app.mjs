@@ -10,11 +10,10 @@ dotenv.config();
 // Módulos
 import modulosAp1 from './modulos/modulos.mjs';
 import rutaLogin from './modulos/auth/ruta.login.mjs'; // nueva ruta
-import rutasPagos from './modulos/api-crud/v1/pagos/rutas.pagos.mjs'; // módulo pagos
 
 // Instanciamos Express
 const app = express();
-const PUERTO = process.env.PUERTO || 4000;
+const PUERTO = process.env.PUERTO || 4001;
 
 // Middlewares globales
 app.use(express.json());
@@ -27,16 +26,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// API y módulos existentes
-app.use(modulosAp1);
-app.use(rutasPagos);
-
-// Rutas del sistema de login
-app.use('/', rutaLogin); 
-// Frontends
-app.use('/admin', verificarSesionAdmin, express.static('admini')); // protegido
-app.use('/', express.static('sitio')); // público
-
 // Middleware de autenticación
 function verificarSesionAdmin(req, res, next) {
   if (req.session.usuario && req.session.usuario.rol === 'admin') {
@@ -45,6 +34,16 @@ function verificarSesionAdmin(req, res, next) {
     res.redirect('/login.html');
   }
 }
+
+// API y módulos existentes
+app.use(modulosAp1);
+
+// Rutas del sistema de login
+app.use('/', rutaLogin); 
+
+// Frontends
+app.use('/admin', verificarSesionAdmin, express.static('admini')); // protegido
+app.use('/', express.static('sitio')); // público
 
 // Levantamos el servidor
 app.listen(PUERTO, () => {

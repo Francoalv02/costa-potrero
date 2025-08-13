@@ -7,21 +7,26 @@ async function obtenerEstadosPago() {
 }
 
 // Crear un nuevo pago
-async function crearPago({ id_reserva, id_estado_pago, metodo_pago, observacion }) {
+async function crearPago({ id_reserva, id_estado_pago, metodo_pago, observacion, monto, fecha_pago }) {
   // Obtener el total de la reserva
   const res = await pool.query('SELECT preciototal FROM reservas WHERE id_reserva = $1', [id_reserva]);
   const total = res.rows[0]?.preciototal || 0;
 
-  // Calcular el monto según el estado
-  let monto = total;
-  if (id_estado_pago === 2) monto = total / 2;
-  else if (id_estado_pago === 3) monto = 0;
+  // Calcular el monto según el estado si no viene provisto
+  let montoFinal = (monto != null && !Number.isNaN(parseFloat(monto))) ? parseFloat(monto) : total;
+  if (monto == null) {
+    if (id_estado_pago === 2) montoFinal = total / 2; // Señado
+    else if (id_estado_pago === 3) montoFinal = 0;    // No realizado
+  }
+
+  // Fecha de pago
+  const fecha = fecha_pago ? new Date(fecha_pago) : new Date();
 
   const insert = await pool.query(
-    `INSERT INTO pagos (id_reserva, monto, id_estado_pago, metodo_pago, observacion)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO pagos (id_reserva, monto, id_estado_pago, metodo_pago, observacion, fecha_pago)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING id_pago`,
-    [id_reserva, monto, id_estado_pago, metodo_pago, observacion]
+    [id_reserva, montoFinal, id_estado_pago, metodo_pago, observacion, fecha]
   );
 
   return insert;
@@ -96,11 +101,23 @@ async function eliminarPago(id_pago) {
   await pool.query('DELETE FROM pagos WHERE id_pago = $1', [id_pago]);
 }
 
+async function obtenerMetodosPago() {
+  const res = await pool.query(`
+    SELECT DISTINCT metodo_pago
+    FROM pagos
+    WHERE metodo_pago IS NOT NULL AND TRIM(metodo_pago) <> ''
+    ORDER BY metodo_pago
+  `);
+  // Mapear a lista simple de strings
+  return res.rows.map(r => r.metodo_pago);
+}
+
 export {
   obtenerEstadosPago,
   crearPago,
   obtenerPagos,
   obtenerPagoPorId,
   actualizarPago,
-  eliminarPago
+  eliminarPago,
+  obtenerMetodosPago
 };

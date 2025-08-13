@@ -1,6 +1,7 @@
 import * as modelo from './modelo.reservas.mjs';
 
 import PDFDocument from 'pdfkit';
+import pool from '../../../../conexion/conexion.db.mjs';
 
 //generar reportes 
 async function generarReporteReservas(req, res) {
@@ -193,21 +194,67 @@ async function generarReporteReservas(req, res) {
   }
 }
 
-// --- CONSULTAR DISPONIBILIDAD ---
-export async function consultarDisponibilidad(req, res) {
-  const { fecha_inicio, fecha_fin } = req.body;
-  if (!fecha_inicio || !fecha_fin) return res.status(400).json({ mensaje: 'Fechas requeridas' });
+// --- OBTENER ÚLTIMA RESERVA ---
+async function obtenerUltimaReserva(req, res) {
   try {
-    const disponibles = await modelo.obtenerCabanasDisponibles(fecha_inicio, fecha_fin);
-    if (disponibles.length > 0) {
-      res.json({ disponibles });
-    } else {
-      const sugerencia = await modelo.buscarProximaDisponibilidad(fecha_inicio);
-      res.status(404).json({ mensaje: 'Sin disponibilidad', sugerencia });
-    }
+    const r = await pool.query(`
+      SELECT r.id_reserva,
+             h.nombre AS huesped,
+             h.id_dni,
+             c.nombre_cabana,
+             r.precioTotal AS preciototal
+      FROM reservas r
+      JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
+      ORDER BY r.id_reserva DESC
+      LIMIT 1
+    `);
+    if (r.rows.length === 0) return res.status(404).json({ mensaje: 'Sin reservas' });
+    res.json(r.rows[0]);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: 'Error al consultar disponibilidad' });
+    res.status(500).json({ mensaje: 'Error al obtener última reserva' });
+  }
+}
+
+// --- CONSULTAR DISPONIBILIDAD ---
+async function consultarDisponibilidad(req, res) {
+  const { fecha_inicio, fecha_fin } = req.body;
+  if (!fecha_inicio || !fecha_fin) {
+    return res.status(400).json({ 
+      success: false,
+      mensaje: 'Fechas requeridas' 
+    });
+  }
+  
+  try {
+    console.log('Consultando disponibilidad para:', { fecha_inicio, fecha_fin });
+    
+    const disponibles = await modelo.obtenerCabanasDisponibles(fecha_inicio, fecha_fin);
+    console.log('Cabañas disponibles encontradas:', disponibles.length);
+    
+    if (disponibles.length > 0) {
+      res.json({ 
+        success: true,
+        data: disponibles,
+        mensaje: `Se encontraron ${disponibles.length} cabañas disponibles`
+      });
+    } else {
+      const sugerencia = await modelo.buscarProximaDisponibilidad(fecha_inicio);
+      res.json({ 
+        success: false,
+        mensaje: 'Sin disponibilidad', 
+        sugerencia,
+        data: []
+      });
+    }
+  } catch (error) {
+    console.error('Error al consultar disponibilidad:', error);
+    res.status(500).json({ 
+      success: false,
+      mensaje: 'Error al consultar disponibilidad',
+      data: []
+    });
   }
 }
 
@@ -215,11 +262,18 @@ export async function consultarDisponibilidad(req, res) {
 async function obtenerReservas(req, res) {
   try {
     const resultado = await modelo.obtenerReservasConEstado();
-    if (resultado.rows.length > 0) {
-      res.json(resultado.rows);
-    } else {
-      res.status(404).json({ mensaje: 'No se encontraron reservas' });
-    }
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
+}
+
+// --- OBTENER RESERVAS ACTIVAS (excluyendo Check Out) ---
+async function obtenerReservasActivas(req, res) {
+  try {
+    const resultado = await modelo.obtenerReservasActivas();
+    res.json(resultado.rows);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error en el servidor' });
@@ -230,6 +284,14 @@ async function obtenerReservas(req, res) {
 async function obtenerReserva(req, res) {
   try {
     const { id } = req.params;
+    console.log('ID recibido en obtenerReserva:', id, 'Tipo:', typeof id);
+    
+    // Validar que el ID sea un número
+    if (!id || isNaN(parseInt(id))) {
+      console.error('ID inválido recibido:', id);
+      return res.status(400).json({ mensaje: 'ID de reserva inválido' });
+    }
+    
     const resultado = await modelo.obtenerReservaConEstadoPorId(id);
 
     if (resultado.rows.length > 0) {
@@ -241,7 +303,7 @@ async function obtenerReserva(req, res) {
       res.status(404).json({ mensaje: 'Reserva no encontrada' });
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error en obtenerReserva:', error);
     res.status(500).json({ mensaje: 'Error en el servidor' });
   }
 }
@@ -260,7 +322,7 @@ async function crearReservaHandler(req, res) {
     // calcula automáticamente el precio
     const resultado = await modelo.crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado });
 
-    res.status(201).json({ mensaje: `Reserva creada correctamente` });
+    res.status(201).json({ mensaje: `Reserva creada correctamente`, id_reserva: resultado.rows[0].id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al crear la reserva' });
@@ -271,13 +333,13 @@ async function crearReservaHandler(req, res) {
 async function modificarReserva(req, res) {
   try {
     const { id } = req.params;
-    const { id_dni, id_cabana, fecha_inicio, fecha_fin, nombre, gmail, id_estado } = req.body;
+    const { id_dni, id_cabana, fecha_inicio, fecha_fin, nombre, gmail, telefono, id_estado } = req.body;
 
     if (!id || !id_dni || !id_cabana || !fecha_inicio || !fecha_fin || !id_estado) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
 
-    await modelo.actualizarHuesped({ id_dni, nombre, gmail });
+    await modelo.actualizarHuesped({ id_dni, nombre, gmail, telefono });
 
     // recalcula el precio
     const resultado = await modelo.modificarReserva({
@@ -319,6 +381,8 @@ async function eliminarReserva(req, res) {
 async function obtenerReservasConFiltros(req, res) {
   try {
     const { fechaInicio, fechaFin, estado, cabana } = req.query;
+    console.log('Parámetros recibidos en controlador:', req.query);
+    console.log('Parámetros extraídos:', { fechaInicio, fechaFin, estado, cabana });
     
     const resultado = await modelo.obtenerReservasConFiltros({
       fechaInicio,
@@ -333,7 +397,7 @@ async function obtenerReservasConFiltros(req, res) {
       res.status(404).json({ mensaje: 'No se encontraron reservas con los filtros aplicados' });
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error en controlador obtenerReservasConFiltros:', error);
     res.status(500).json({ mensaje: 'Error al filtrar reservas' });
   }
 }
@@ -348,14 +412,50 @@ async function obtenerEstados(req, res) {
   }
 }
 
+// --- ACTUALIZAR ESTADO DE CICLO DE VIDA ---
+async function actualizarEstadoCiclo(req, res) {
+  try {
+    const { id } = req.params;
+    const { nuevoEstado } = req.body;
+
+    if (!nuevoEstado) {
+      return res.status(400).json({ mensaje: 'Nuevo estado requerido' });
+    }
+
+    // Validar que el estado sea válido
+    const estadosValidos = ['Reservada', 'Check In', 'Limpieza', 'Check Out'];
+    if (!estadosValidos.includes(nuevoEstado)) {
+      return res.status(400).json({ mensaje: 'Estado no válido' });
+    }
+
+    const resultado = await modelo.actualizarEstadoReserva(id, nuevoEstado);
+    
+    if (resultado.rows.length > 0) {
+      res.json({ 
+        mensaje: `Estado de reserva ${id} actualizado a "${nuevoEstado}"`,
+        nuevoEstado: nuevoEstado
+      });
+    } else {
+      res.status(404).json({ mensaje: 'Reserva no encontrada' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
+}
+
 // --- EXPORTACIONES ---
 export {
-  generarReporteReservas,
   obtenerReservas,
+  obtenerReservasActivas,
   obtenerReserva,
   crearReservaHandler,
   modificarReserva,
   eliminarReserva,
   obtenerReservasConFiltros,
-  obtenerEstados
+  generarReporteReservas,
+  obtenerEstados,
+  actualizarEstadoCiclo,
+  obtenerUltimaReserva,
+  consultarDisponibilidad
 };

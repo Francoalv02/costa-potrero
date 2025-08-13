@@ -5,7 +5,7 @@ import pool from '../../../../conexion/conexion.db.mjs';
 //
 
 // Obtener cabañas disponibles en el rango de fechas
-export async function obtenerCabanasDisponibles(inicio, fin) {
+async function obtenerCabanasDisponibles(inicio, fin) {
   const query = `
     SELECT 
       c.id_cabana,
@@ -25,7 +25,7 @@ export async function obtenerCabanasDisponibles(inicio, fin) {
   return result.rows;
 }
 
-export async function buscarProximaDisponibilidad(fecha_inicio) {
+async function buscarProximaDisponibilidad(fecha_inicio) {
   const query = `
     SELECT MIN(fechafin + 1) AS fecha_inicio FROM reservas
     WHERE fechainicio >= $1
@@ -50,25 +50,42 @@ export async function buscarProximaDisponibilidad(fecha_inicio) {
 // Obtener reserva por ID (con nombre de estado)
 async function obtenerReservaConEstadoPorId(id) {
   try {
+    console.log('ID recibido en modelo obtenerReservaConEstadoPorId:', id, 'Tipo:', typeof id);
+    
+    // Validar que el ID sea un número
+    if (!id || isNaN(parseInt(id))) {
+      console.error('ID inválido en modelo:', id);
+      throw new Error('ID de reserva inválido');
+    }
+    
     const resultado = await pool.query(`
       SELECT 
         r.id_reserva AS id,
         h.id_dni,
         h.nombre,
         h.gmail AS email,
+        h.telefono,
         r.id_cabana,
+        c.nombre_cabana,
+        r.id_estado AS id_estado,
         r.fechaInicio AS fechainicio,
         r.fechaFin AS fechafin,
         r.precioTotal AS preciototal,
         e.nombreestado AS NombreEstado
       FROM reservas r
       JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
       JOIN Estados e ON r.id_estado = e.id_estado
       WHERE r.id_reserva = $1
     `, [id]);
+    
+    console.log('Resultado de consulta:', resultado.rows.length, 'filas');
+    if (resultado.rows.length > 0) {
+      console.log('Datos de la reserva:', resultado.rows[0]);
+    }
     return resultado;
   } catch (error) {
-    console.error(error);
+    console.error('Error en modelo obtenerReservaConEstadoPorId:', error);
     throw error;
   }
 }
@@ -91,6 +108,34 @@ async function obtenerReservasConEstado() {
       JOIN huespedes h ON r.id_dni = h.id_dni
       JOIN cabanas c ON r.id_cabana = c.id_cabana
       JOIN Estados e ON r.id_estado = e.id_estado
+      ORDER BY r.id_reserva
+    `);
+    return resultado;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Obtener solo reservas activas (excluyendo Check Out)
+async function obtenerReservasActivas() {
+  try {
+    const resultado = await pool.query(`
+      SELECT 
+        r.id_reserva AS id,
+        h.id_dni,
+        h.nombre,
+        h.gmail AS email,
+        c.nombre_cabana,
+        r.fechaInicio,
+        r.fechaFin,
+        r.precioTotal,
+        e.nombreestado AS NombreEstado
+      FROM reservas r
+      JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
+      JOIN Estados e ON r.id_estado = e.id_estado
+      WHERE LOWER(e.nombreestado) NOT LIKE '%check out%'
       ORDER BY r.id_reserva
     `);
     return resultado;
@@ -218,84 +263,170 @@ async function actualizarHuesped({ id_dni, nombre, gmail }) {
   }
 }
 
-// Obtener todos los estados
-async function obtenerEstados() {
+// Actualizar estado de ciclo de vida de una reserva
+async function actualizarEstadoReserva(id, nuevoEstado) {
   try {
-    const resultado = await pool.query('SELECT * FROM Estados ORDER BY id_estado');
-    return resultado.rows;
+    // Primero verificar si el estado existe, si no, crearlo
+    let estadoResult = await pool.query(
+      'SELECT id_estado FROM Estados WHERE LOWER(nombreestado) = LOWER($1)',
+      [nuevoEstado]
+    );
+
+    let idEstado;
+    if (estadoResult.rows.length === 0) {
+      // Crear el nuevo estado
+      const nuevoEstadoResult = await pool.query(
+        'INSERT INTO Estados (nombreestado) VALUES ($1) RETURNING id_estado',
+        [nuevoEstado]
+      );
+      idEstado = nuevoEstadoResult.rows[0].id_estado;
+    } else {
+      idEstado = estadoResult.rows[0].id_estado;
+    }
+
+    // Actualizar la reserva
+    const resultado = await pool.query(`
+      UPDATE reservas
+      SET id_estado = $1
+      WHERE id_reserva = $2
+      RETURNING id_reserva AS id
+    `, [idEstado, id]);
+
+    return resultado;
   } catch (error) {
-    console.error('Error al obtener estados:', error);
+    console.error('Error actualizando estado de reserva:', error);
     throw error;
   }
 }
 
-export async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana }) {
-  const condiciones = [];
-  const valores = [];
-  let contador = 1;
-
-  // Filtro por fechas
-  if (fechaInicio) {
-    condiciones.push(`r.fechaInicio >= $${contador}`);
-    valores.push(fechaInicio);
-    contador++;
+// Obtener todos los estados
+async function obtenerEstados() {
+  try {
+    // Primero verificar si la tabla existe
+    const checkTable = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'estados'
+      );
+    `);
+    
+    if (!checkTable.rows[0].exists) {
+      console.log('Tabla Estados no existe, creando tabla básica...');
+      // Crear tabla básica si no existe
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS Estados (
+          id_estado SERIAL PRIMARY KEY,
+          nombreestado VARCHAR(50) NOT NULL UNIQUE
+        );
+      `);
+      
+      // Insertar estados básicos
+      await pool.query(`
+        INSERT INTO Estados (nombreestado) VALUES 
+        ('Reservada'), ('Check In'), ('Limpieza'), ('Check Out')
+        ON CONFLICT (nombreestado) DO NOTHING;
+      `);
+    }
+    
+    const resultado = await pool.query('SELECT * FROM Estados ORDER BY id_estado');
+    console.log('Estados cargados:', resultado.rows);
+    return resultado.rows;
+  } catch (error) {
+    console.error('Error al obtener estados:', error);
+    // Retornar estados por defecto si hay error
+    return [
+      { id_estado: 1, nombreestado: 'Reservada' },
+      { id_estado: 2, nombreestado: 'Check In' },
+      { id_estado: 3, nombreestado: 'Limpieza' },
+      { id_estado: 4, nombreestado: 'Check Out' }
+    ];
   }
-  
-  if (fechaFin) {
-    condiciones.push(`r.fechaInicio <= $${contador}`);
-    valores.push(fechaFin);
-    contador++;
+}
+
+// Obtener reservas con filtros
+async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana }) {
+  try {
+    console.log('Parámetros recibidos en obtenerReservasConFiltros:', { fechaInicio, fechaFin, estado, cabana });
+    
+    const condiciones = [];
+    const valores = [];
+    let contador = 1;
+
+    // Filtro por fechas
+    if (fechaInicio && fechaInicio.trim() !== '') {
+      condiciones.push(`r.fechaInicio >= $${contador}`);
+      valores.push(fechaInicio);
+      contador++;
+    }
+    
+    if (fechaFin && fechaFin.trim() !== '') {
+      condiciones.push(`r.fechaInicio <= $${contador}`);
+      valores.push(fechaFin);
+      contador++;
+    }
+
+    // Filtro por estado
+    if (estado && estado.trim() !== '') {
+      condiciones.push(`LOWER(e.nombreestado) = LOWER($${contador})`);
+      valores.push(estado);
+      contador++;
+    }
+
+    // Filtro por cabaña
+    if (cabana && cabana.trim() !== '') {
+      condiciones.push(`c.nombre_cabana = $${contador}`);
+      valores.push(cabana);
+      contador++;
+    }
+
+    const where = condiciones.length ? `WHERE ${condiciones.join(' AND ')}` : '';
+
+    const query = `
+      SELECT 
+        r.id_reserva AS id,
+        h.id_dni,
+        h.nombre,
+        h.gmail AS email,
+        c.nombre_cabana,
+        r.fechaInicio,
+        r.fechaFin,
+        r.precioTotal,
+        e.nombreestado AS NombreEstado
+      FROM reservas r
+      JOIN huespedes h ON r.id_dni = h.id_dni
+      JOIN cabanas c ON r.id_cabana = c.id_cabana
+      JOIN Estados e ON r.id_estado = e.id_estado
+      ${where}
+      ORDER BY r.id_reserva DESC
+    `;
+
+    console.log('Query de filtros:', query);
+    console.log('Valores de filtros:', valores);
+
+    const resultado = await pool.query(query, valores);
+    console.log('Resultado de filtros:', resultado.rows.length, 'filas');
+    return resultado;
+  } catch (error) {
+    console.error('Error en obtenerReservasConFiltros:', error);
+    throw error;
   }
-
-  // Filtro por estado
-  if (estado) {
-    condiciones.push(`LOWER(e.nombreestado) = LOWER($${contador})`);
-    valores.push(estado);
-    contador++;
-  }
-
-  // Filtro por cabaña
-  if (cabana) {
-    condiciones.push(`c.nombre_cabana = $${contador}`);
-    valores.push(cabana);
-    contador++;
-  }
-
-  const where = condiciones.length ? `WHERE ${condiciones.join(' AND ')}` : '';
-
-  const query = `
-    SELECT 
-      r.id_reserva AS id,
-      h.id_dni,
-      h.nombre,
-      h.gmail AS email,
-      c.nombre_cabana,
-      r.fechaInicio,
-      r.fechaFin,
-      r.precioTotal,
-      e.nombreestado AS NombreEstado
-    FROM reservas r
-    JOIN huespedes h ON r.id_dni = h.id_dni
-    JOIN cabanas c ON r.id_cabana = c.id_cabana
-    JOIN Estados e ON r.id_estado = e.id_estado
-    ${where}
-    ORDER BY r.id_reserva DESC
-  `;
-
-  const resultado = await pool.query(query, valores);
-  return resultado;
 }
 
 
 //
 // ==== EXPORTACIONES ====
 export {
-  obtenerReservasConEstado,
   obtenerReservaConEstadoPorId,
+  obtenerReservasConEstado,
+  obtenerReservasActivas,
   crearReserva,
   modificarReserva,
   eliminarReserva,
   verificarOCrearHuesped,
   actualizarHuesped,
-  obtenerEstados
+  actualizarEstadoReserva,
+  obtenerEstados,
+  obtenerCabanasDisponibles,
+  buscarProximaDisponibilidad,
+  obtenerReservasConFiltros
 };

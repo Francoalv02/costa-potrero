@@ -185,13 +185,34 @@ async function obtenerCabanas(req, res) {
     try {
         const resultado = await modelo.obtenerCabanas();
         if (resultado.rows.length > 0) {
-            res.json(resultado.rows);
+            // Transformar los datos al formato que espera el frontend
+            const cabanas = resultado.rows.map(cabana => ({
+                id: cabana.id_cabana,
+                nombre: cabana.nombre_cabana,
+                descripcion: cabana.descripcion,
+                capacidad: cabana.capacidad_personas,
+                precio: cabana.precio
+            }));
+            
+            res.json({
+                success: true,
+                data: cabanas,
+                mensaje: `Se encontraron ${cabanas.length} cabañas`
+            });
         } else {
-            res.status(404).json({ mensaje: 'No se encontraron cabañas' });
+            res.status(404).json({ 
+                success: false,
+                mensaje: 'No se encontraron cabañas',
+                data: []
+            });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ mensaje: 'Error en el servidor al obtener cabaña' });
+        res.status(500).json({ 
+            success: false,
+            mensaje: 'Error en el servidor al obtener cabañas',
+            data: []
+        });
     }
 }
 
@@ -276,15 +297,30 @@ async function eliminarCabana(req, res) {
         const { id } = req.params;
         const resultado = await modelo.eliminarCabana(id);
 
-        if (resultado.rows.length > 0) {
-            const { id: eliminarCabana } = resultado.rows[0];
-            res.status(200).json({ mensaje: `La Cabaña fue eliminada correctamente` });
-        } else {
-            res.status(404).json({ mensaje: 'La Cabaña no encontrada' });
-        }
+        res.status(200).json({ 
+            mensaje: `La Cabaña fue eliminada correctamente`,
+            id_eliminado: resultado.rows[0].id_cabana
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: 'Error en el servidor al eliminar la cabaña' });
+        console.error('Error al eliminar cabaña:', error);
+        
+        if (error.code === 'RESERVAS_ASOCIADAS') {
+            res.status(400).json({ 
+                mensaje: error.message,
+                detalle: error.detail,
+                tipo: 'RESERVAS_ASOCIADAS'
+            });
+        } else if (error.code === 'NO_ENCONTRADA') {
+            res.status(404).json({ 
+                mensaje: error.message,
+                tipo: 'NO_ENCONTRADA'
+            });
+        } else {
+            res.status(500).json({ 
+                mensaje: 'Error en el servidor al eliminar la cabaña',
+                tipo: 'ERROR_SERVIDOR'
+            });
+        }
     }
 }
 

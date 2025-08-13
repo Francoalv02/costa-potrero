@@ -97,16 +97,34 @@ async function modificarCabana(cabana) {
 
 async function eliminarCabana(id_cabana) {
     try {
-        const resultado = await pool.query(
-            `
-            DELETE FROM cabanas
-            WHERE id_cabana = $1
-            `,
+        // Primero verificar si hay reservas asociadas
+        const reservasAsociadas = await pool.query(
+            `SELECT COUNT(*) as total FROM reservas WHERE id_cabana = $1`,
             [id_cabana]
         );
+        
+        if (reservasAsociadas.rows[0].total > 0) {
+            const error = new Error('No se puede eliminar la cabaña porque tiene reservas asociadas');
+            error.code = 'RESERVAS_ASOCIADAS';
+            error.detail = `La cabaña tiene ${reservasAsociadas.rows[0].total} reserva(s) asociada(s)`;
+            throw error;
+        }
+        
+        // Si no hay reservas, proceder con la eliminación
+        const resultado = await pool.query(
+            `DELETE FROM cabanas WHERE id_cabana = $1 RETURNING id_cabana`,
+            [id_cabana]
+        );
+        
+        if (resultado.rowCount === 0) {
+            const error = new Error('Cabaña no encontrada');
+            error.code = 'NO_ENCONTRADA';
+            throw error;
+        }
+        
         return resultado;
     } catch (error) {
-        console.log(error);
+        console.log('Error en eliminarCabana:', error);
         throw error;
     }
 }

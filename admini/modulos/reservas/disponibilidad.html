@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Disponibilidad - Costa Potrero</title>
     <link rel="stylesheet" href="../css/estilo.css">
-    <script type="module" src="./js/consultar.js"></script>
 </head>
 <body>
  <header>
@@ -22,6 +21,7 @@
                     <a href="./../cabanas/index.html">Listado Cabañas</a>
                     <a href="./../huespedes/index.html">Listado Huespedes</a>
                     <a href="./../pagos/pagos.html">Lista de Pagos</a>
+                    <a href="./../solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
            
@@ -95,5 +95,8 @@
     document.getElementById('fecha_fin').min = today;
   });
 </script>
+
+<!-- Cargar el script de consultar después de que el DOM esté listo -->
+<script src="./js/consultar.js"></script>
 </body>
 </html>
