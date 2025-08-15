@@ -258,10 +258,7 @@ contenedorCabanas.addEventListener('click', async (evento) => {
   if (evento.target.classList.contains('btn-eliminar-reserva')) {
     const idCabana = evento.target.dataset.id;
     
-    // Confirmación rápida
-    if (!confirm('¿Estás seguro de que quieres eliminar esta cabaña?')) {
-      return;
-    }
+    
     
     try {
       const respuesta = await eliminarRegistro(`/api/v1/cabanas/${idCabana}`);

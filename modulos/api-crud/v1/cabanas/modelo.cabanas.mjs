@@ -95,39 +95,64 @@ async function modificarCabana(cabana) {
     }
 }
 
-async function eliminarCabana(id_cabana) {
-    try {
-        // Primero verificar si hay reservas asociadas
-        const reservasAsociadas = await pool.query(
-            `SELECT COUNT(*) as total FROM reservas WHERE id_cabana = $1`,
-            [id_cabana]
-        );
-        
-        if (reservasAsociadas.rows[0].total > 0) {
-            const error = new Error('No se puede eliminar la cabaña porque tiene reservas asociadas');
-            error.code = 'RESERVAS_ASOCIADAS';
-            error.detail = `La cabaña tiene ${reservasAsociadas.rows[0].total} reserva(s) asociada(s)`;
-            throw error;
-        }
-        
-        // Si no hay reservas, proceder con la eliminación
-        const resultado = await pool.query(
-            `DELETE FROM cabanas WHERE id_cabana = $1 RETURNING id_cabana`,
-            [id_cabana]
-        );
-        
-        if (resultado.rowCount === 0) {
-            const error = new Error('Cabaña no encontrada');
-            error.code = 'NO_ENCONTRADA';
-            throw error;
-        }
-        
-        return resultado;
-    } catch (error) {
-        console.log('Error en eliminarCabana:', error);
-        throw error;
+
+
+ async function eliminarCabana(id_cabana) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Normalizamos a entero por las dudas
+    const id = parseInt(id_cabana, 10);
+    if (Number.isNaN(id)) {
+      const err = new Error('ID de cabaña inválido');
+      err.code = 'ID_INVALIDO';
+      throw err;
     }
+
+    // 1) ¿Tiene reservas?
+    const { rows: [ rowCountRes ] } = await client.query(
+      `SELECT COUNT(*)::int AS total FROM reservas WHERE id_cabana = $1`,
+      [id]
+    );
+
+    if (rowCountRes.total > 0) {
+      await client.query('ROLLBACK');
+      const err = new Error('La cabaña no se puede eliminar porque tiene reservas asociadas.');
+      err.code = 'TIENE_RESERVAS';
+      err.detail = `Tiene ${rowCountRes.total} reserva(s).`;
+      throw err;
+    }
+
+    // 2) No tiene reservas → limpiamos solicitudes para no chocar con la FK
+    await client.query(
+      `DELETE FROM solicitudes_reserva WHERE id_cabana = $1`,
+      [id]
+    );
+
+    // 3) Eliminamos la cabaña
+    const del = await client.query(
+      `DELETE FROM cabanas WHERE id_cabana = $1 RETURNING id_cabana`,
+      [id]
+    );
+
+    if (del.rowCount === 0) {
+      await client.query('ROLLBACK');
+      const err = new Error('Cabaña no encontrada');
+      err.code = 'NO_ENCONTRADA';
+      throw err;
+    }
+
+    await client.query('COMMIT');
+    return del; // del.rows[0].id_cabana
+  } catch (e) {
+    try { await client.query('ROLLBACK'); } catch {}
+    throw e;
+  } finally {
+    client.release();
+  }
 }
+
 
 export {
     obtenerCabana,

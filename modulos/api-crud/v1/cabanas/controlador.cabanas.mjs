@@ -292,37 +292,58 @@ async function modificarCabana(req, res) {
     }
 }
 
-async function eliminarCabana(req, res) {
-    try {
-        const { id } = req.params;
-        const resultado = await modelo.eliminarCabana(id);
 
-        res.status(200).json({ 
-            mensaje: `La Cabaña fue eliminada correctamente`,
-            id_eliminado: resultado.rows[0].id_cabana
-        });
-    } catch (error) {
-        console.error('Error al eliminar cabaña:', error);
-        
-        if (error.code === 'RESERVAS_ASOCIADAS') {
-            res.status(400).json({ 
-                mensaje: error.message,
-                detalle: error.detail,
-                tipo: 'RESERVAS_ASOCIADAS'
-            });
-        } else if (error.code === 'NO_ENCONTRADA') {
-            res.status(404).json({ 
-                mensaje: error.message,
-                tipo: 'NO_ENCONTRADA'
-            });
-        } else {
-            res.status(500).json({ 
-                mensaje: 'Error en el servidor al eliminar la cabaña',
-                tipo: 'ERROR_SERVIDOR'
-            });
-        }
+
+ async function eliminarCabana(req, res) {
+  try {
+    const { id } = req.params;
+    const resultado = await modelo.eliminarCabana(id);
+
+    return res.status(200).json({
+      mensaje: 'La cabaña fue eliminada correctamente',
+      id_eliminado: resultado.rows[0].id_cabana
+    });
+  } catch (error) {
+    console.error('Error al eliminar cabaña:', error);
+
+    if (error.code === 'TIENE_RESERVAS') {
+      return res.status(409).json({
+        mensaje: 'No se puede eliminar la cabaña: tiene reservas asociadas.',
+        detalle: error.detail,
+        tipo: 'TIENE_RESERVAS'
+      });
     }
+
+    if (error.code === 'NO_ENCONTRADA') {
+      return res.status(404).json({
+        mensaje: 'Cabaña no encontrada',
+        tipo: 'NO_ENCONTRADA'
+      });
+    }
+
+    if (error.code === 'ID_INVALIDO') {
+      return res.status(400).json({
+        mensaje: 'ID de cabaña inválido',
+        tipo: 'ID_INVALIDO'
+      });
+    }
+
+    // Si llegara a pasar directo el error de FK por otro lado
+    if (error.code === '23503') {
+      return res.status(409).json({
+        mensaje: 'No se puede eliminar la cabaña por dependencias existentes.',
+        tipo: 'TIENE_RESERVAS_O_SOLICITUDES'
+      });
+    }
+
+    return res.status(500).json({
+      mensaje: 'Error en el servidor al eliminar la cabaña',
+      tipo: 'ERROR_SERVIDOR'
+    });
+  }
 }
+
+
 
 export {
     generarReporteCabanas,

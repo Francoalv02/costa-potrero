@@ -128,9 +128,57 @@ async function actualizarPago(id_pago, { id_estado_pago, metodo_pago, observacio
   }
 }
 
-// Eliminar un pago
+// Eliminar un pago con validación de reservas asociadas
+// NO permite eliminar pagos que tengan reservas asociadas (por seguridad e integridad de datos)
 async function eliminarPago(id_pago) {
-  await pool.query('DELETE FROM pagos WHERE id_pago = $1', [id_pago]);
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1) Verificar si el pago existe y obtener su reserva asociada
+    const reservaQuery = await client.query(
+      `SELECT id_reserva FROM pagos WHERE id_pago = $1`,
+      [id_pago]
+    );
+
+    if (reservaQuery.rows.length === 0) {
+      await client.query('ROLLBACK');
+      const error = new Error('Pago no encontrado.');
+      error.code = 'NO_ENCONTRADO';
+      throw error;
+    }
+
+    const id_reserva = reservaQuery.rows[0].id_reserva;
+
+    // 2) Verificar si la reserva asociada existe
+    const reservaExiste = await client.query(
+      `SELECT COUNT(*)::int AS total, ID_Estado
+       FROM reservas
+       WHERE id_reserva = $1`,
+      [id_reserva]
+    );
+
+    if (reservaExiste.rows.length === 0 || reservaExiste.rows[0].total === 0) {
+      await client.query('ROLLBACK');
+      const error = new Error('La reserva asociada al pago no existe.');
+      error.code = 'RESERVA_NO_EXISTE';
+      throw error;
+    }
+
+    // 3) NO permitir eliminar el pago porque SIEMPRE está asociado a una reserva
+    // Los pagos son registros históricos importantes que no deben eliminarse
+    await client.query('ROLLBACK');
+    const error = new Error('No se puede eliminar el pago porque está asociado a una reserva.');
+    error.code = 'TIENE_RESERVAS';
+    error.detail = `Este pago está vinculado a la reserva #${id_reserva} y no puede ser eliminado por seguridad e integridad de datos.`;
+    throw error;
+
+  } catch (error) {
+    try { await client.query('ROLLBACK'); } catch {}
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 async function obtenerMetodosPago() {

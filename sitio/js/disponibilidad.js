@@ -419,7 +419,7 @@ async function enviarSolicitud() {
     const result = await response.json();
     
     if (result.success) {
-      alert('¡Solicitud enviada exitosamente! Te contactaremos pronto para confirmar los detalles.');
+      ('¡Solicitud enviada exitosamente! Te contactaremos pronto para confirmar los detalles.');
       cerrarModalSolicitud();
       
       // Limpiar formulario

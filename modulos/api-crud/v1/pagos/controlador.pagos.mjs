@@ -130,14 +130,43 @@ async function actualizarPago(req, res) {
 async function eliminarPago(req, res) {
   try {
     const { id } = req.params;
-    await modelo.eliminarPago(id);
-    res.json({ mensaje: 'Pago eliminado correctamente' });
+    const resultado = await modelo.eliminarPago(id);
+
+    res.json({
+      mensaje: 'Pago eliminado correctamente',
+      id_eliminado: resultado.rows[0].id_pago
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: 'Error al eliminar el pago' });
+
+    if (error.code === 'TIENE_RESERVAS') {
+      return res.status(409).json({
+        mensaje: error.message,
+        detalle: error.detail,
+        tipo: 'TIENE_RESERVAS'
+      });
+    }
+
+    if (error.code === 'RESERVA_NO_EXISTE') {
+      return res.status(400).json({
+        mensaje: error.message,
+        tipo: 'RESERVA_NO_EXISTE'
+      });
+    }
+
+    if (error.code === 'NO_ENCONTRADO') {
+      return res.status(404).json({
+        mensaje: error.message,
+        tipo: 'NO_ENCONTRADO'
+      });
+    }
+
+    res.status(500).json({
+      mensaje: 'Error al eliminar el pago',
+      tipo: 'ERROR_SERVIDOR'
+    });
   }
 }
-
 // Generar reporte de pagos
 async function generarReportePagos(req, res) {
   try {

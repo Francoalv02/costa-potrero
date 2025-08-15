@@ -810,10 +810,6 @@ contenedorReservas.addEventListener('click', async (evento) => {
   if (evento.target.classList.contains('btn-eliminar-reserva')) {
     const idReserva = evento.target.dataset.id;
     
-    // Confirmación rápida
-    if (!confirm('¿Estás seguro de que quieres eliminar esta reserva?')) {
-      return;
-    }
     
     try {
       const respuesta = await eliminarRegistro(`/api/v1/reservas/${idReserva}`);

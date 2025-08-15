@@ -410,27 +410,35 @@ formBuscar.addEventListener('submit', async (e) => {
 
 // Función para eliminar pago desde búsqueda
 async function eliminarPago(id) {
-  if (!confirm('¿Estás seguro de que quieres eliminar este pago?')) {
-    return;
-  }
-  
   try {
     const response = await fetch(`/api/v1/pagos/${id}`, {
       method: 'DELETE'
     });
     
+    const datos = await response.json();
+    
     if (response.ok) {
-      mostrarMensaje(mensajeDiv, 'Pago eliminado exitosamente', 'success');
+      mostrarMensaje(mensajeDiv, '✅ Pago eliminado exitosamente', 'success');
       // Recargar la tabla
       await cargarPagos();
       // Limpiar búsqueda
       resultado.innerHTML = '';
     } else {
-      mostrarMensaje(mensajeDiv, 'Error al eliminar el pago', 'error');
+      // Manejar diferentes tipos de error
+      if (datos.tipo === 'TIENE_RESERVAS') {
+        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje}`, 'error');
+        if (datos.detalle) {
+          mostrarMensaje(mensajeDiv, `ℹ️ ${datos.detalle}`, 'info');
+        }
+      } else if (datos.tipo === 'NO_ENCONTRADO') {
+        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje}`, 'error');
+      } else {
+        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje || 'Error al eliminar el pago'}`, 'error');
+      }
     }
   } catch (error) {
-    console.error(error);
-    mostrarMensaje(mensajeDiv, 'Error al eliminar el pago', 'error');
+    console.error('Error al eliminar pago:', error);
+    mostrarMensaje(mensajeDiv, '❌ Error de conexión al eliminar el pago', 'error');
   }
 }
 

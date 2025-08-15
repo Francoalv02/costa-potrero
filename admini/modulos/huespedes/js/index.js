@@ -453,10 +453,7 @@ window.editarHuesped = async (dni) => {
 
 // Función global para eliminar huésped
 window.eliminarHuesped = async (dni) => {
-  if (!confirm('¿Estás seguro de que quieres eliminar este huésped?')) {
-    return;
-  }
-  
+ 
   try {
     const response = await fetch(`/api/v1/huespedes/${dni}`, { method: 'DELETE' });
     
