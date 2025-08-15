@@ -5,16 +5,7 @@ const router = express.Router();
 
 // Credenciales de respaldo (fallback)
 const USUARIOS_FALLBACK = [
-    {
-        usuario: 'admin@costapotrero.com',
-        clave: 'franco02',
-        rol: 'admin'
-    },
-    {
-        usuario: 'admin@costa.com',
-        clave: 'admin1234',
-        rol: 'admin'
-    }
+
 ];
  
 router.post('/login', async (req, res) => {
