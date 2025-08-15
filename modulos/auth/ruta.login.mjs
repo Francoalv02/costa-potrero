@@ -16,7 +16,7 @@ const USUARIOS_FALLBACK = [
         rol: 'admin'
     }
 ];
-
+ 
 router.post('/login', async (req, res) => {
     try {
         const { usuario, clave } = req.body;

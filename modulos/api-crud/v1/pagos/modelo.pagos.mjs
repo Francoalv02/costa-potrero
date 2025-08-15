@@ -40,9 +40,11 @@ async function obtenerPagos() {
       r.id_reserva,
       h.nombre AS huesped,
       c.nombre_cabana,
-      p.monto,
+      p.monto AS monto_pagado,
+      r.preciototal AS monto_total,
       p.fecha_pago,
       ep.nombre_estado_pago,
+      ep.id_estado_pago,
       p.metodo_pago,
       p.observacion
     FROM pagos p
@@ -86,14 +88,44 @@ async function obtenerPagoPorId(id_pago) {
 
 // Actualizar un pago
 async function actualizarPago(id_pago, { id_estado_pago, metodo_pago, observacion }) {
-  const res = await pool.query(`
-    UPDATE pagos 
-    SET id_estado_pago = $1, metodo_pago = $2, observacion = $3
-    WHERE id_pago = $4
-    RETURNING id_pago
-  `, [id_estado_pago, metodo_pago, observacion, id_pago]);
-  
-  return res;
+  try {
+    // Primero obtener el pago actual para saber la reserva
+    const pagoActual = await pool.query('SELECT id_reserva FROM pagos WHERE id_pago = $1', [id_pago]);
+    if (pagoActual.rows.length === 0) {
+      throw new Error('Pago no encontrado');
+    }
+    
+    const id_reserva = pagoActual.rows[0].id_reserva;
+    
+    // Obtener el precio total de la reserva
+    const reserva = await pool.query('SELECT preciototal FROM reservas WHERE id_reserva = $1', [id_reserva]);
+    if (reserva.rows.length === 0) {
+      throw new Error('Reserva no encontrada');
+    }
+    
+    const precioTotal = parseFloat(reserva.rows[0].preciototal || 0);
+    
+    // Calcular el nuevo monto según el estado
+    let nuevoMonto = precioTotal;
+    if (id_estado_pago === 2) { // Señado
+      nuevoMonto = precioTotal / 2;
+    } else if (id_estado_pago === 3) { // Realizado
+      nuevoMonto = precioTotal;
+    }
+    
+    // Actualizar el pago con el nuevo monto
+    const res = await pool.query(`
+      UPDATE pagos 
+      SET id_estado_pago = $1, metodo_pago = $2, observacion = $3, monto = $4
+      WHERE id_pago = $5
+      RETURNING id_pago
+    `, [id_estado_pago, metodo_pago, observacion, nuevoMonto, id_pago]);
+    
+    return res;
+  } catch (error) {
+    console.error('Error en actualizarPago:', error);
+    throw error;
+  }
 }
 
 // Eliminar un pago

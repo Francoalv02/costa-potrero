@@ -6,6 +6,7 @@
   <title>Gestión de Pagos - Costa Potrero</title>
     <link rel="stylesheet" href="../css/estilo.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="module" src="./js/pagos.js"></script>
 </head>
 <body>
@@ -122,8 +123,9 @@
                         <th>ID Reserva</th>
                         <th>Huésped</th>
                         <th>Fecha Pago</th>
-                        <th>Monto</th>
                         <th>Estado</th>
+                        <th>Monto Total</th>
+                        <th>Pago Restante</th>
                         <th>Método</th>
                         <th>Observación</th>
                         <th>Acciones</th>
@@ -146,16 +148,16 @@
                         <p id="total-pagos">0</p>
                     </div>
                     <div class="tarjeta">
-                        <h3>Monto Total</h3>
-                        <p id="monto-total">$0</p>
+                        <h3>Monto Pagado</h3>
+                        <p id="monto-pagado">$0</p>
                     </div>
                     <div class="tarjeta">
-                        <h3>Pagos Pendientes</h3>
-                        <p id="pagos-pendientes">0</p>
+                        <h3>Monto Restante</h3>
+                        <p id="monto-restante">$0</p>
                     </div>
                     <div class="tarjeta">
-                        <h3>Pagos Completados</h3>
-                        <p id="pagos-completados">0</p>
+                        <h3>Pago Total</h3>
+                        <p id="pago-total">$0</p>
                     </div>
                 </div>
 

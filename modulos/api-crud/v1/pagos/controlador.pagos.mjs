@@ -150,7 +150,7 @@ async function generarReportePagos(req, res) {
     let pagosFiltrados = pagos;
     if (estado) {
       pagosFiltrados = pagos.filter(p => 
-        p.nombre_estado_pago.toLowerCase() === estado.toLowerCase()
+        p.nombre_estado_pago.toLowerCase().includes(estado.toLowerCase())
       );
     }
 
@@ -196,11 +196,34 @@ async function generarReportePagos(req, res) {
     
     doc.moveDown(1);
 
-    // Estadísticas del reporte
+    // Estadísticas del reporte - CORREGIDAS
     const totalPagos = pagosFiltrados.length;
-    const montoTotal = pagosFiltrados.reduce((sum, p) => sum + parseFloat(p.monto), 0);
-    const pagosPendientes = pagosFiltrados.filter(p => p.nombre_estado_pago.toLowerCase().includes('pendiente')).length;
-    const pagosCompletados = pagosFiltrados.filter(p => p.nombre_estado_pago.toLowerCase().includes('completado')).length;
+    
+    // Calcular monto pagado (suma de todos los pagos registrados)
+    const montoPagado = pagosFiltrados.reduce((sum, p) => {
+      const monto = parseFloat(p.monto_pagado || p.monto || 0);
+      return sum + monto;
+    }, 0);
+    
+    // Calcular pago total (suma de todas las reservas)
+    const pagoTotal = pagosFiltrados.reduce((sum, p) => {
+      const montoTotal = parseFloat(p.monto_total || 0);
+      return sum + montoTotal;
+    }, 0);
+    
+    // Calcular monto restante
+    const montoRestante = pagoTotal - montoPagado;
+    
+    // Contar pagos por estado - CORREGIDO
+    const pagosPendientes = pagosFiltrados.filter(p => {
+      const estadoPago = p.nombre_estado_pago?.toLowerCase() || '';
+      return estadoPago.includes('señado') || estadoPago.includes('senado');
+    }).length;
+    
+    const pagosCompletados = pagosFiltrados.filter(p => {
+      const estadoPago = p.nombre_estado_pago?.toLowerCase() || '';
+      return estadoPago.includes('realizado') || estadoPago.includes('completado');
+    }).length;
 
     // Crear tabla de estadísticas
     const statsY = doc.y;
@@ -213,7 +236,9 @@ async function generarReportePagos(req, res) {
     
     const statsData = [
       ['Total de Pagos:', totalPagos.toString()],
-      ['Monto Total:', `$${montoTotal.toFixed(2)}`],
+      ['Monto Pagado:', `$${montoPagado.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`],
+      ['Monto Restante:', `$${montoRestante.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`],
+      ['Pago Total:', `$${pagoTotal.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`],
       ['Pagos Pendientes:', pagosPendientes.toString()],
       ['Pagos Completados:', pagosCompletados.toString()]
     ];
@@ -243,14 +268,14 @@ async function generarReportePagos(req, res) {
     
     doc.moveDown(0.5);
 
-    // Definir columnas de la tabla
+    // Definir columnas de la tabla - ACTUALIZADAS
     const columns = [
       { header: 'ID', key: 'id_pago', width: 30 },
       { header: 'Reserva', key: 'id_reserva', width: 40 },
       { header: 'Huésped', key: 'huesped', width: 80 },
       { header: 'Fecha', key: 'fecha_pago', width: 60 },
-      { header: 'Monto', key: 'monto', width: 50 },
       { header: 'Estado', key: 'nombre_estado_pago', width: 60 },
+      { header: 'Monto Total', key: 'monto_total', width: 60 },
       { header: 'Método', key: 'metodo_pago', width: 50 },
       { header: 'Observación', key: 'observacion', width: 80 }
     ];
@@ -293,8 +318,8 @@ async function generarReportePagos(req, res) {
         // Formatear valores específicos
         if (col.key === 'id_reserva') {
           value = `#${value}`;
-        } else if (col.key === 'monto') {
-          value = `$${parseFloat(value).toFixed(2)}`;
+        } else if (col.key === 'monto_total') {
+          value = `$${parseFloat(value || 0).toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
         } else if (col.key === 'fecha_pago') {
           value = new Date(value).toLocaleDateString('es-ES');
         }

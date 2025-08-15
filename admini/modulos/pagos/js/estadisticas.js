@@ -16,10 +16,21 @@ function actualizarTarjetasResumen(pagos) {
         }
         
         const totalPagos = pagos.length;
-        const montoTotal = pagos.reduce((sum, pago) => {
-            const monto = parseFloat(pago.monto) || 0;
+        
+        // Calcular monto pagado (suma de todos los pagos registrados)
+        const montoPagado = pagos.reduce((sum, pago) => {
+            const monto = parseFloat(pago.monto_pagado || pago.monto || 0);
             return sum + monto;
         }, 0);
+        
+        // Calcular pago total (suma de todas las reservas)
+        const pagoTotal = pagos.reduce((sum, pago) => {
+            const montoTotal = parseFloat(pago.monto_total || 0);
+            return sum + montoTotal;
+        }, 0);
+        
+        // Calcular monto restante (diferencia entre total y pagado)
+        const montoRestante = pagoTotal - montoPagado;
         
         // Contar pagos con "Señado" como pendientes y "Realizado" como completados
         const pagosPendientes = pagos.filter(p => {
@@ -34,20 +45,30 @@ function actualizarTarjetasResumen(pagos) {
 
         // Actualizar elementos del DOM
         const totalElement = document.getElementById('total-pagos');
-        const montoElement = document.getElementById('monto-total');
-        const pendientesElement = document.getElementById('pagos-pendientes');
-        const completadosElement = document.getElementById('pagos-completados');
+        const montoPagadoElement = document.getElementById('monto-pagado');
+        const montoRestanteElement = document.getElementById('monto-restante');
+        const pagoTotalElement = document.getElementById('pago-total');
         
         if (totalElement) totalElement.textContent = totalPagos;
-        if (montoElement) montoElement.textContent = `$${montoTotal.toFixed(2)}`;
-        if (pendientesElement) pendientesElement.textContent = pagosPendientes;
-        if (completadosElement) completadosElement.textContent = pagosCompletados;
+        if (montoPagadoElement) montoPagadoElement.textContent = `$${montoPagado.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        if (montoRestanteElement) {
+            montoRestanteElement.textContent = `$${montoRestante.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+            // Aplicar color según el monto restante
+            if (montoRestante > 0) {
+                montoRestanteElement.style.color = '#dc3545'; // Rojo si hay deuda
+            } else {
+                montoRestanteElement.style.color = '#28a745'; // Verde si está completo
+            }
+        }
+        if (pagoTotalElement) pagoTotalElement.textContent = `$${pagoTotal.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
         
         console.log('Tarjetas de resumen actualizadas:', {
             total: totalPagos,
-            monto: montoTotal,
-            pendientes: pagosPendientes,
-            completados: pagosCompletados
+            montoPagado: montoPagado,
+            montoRestante: montoRestante,
+            pagoTotal: pagoTotal,
+            pagosPendientes: pagosPendientes,
+            pagosCompletados: pagosCompletados
         });
         
     } catch (error) {
@@ -385,48 +406,110 @@ async function cargarEstadisticas() {
     }
 }
 
-// Función para exportar estadísticas a PDF usando la API del backend
+// Función para exportar estadísticas a PDF usando jsPDF
 async function exportarEstadisticasPDF() {
-    try {
-        // Mostrar mensaje de carga
-        const mensajes = document.getElementById('mensajes');
-        if (mensajes) {
-            mostrarMensaje(mensajes, '📄 Generando reporte PDF...', 'info');
-        }
-        
-        // Obtener el filtro de estado actual
-        const filtroEstado = document.getElementById('filtro-estado')?.value || '';
-        
-        // Construir la URL del reporte
-        let url = '/api/v1/pagos/reporte';
-        if (filtroEstado) {
-            url += `?estado=${encodeURIComponent(filtroEstado)}`;
-        }
-        
-        // Crear un enlace temporal para descargar el PDF
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `reporte_pagos_${new Date().toISOString().split('T')[0]}.pdf`;
-        
-        // Simular clic para descargar
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Mostrar mensaje de éxito
-        if (mensajes) {
-            mostrarMensaje(mensajes, '✅ Reporte PDF generado y descargado exitosamente', 'success');
-        }
-        
-    } catch (error) {
-        console.error('Error al exportar PDF:', error);
-        
-        // Mostrar mensaje de error
-        const mensajes = document.getElementById('mensajes');
-        if (mensajes) {
-            mostrarMensaje(mensajes, '❌ Error al generar el reporte PDF', 'error');
-        }
+  try {
+    // Verificar que jsPDF esté disponible
+    const { jsPDF } = window.jspdf || {};
+    if (!jsPDF) {
+      mostrarMensaje(document.getElementById('mensajes'), '❌ Error: jsPDF no está disponible', 'error');
+      return;
     }
+
+    // Mostrar mensaje de carga
+    const mensajes = document.getElementById('mensajes');
+    if (mensajes) {
+      mostrarMensaje(mensajes, '📄 Generando reporte PDF de estadísticas...', 'info');
+    }
+
+    // Obtener datos actuales de las estadísticas
+    const totalPagos = document.getElementById('total-pagos')?.textContent || '0';
+    const montoPagado = document.getElementById('monto-pagado')?.textContent || '$0';
+    const montoRestante = document.getElementById('monto-restante')?.textContent || '$0';
+    const pagoTotal = document.getElementById('pago-total')?.textContent || '$0';
+
+    // Crear el PDF
+    const doc = new jsPDF();
+    
+    // Título principal
+    doc.setFontSize(20);
+    doc.setTextColor(44, 62, 80);
+    doc.text('Reporte de Estadísticas de Pagos', 14, 20);
+    doc.text('Costa Potrero', 14, 30);
+    
+    // Información del reporte
+    doc.setFontSize(12);
+    doc.setTextColor(127, 140, 141);
+    doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 14, 45);
+    doc.text(`Hora: ${new Date().toLocaleTimeString('es-ES')}`, 14, 55);
+    
+    // Resumen de estadísticas
+    doc.setFontSize(16);
+    doc.setTextColor(44, 62, 80);
+    doc.text('Resumen de Estadísticas:', 14, 75);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(52, 73, 94);
+    doc.text(`Total de Pagos: ${totalPagos}`, 14, 90);
+    doc.text(`Monto Pagado: ${montoPagado}`, 14, 100);
+    doc.text(`Monto Restante: ${montoRestante}`, 14, 110);
+    doc.text(`Pago Total: ${pagoTotal}`, 14, 125);
+    
+    // Agregar gráficos como imágenes
+    try {
+      // Gráfico de estados
+      const graficoEstados = document.getElementById('grafico-estados');
+      if (graficoEstados) {
+        const canvasEstados = graficoEstados;
+        const imgDataEstados = canvasEstados.toDataURL('image/png');
+        doc.addImage(imgDataEstados, 'PNG', 14, 140, 80, 60);
+        doc.text('Gráfico: Pagos por Estado', 14, 205);
+      }
+      
+      // Gráfico de métodos
+      const graficoMetodos = document.getElementById('grafico-metodos');
+      if (graficoMetodos) {
+        const canvasMetodos = graficoMetodos;
+        const imgDataMetodos = canvasMetodos.toDataURL('image/png');
+        doc.addImage(imgDataMetodos, 'PNG', 110, 140, 80, 60);
+        doc.text('Gráfico: Pagos por Método', 110, 205);
+      }
+    } catch (error) {
+      console.error('Error al agregar gráficos:', error);
+      doc.text('Nota: Los gráficos no pudieron ser incluidos', 14, 140);
+    }
+    
+    // Información adicional
+    doc.setFontSize(10);
+    doc.setTextColor(127, 140, 141);
+    doc.text('Este reporte incluye:', 14, 220);
+    doc.text('• Resumen de pagos y montos', 14, 230);
+    doc.text('• Gráficos de distribución por estado y método', 14, 240);
+    doc.text('• Análisis financiero del sistema', 14, 250);
+    
+    // Pie de página
+    doc.setFontSize(8);
+    doc.text('Reporte generado automáticamente por el sistema de Costa Potrero', 14, 270);
+    
+    // Guardar el PDF
+    const fecha = new Date().toISOString().split('T')[0];
+    const hora = new Date().toLocaleTimeString('es-ES').replace(/:/g, '-');
+    doc.save(`estadisticas_pagos_${fecha}_${hora}.pdf`);
+    
+    // Mostrar mensaje de éxito
+    if (mensajes) {
+      mostrarMensaje(mensajes, '✅ Reporte PDF de estadísticas generado exitosamente', 'success');
+    }
+    
+  } catch (error) {
+    console.error('Error al exportar estadísticas PDF:', error);
+    
+    // Mostrar mensaje de error
+    const mensajes = document.getElementById('mensajes');
+    if (mensajes) {
+      mostrarMensaje(mensajes, '❌ Error al generar el reporte PDF de estadísticas', 'error');
+    }
+  }
 }
 
 // Función auxiliar para mostrar mensajes (si no está disponible)

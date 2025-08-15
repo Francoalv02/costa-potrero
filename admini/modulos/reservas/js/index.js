@@ -48,12 +48,12 @@ async function cargarEstados() {
         selectEstado.removeChild(selectEstado.lastChild);
       }
       
-      estados.forEach(estado => {
-        const option = document.createElement('option');
-        option.value = estado.nombreestado;
-        option.textContent = estado.nombreestado;
-        selectEstado.appendChild(option);
-      });
+    estados.forEach(estado => {
+      const option = document.createElement('option');
+      option.value = estado.nombreestado;
+      option.textContent = estado.nombreestado;
+      selectEstado.appendChild(option);
+    });
       
       console.log('Estados cargados en filtros:', estados.length);
     } else {
@@ -139,11 +139,30 @@ async function aplicarFiltros() {
     console.log('Respuesta del servidor:', respuesta.status, respuesta.statusText);
     
     if (!respuesta.ok) {
+      // Si es un 404, significa que no se encontraron reservas con esos filtros
+      if (respuesta.status === 404) {
+        const mensaje = generarMensajeSinResultados(filtros);
+        mostrarReservas([]); // Mostrar tabla vacía
+        actualizarInfoFiltros(filtros, 0);
+        filtrosAplicados = true;
+        mostrarMensaje(mensajes, mensaje, 'info');
+        return;
+      }
       throw new Error(`HTTP error! status: ${respuesta.status}`);
     }
     
     const reservasFiltradas = await respuesta.json();
     console.log('Reservas filtradas recibidas:', reservasFiltradas);
+
+    // Si no hay reservas filtradas, mostrar mensaje apropiado
+    if (!reservasFiltradas || reservasFiltradas.length === 0) {
+      const mensaje = generarMensajeSinResultados(filtros);
+      mostrarReservas([]); // Mostrar tabla vacía
+      actualizarInfoFiltros(filtros, 0);
+      filtrosAplicados = true;
+      mostrarMensaje(mensajes, mensaje, 'info');
+      return;
+    }
 
     // Mostrar reservas filtradas
     mostrarReservas(reservasFiltradas);
@@ -167,8 +186,42 @@ async function aplicarFiltros() {
     
   } catch (error) {
     console.error('Error al aplicar filtros:', error);
-    mostrarMensaje(mensajes, `❌ Error al aplicar los filtros: ${error.message}`, 'error');
+    
+    // Si es un error de red o servidor, mostrar mensaje genérico
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      mostrarMensaje(mensajes, '❌ Error de conexión. Verifica tu conexión a internet.', 'error');
+    } else {
+      mostrarMensaje(mensajes, `❌ Error al aplicar los filtros: ${error.message}`, 'error');
+    }
   }
+}
+
+// Función para generar mensajes personalizados cuando no hay resultados
+function generarMensajeSinResultados(filtros) {
+  const filtrosAplicados = [];
+  
+  if (filtros.fechaInicio && filtros.fechaFin) {
+    filtrosAplicados.push(`fechas del ${filtros.fechaInicio} al ${filtros.fechaFin}`);
+  } else if (filtros.fechaInicio) {
+    filtrosAplicados.push(`desde el ${filtros.fechaInicio}`);
+  } else if (filtros.fechaFin) {
+    filtrosAplicados.push(`hasta el ${filtros.fechaFin}`);
+  }
+  
+  if (filtros.estado) {
+    filtrosAplicados.push(`estado "${filtros.estado}"`);
+  }
+  
+  if (filtros.cabana) {
+    filtrosAplicados.push(`cabaña "${filtros.cabana}"`);
+  }
+  
+  if (filtrosAplicados.length === 0) {
+    return '📭 No se encontraron reservas con los filtros aplicados.';
+  }
+  
+  const filtrosTexto = filtrosAplicados.join(' y ');
+  return `📭 No se encontraron reservas con ${filtrosTexto}.`;
 }
 
 // Limpiar filtros
@@ -309,11 +362,29 @@ function mostrarReservas(reservas) {
   }
   
   if (reservas.length === 0) {
+    // Verificar si hay filtros aplicados para mostrar mensaje apropiado
+    const filtrosAplicados = document.getElementById('info-filtros');
+    let mensaje = '';
+    
+    if (filtrosAplicados && filtrosAplicados.textContent.includes('Filtros:')) {
+      // Hay filtros aplicados
+      mensaje = `
+        <h3>📭 No se encontraron reservas</h3>
+        <p>No hay reservas que coincidan con los filtros aplicados.</p>
+        <p><strong>Sugerencia:</strong> Intenta con otros filtros o <button onclick="limpiarFiltros()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">limpiar todos los filtros</button> para ver todas las reservas.</p>
+      `;
+    } else {
+      // No hay filtros aplicados
+      mensaje = `
+        <h3>📭 No se encontraron reservas</h3>
+        <p>No hay reservas registradas en el sistema.</p>
+      `;
+    }
+    
     contenedorReservas.innerHTML = `
       <tr>
         <td colspan="11" style="text-align: center; padding: 20px; color: #6c757d;">
-          <h3>📭 No se encontraron reservas</h3>
-          <p>No hay reservas que coincidan con los criterios de búsqueda.</p>
+          ${mensaje}
         </td>
       </tr>
     `;

@@ -262,7 +262,7 @@ async function consultarDisponibilidad(req, res) {
 async function obtenerReservas(req, res) {
   try {
     const resultado = await modelo.obtenerReservasConEstado();
-    res.json(resultado.rows);
+      res.json(resultado.rows);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error en el servidor' });

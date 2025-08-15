@@ -66,14 +66,14 @@ async function cargarEstadosPago() {
     }
 
     if (Array.isArray(estados)) {
-      estados.forEach((estado) => {
+    estados.forEach((estado) => {
         console.log('Procesando estado:', estado);
-        
+
         // Opción para el filtro
-        const option2 = document.createElement('option');
-        option2.value = estado.nombre_estado_pago.toLowerCase();
-        option2.textContent = estado.nombre_estado_pago;
-        filtroEstadoSelect.appendChild(option2);
+      const option2 = document.createElement('option');
+      option2.value = estado.nombre_estado_pago.toLowerCase();
+      option2.textContent = estado.nombre_estado_pago;
+      filtroEstadoSelect.appendChild(option2);
         
         // Opción para el modal de edición
         if (editarEstadoSelect) {
@@ -131,14 +131,69 @@ async function cargarPagos() {
       console.log('Pagos filtrados:', pagosFiltrados.length, 'de', pagos.length);
       
       pagosFiltrados.forEach(p => {
+        // Determinar el color de fondo según el estado
+        const estadoColor = obtenerColorEstado(p.nombre_estado_pago);
+        const montoTotal = parseFloat(p.monto_total || 0);
+        
+        // Calcular pago restante según el estado
+        let pagoRestante, pagoRestanteColor, pagoRestanteTexto;
+        
+        if (p.nombre_estado_pago.toLowerCase() === 'realizado' || p.nombre_estado_pago.toLowerCase() === 'completado') {
+          // Pago completo - no hay restante
+          pagoRestante = 0;
+          pagoRestanteColor = '#28a745'; // Verde
+          pagoRestanteTexto = '✅ Completado';
+        } else if (p.nombre_estado_pago.toLowerCase() === 'señado' || p.nombre_estado_pago.toLowerCase() === 'señado') {
+          // Pago parcial - falta la mitad
+          pagoRestante = montoTotal / 2;
+          pagoRestanteColor = '#dc3545'; // Rojo
+          pagoRestanteTexto = new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+            minimumFractionDigits: 0
+          }).format(pagoRestante);
+        } else {
+          // Otros estados
+          pagoRestante = montoTotal;
+          pagoRestanteColor = '#6c757d'; // Gris
+          pagoRestanteTexto = new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+            minimumFractionDigits: 0
+          }).format(pagoRestante);
+        }
+        
+        // Formatear monto total
+        const montoTotalFormateado = new Intl.NumberFormat('es-AR', {
+          style: 'currency',
+          currency: 'ARS',
+          minimumFractionDigits: 0
+        }).format(montoTotal);
+        
         tablaPagos.innerHTML += `
-          <tr>
+          <tr style="background-color: ${estadoColor};">
             <td>${p.id_pago}</td>
             <td>#${p.id_reserva}</td>
             <td>${p.huesped}</td>
             <td>${formatearFecha(p.fecha_pago)}</td>
-            <td>$${p.monto}</td>
-            <td>${p.nombre_estado_pago}</td>
+            <td>
+              <span class="estado-badge" style="
+                background-color: ${estadoColor === '#fff3cd' ? '#ffc107' : '#28a745'};
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 0.85em;
+                font-weight: bold;
+              ">
+                ${p.nombre_estado_pago}
+              </span>
+            </td>
+            <td style="font-weight: bold; color: #495057; font-size: 14px;">
+              ${montoTotalFormateado}
+            </td>
+            <td style="font-weight: bold; color: ${pagoRestanteColor}; font-size: 14px; text-align: center;">
+              ${pagoRestanteTexto}
+            </td>
             <td>${p.metodo_pago ?? '-'}</td>
             <td>${p.observacion ?? '-'}</td>
             <td>
@@ -158,6 +213,24 @@ async function cargarPagos() {
   } catch (error) {
     console.error('Error al cargar pagos:', error);
     mostrarMensaje(mensajeDiv, 'No se pudo cargar el listado de pagos');
+  }
+}
+
+// Función para obtener el color de fondo según el estado del pago
+function obtenerColorEstado(estado) {
+  const estadoLower = estado.toLowerCase();
+  
+  switch (estadoLower) {
+    case 'señado':
+    case 'señado':
+      return '#fff3cd'; // Amarillo claro para pagos parciales
+    case 'realizado':
+    case 'completado':
+      return '#d4edda'; // Verde claro para pagos completos
+    case 'pendiente':
+      return '#f8d7da'; // Rojo claro para pagos pendientes
+    default:
+      return '#ffffff'; // Blanco por defecto
   }
 }
 
@@ -550,11 +623,11 @@ window.addEventListener('load', async () => {
   
   try {
     console.log('Llamando a cargarEstadosPago...');
-    await cargarEstadosPago();
+  await cargarEstadosPago();
     console.log('Estados de pago cargados');
     
     console.log('Llamando a cargarPagos...');
-    await cargarPagos();
+  await cargarPagos();
     console.log('Pagos cargados');
     
     console.log('Inicialización completada');
