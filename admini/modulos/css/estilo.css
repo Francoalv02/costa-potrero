@@ -3255,3 +3255,83 @@ table td:nth-child(9) {
     min-width: 100px;
   }
 }
+
+/* Estilos específicos para modales de solicitudes */
+.modal-content {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.modal-content p {
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-content p strong {
+  color: #34495e;
+  font-weight: 700;
+}
+
+.modal-content p:last-of-type {
+  margin-bottom: 20px;
+}
+
+.modal-busqueda .form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.modal-busqueda textarea {
+  width: 100%;
+  padding: 15px 18px;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: white;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.modal-busqueda textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-buttons .btn-estadisticas {
+  min-width: 180px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-buttons .btn-estadisticas:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos específicos para el modal de eliminación */
+.modal-content p[style*="color: #dc3545"] {
+  background: rgba(220, 53, 69, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 4px solid #dc3545;
+  margin: 20px 0;
+}

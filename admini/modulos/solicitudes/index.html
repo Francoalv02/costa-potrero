@@ -68,6 +68,78 @@
         </section>
     </main>
 
+    <!-- Modal para Aprobar Solicitud -->
+    <div id="modal-aprobar-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-aprobar">×</button>
+            <h3>✅ Aprobar Solicitud</h3>
+            <div class="modal-content">
+                <p><strong>¿Estás seguro de que deseas aprobar esta solicitud?</strong></p>
+                <p>Esta acción cambiará el estado de la solicitud a "Aprobada".</p>
+                <div class="form-group">
+                    <label for="observaciones-aprobar">Observaciones (opcional):</label>
+                    <textarea id="observaciones-aprobar" rows="3" placeholder="Observaciones adicionales sobre la aprobación..."></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="btn-confirmar-aprobar" class="btn-estadisticas" style="background: #28a745;">
+                        ✅ Confirmar Aprobación
+                    </button>
+                    <button type="button" id="btn-cancelar-aprobar" class="btn-estadisticas" style="background: #6c757d;">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Rechazar Solicitud -->
+    <div id="modal-rechazar-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-rechazar">×</button>
+            <h3>❌ Rechazar Solicitud</h3>
+            <div class="modal-content">
+                <p><strong>¿Estás seguro de que deseas rechazar esta solicitud?</strong></p>
+                <p>Esta acción cambiará el estado de la solicitud a "Rechazada".</p>
+                <div class="form-group">
+                    <label for="motivo-rechazo">Motivo del rechazo:</label>
+                    <textarea id="motivo-rechazo" rows="3" placeholder="Ingresa el motivo del rechazo..." required></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="btn-confirmar-rechazar" class="btn-estadisticas" style="background: #dc3545;">
+                        ❌ Confirmar Rechazo
+                    </button>
+                    <button type="button" id="btn-cancelar-rechazar" class="btn-estadisticas" style="background: #6c757d;">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Eliminar Solicitud -->
+    <div id="modal-eliminar-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal-eliminar">×</button>
+            <h3>🗑️ Eliminar Solicitud</h3>
+            <div class="modal-content">
+                <p><strong>⚠️ ¿Estás seguro de que deseas eliminar esta solicitud?</strong></p>
+                <p style="color: #dc3545; font-weight: bold;">Esta acción no se puede deshacer y eliminará permanentemente la solicitud del sistema.</p>
+                <div class="form-group">
+                    <label for="motivo-eliminacion">Motivo de la eliminación (opcional):</label>
+                    <textarea id="motivo-eliminacion" rows="3" placeholder="Ingresa el motivo de la eliminación..."></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="btn-confirmar-eliminar" class="btn-estadisticas" style="background: #dc3545;">
+                        🗑️ Confirmar Eliminación
+                    </button>
+                    <button type="button" id="btn-cancelar-eliminar" class="btn-estadisticas" style="background: #6c757d;">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function cerrarSesion() {
             fetch('/logout', { method: 'POST' })
