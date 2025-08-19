@@ -3,62 +3,62 @@ async function cargarCabanas() {
     console.log('🔄 Iniciando carga de cabañas...');
     
     try {
-        console.log('📡 Haciendo petición a /api/v1/cabanas...');
+        console.log('Haciendo petición a /api/v1/cabanas...');
         const response = await fetch('/api/v1/cabanas');
-        console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+        console.log('Respuesta del servidor:', response.status, response.statusText);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const cabanas = await response.json();
-        console.log('📦 Datos recibidos:', cabanas);
+        console.log('Datos recibidos:', cabanas);
         
         if (cabanas.success && cabanas.data) {
-            console.log(`✅ Cabañas cargadas exitosamente: ${cabanas.data.length} cabañas`);
-            console.log('📋 Lista de cabañas:', cabanas.data);
+            console.log(`Cabañas cargadas exitosamente: ${cabanas.data.length} cabañas`);
+            console.log('Lista de cabañas:', cabanas.data);
             mostrarCabanas(cabanas.data);
         } else {
-            console.error('❌ Error en la respuesta:', cabanas.mensaje || 'Respuesta inválida');
-            console.log('🔄 Usando cabañas por defecto...');
+            console.error('Error en la respuesta:', cabanas.mensaje || 'Respuesta inválida');
+            console.log('Usando cabañas por defecto...');
             mostrarCabanasPorDefecto();
         }
     } catch (error) {
-        console.error('❌ Error de conexión:', error);
-        console.log('🔄 Cargando cabañas por defecto...');
+        console.error('Error de conexión:', error);
+        console.log('Cargando cabañas por defecto...');
         mostrarCabanasPorDefecto();
     }
 }
 
 // Función para mostrar las cabañas en el DOM
 function mostrarCabanas(cabanas) {
-    console.log('🎨 Renderizando cabañas:', cabanas.length);
-    console.log('📋 Datos de cabañas:', cabanas);
+    console.log('Renderizando cabañas:', cabanas.length);
+    console.log('Datos de cabañas:', cabanas);
     
     const container = document.getElementById('cabanas-container');
     if (!container) {
-        console.error('❌ No se encontró el contenedor de cabañas');
+        console.error('No se encontró el contenedor de cabañas');
         return;
     }
     
-    console.log('🏗️ Limpiando contenedor...');
+    console.log('Limpiando contenedor...');
     container.innerHTML = '';
 
     cabanas.forEach((cabana, index) => {
-        console.log(`🏠 Creando card para: ${cabana.nombre} (índice ${index})`);
+        console.log(`Creando card para: ${cabana.nombre} (índice ${index})`);
         const cabanaCard = crearCabanaCard(cabana);
         container.appendChild(cabanaCard);
-        console.log(`✅ Card creada para: ${cabana.nombre}`);
+        console.log(`Card creada para: ${cabana.nombre}`);
     });
 
-    console.log('✨ Aplicando animaciones...');
+    console.log('Aplicando animaciones...');
     aplicarAnimaciones();
-    console.log('🎉 Renderizado completado');
+    console.log('Renderizado completado');
 }
 
 // Función para crear una card de cabaña
 function crearCabanaCard(cabana) {
-    console.log('🔨 Creando card con datos:', cabana);
+    console.log('Creando card con datos:', cabana);
     
     const div = document.createElement('div');
     div.className = 'cabana-card slide-in-left';
@@ -108,16 +108,16 @@ function crearCabanaCard(cabana) {
         </div>
     `;
     
-    console.log('📝 HTML generado:', html);
+    console.log('HTML generado:', html);
     div.innerHTML = html;
     
-    console.log('✅ Card creada exitosamente');
+    console.log('Card creada exitosamente');
     return div;
 }
 
 // Función para mostrar cabañas por defecto si no se pueden cargar desde la BD
 function mostrarCabanasPorDefecto() {
-    console.log('🔄 Cargando cabañas por defecto...');
+    console.log('Cargando cabañas por defecto...');
     
     const cabanasDefault = [
         {
@@ -179,22 +179,22 @@ async function verificarServidor() {
         const response = await fetch('/api/v1/cabanas', { method: 'HEAD' });
         return response.ok;
     } catch (error) {
-        console.log('⚠️ Servidor no disponible, usando datos por defecto');
+        console.log('Servidor no disponible, usando datos por defecto');
         return false;
     }
 }
 
 // Cargar cabañas cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🚀 Iniciando carga de cabañas...');
+    console.log('Iniciando carga de cabañas...');
     
     // Intentar cargar desde la API primero
-    console.log('🔄 Intentando cargar desde la API...');
+    console.log('Intentando cargar desde la API...');
     cargarCabanas();
 });
 
 // Función para recargar cabañas (útil para debugging)
 window.recargarCabanas = function() {
-    console.log('🔄 Recargando cabañas...');
+    console.log('Recargando cabañas...');
     cargarCabanas();
 }; 

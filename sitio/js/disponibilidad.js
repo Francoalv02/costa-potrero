@@ -283,7 +283,7 @@ function crearModalSolicitud() {
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title">
-            📅 Solicitar Reserva
+            Solicitar Reserva
           </h3>
           <button class="modal-close" onclick="cerrarModalSolicitud()">
             ✕
@@ -292,7 +292,7 @@ function crearModalSolicitud() {
         
         <div class="modal-body">
           <div class="modal-cabana-info">
-            <h4>🏠 Información de la Cabaña</h4>
+            <h4>Información de la Cabaña</h4>
             <p><strong>Cabaña:</strong> <span id="modal-cabana-nombre"></span></p>
             <p><strong>Precio:</strong> <span id="modal-cabana-precio"></span></p>
             <p><strong>Fechas:</strong> <span id="modal-fechas"></span></p>
@@ -306,28 +306,28 @@ function crearModalSolicitud() {
             
             <div class="form-group">
               <label for="modal-nombre">
-                👤 Nombre Completo *
+                Nombre Completo *
               </label>
               <input type="text" id="modal-nombre" required placeholder="Tu nombre completo">
             </div>
             
             <div class="form-group">
               <label for="modal-email">
-                📧 Email *
+                Email *
               </label>
               <input type="email" id="modal-email" required placeholder="tu@email.com">
             </div>
             
             <div class="form-group">
               <label for="modal-telefono">
-                📞 Teléfono *
+                Teléfono *
               </label>
               <input type="tel" id="modal-telefono" required placeholder="+54 351 123 4567">
             </div>
             
             <div class="form-group">
               <label for="modal-observaciones">
-                💬 Observaciones (opcional)
+                Observaciones (opcional)
               </label>
               <textarea id="modal-observaciones" rows="3" placeholder="Comentarios adicionales, horarios especiales, etc."></textarea>
             </div>
@@ -336,10 +336,10 @@ function crearModalSolicitud() {
         
         <div class="modal-footer">
           <button class="modal-btn modal-btn-secondary" onclick="cerrarModalSolicitud()">
-            ❌ Cancelar
+            Cancelar
           </button>
           <button class="modal-btn modal-btn-primary" onclick="enviarSolicitud()">
-            📤 Enviar Solicitud
+            Enviar Solicitud
           </button>
         </div>
       </div>
