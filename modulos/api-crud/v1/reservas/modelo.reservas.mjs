@@ -1,7 +1,7 @@
 import pool from '../../../../conexion/conexion.db.mjs';
 
 //
-// ==== CONSULTAR DISPONIBILIDAD ===
+//CONSULTAR DISPONIBILIDAD
 //
 
 // Obtener cabañas disponibles en el rango de fechas
@@ -43,7 +43,7 @@ async function buscarProximaDisponibilidad(fecha_inicio) {
   };
 }
 //
-// ==== CRUD RESERVAS ====
+//CRUD RESERVAS
 //
 
 // Obtener todas las reservas con datos completos
@@ -149,18 +149,18 @@ async function obtenerReservasActivas() {
 // Crear reserva
 async function crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado }) {
   try {
-    // 1. Obtener precio por día desde la tabla Cabañas
+    //Obtener precio por día desde la tabla Cabañas
     const cabana = await pool.query(
       'SELECT precio FROM cabanas WHERE id_cabana = $1',
       [id_cabana]
     );
     const precioPorDia = cabana.rows[0]?.precio || 0;
 
-    // 2. Calcular días
+    //Calcular días
     const dias = Math.ceil((new Date(fecha_fin) - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24));
     const precio_total = dias * precioPorDia;
 
-    // 3. Insertar reserva con el precio calculado
+    //jInsertar reserva con el precio calculado
     const resultado = await pool.query(`
       INSERT INTO reservas (id_dni, id_cabana, fechaInicio, fechaFin, precioTotal, id_estado)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -178,18 +178,18 @@ async function crearReserva({ id_dni, id_cabana, fecha_inicio, fecha_fin, id_est
 // Modificar reserva
 async function modificarReserva({ id, id_dni, id_cabana, fecha_inicio, fecha_fin, id_estado }) {
   try {
-    // 1. Obtener precio por día desde la tabla Cabañas
+    //Obtener precio por día desde la tabla Cabañas
     const cabana = await pool.query(
       'SELECT precio FROM cabanas WHERE id_cabana = $1',
       [id_cabana]
     );
     const precioPorDia = cabana.rows[0]?.precio || 0;
 
-    // 2. Calcular días
+    //Calcular días
     const dias = Math.ceil((new Date(fecha_fin) - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24));
     const precio_total = dias * precioPorDia;
 
-    // 3. Actualizar la reserva
+    //Actualizar la reserva
     const resultado = await pool.query(`
       UPDATE reservas
       SET id_dni = $1,
@@ -210,7 +210,7 @@ async function modificarReserva({ id, id_dni, id_cabana, fecha_inicio, fecha_fin
 }
 
 
-// Eliminar reserva
+//Eliminar reserva
 async function eliminarReserva(id) {
   try {
     const resultado = await pool.query(`
@@ -224,7 +224,7 @@ async function eliminarReserva(id) {
     throw error;
   }
 }
-// Verificar si el huésped existe, si no lo crea
+//Verificar si el huésped existe, si no lo crea
 async function verificarOCrearHuesped({ id_dni, nombre, gmail }) {
   try {
     const existe = await pool.query(
@@ -233,7 +233,7 @@ async function verificarOCrearHuesped({ id_dni, nombre, gmail }) {
     );
 
     if (existe.rows.length === 0) {
-      // Insertar huésped si no existe
+      //Insertar huésped si no existe
       await pool.query(
         'INSERT INTO huespedes (id_dni, nombre, gmail) VALUES ($1, $2, $3)',
         [id_dni, nombre, gmail]
@@ -245,7 +245,7 @@ async function verificarOCrearHuesped({ id_dni, nombre, gmail }) {
   }
 }
 
-// Actualizar nombre y gmail del huésped
+//Actualizar nombre y gmail del huésped
 async function actualizarHuesped({ id_dni, nombre, gmail }) {
   try {
     const resultado = await pool.query(`
@@ -263,7 +263,7 @@ async function actualizarHuesped({ id_dni, nombre, gmail }) {
   }
 }
 
-// Actualizar estado de ciclo de vida de una reserva
+//Actualizar estado de ciclo de vida de una reserva
 async function actualizarEstadoReserva(id, nuevoEstado) {
   try {
     // Primero verificar si el estado existe, si no, crearlo
@@ -274,7 +274,7 @@ async function actualizarEstadoReserva(id, nuevoEstado) {
 
     let idEstado;
     if (estadoResult.rows.length === 0) {
-      // Crear el nuevo estado
+      //Crear el nuevo estado
       const nuevoEstadoResult = await pool.query(
         'INSERT INTO Estados (nombreestado) VALUES ($1) RETURNING id_estado',
         [nuevoEstado]
@@ -284,7 +284,7 @@ async function actualizarEstadoReserva(id, nuevoEstado) {
       idEstado = estadoResult.rows[0].id_estado;
     }
 
-    // Actualizar la reserva
+    //Actualizar la reserva
     const resultado = await pool.query(`
       UPDATE reservas
       SET id_estado = $1
@@ -299,10 +299,10 @@ async function actualizarEstadoReserva(id, nuevoEstado) {
   }
 }
 
-// Obtener todos los estados
+//Obtener todos los estados
 async function obtenerEstados() {
   try {
-    // Primero verificar si la tabla existe
+    //Primero verificar si la tabla existe
     const checkTable = await pool.query(`
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
@@ -312,7 +312,7 @@ async function obtenerEstados() {
     
     if (!checkTable.rows[0].exists) {
       console.log('Tabla Estados no existe, creando tabla básica...');
-      // Crear tabla básica si no existe
+      //Crear tabla básica si no existe
       await pool.query(`
         CREATE TABLE IF NOT EXISTS Estados (
           id_estado SERIAL PRIMARY KEY,
@@ -320,7 +320,7 @@ async function obtenerEstados() {
         );
       `);
       
-      // Insertar estados básicos
+      //Insertar estados básicos
       await pool.query(`
         INSERT INTO Estados (nombreestado) VALUES 
         ('Reservada'), ('Check In'), ('Limpieza'), ('Check Out')
@@ -333,7 +333,7 @@ async function obtenerEstados() {
     return resultado.rows;
   } catch (error) {
     console.error('Error al obtener estados:', error);
-    // Retornar estados por defecto si hay error
+    //Retornar estados por defecto si hay error
     return [
       { id_estado: 1, nombreestado: 'Reservada' },
       { id_estado: 2, nombreestado: 'Check In' },
@@ -343,7 +343,7 @@ async function obtenerEstados() {
   }
 }
 
-// Obtener reservas con filtros
+//Obtener reservas con filtros
 async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana }) {
   try {
     console.log('Parámetros recibidos en obtenerReservasConFiltros:', { fechaInicio, fechaFin, estado, cabana });
@@ -352,7 +352,7 @@ async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana
     const valores = [];
     let contador = 1;
 
-    // Filtro por fechas
+    //Filtro por fechas
     if (fechaInicio && fechaInicio.trim() !== '') {
       condiciones.push(`r.fechaInicio >= $${contador}`);
       valores.push(fechaInicio);
@@ -365,14 +365,14 @@ async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana
       contador++;
     }
 
-    // Filtro por estado
+    //Filtro por estado
     if (estado && estado.trim() !== '') {
       condiciones.push(`LOWER(e.nombreestado) = LOWER($${contador})`);
       valores.push(estado);
       contador++;
     }
 
-    // Filtro por cabaña
+    //Filtro por cabaña
     if (cabana && cabana.trim() !== '') {
       condiciones.push(`c.nombre_cabana = $${contador}`);
       valores.push(cabana);
@@ -413,8 +413,8 @@ async function obtenerReservasConFiltros({ fechaInicio, fechaFin, estado, cabana
 }
 
 
-//
-// ==== EXPORTACIONES ====
+
+//EXPORTACIONES
 export {
   obtenerReservaConEstadoPorId,
   obtenerReservasConEstado,

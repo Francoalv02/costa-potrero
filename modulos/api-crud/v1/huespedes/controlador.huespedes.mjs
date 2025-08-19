@@ -1,7 +1,7 @@
 import * as modelo from './modelo.huespedes.mjs';
 import PDFDocument from 'pdfkit';
 
-// --- OBTENER TODOS LOS HUÉSPEDES ---
+//OBTENER TODOS LOS HUÉSPEDES
 async function obtenerHuespedes(req, res) {
   try {
     const resultado = await modelo.obtenerTodos();
@@ -12,7 +12,7 @@ async function obtenerHuespedes(req, res) {
   }
 }
 
-// --- OBTENER UN HUÉSPED ---
+//OBTENER UN HUÉSPED
 async function obtenerUno(req, res) {
   try {
     const resultado = await modelo.obtenerPorDNI(req.params.id_dni);
@@ -24,7 +24,7 @@ async function obtenerUno(req, res) {
   }
 }
 
-// --- CREAR O ACTUALIZAR HUÉSPED ---
+//CREAR O ACTUALIZAR HUÉSPED
 async function crearOActualizar(req, res) {
   try {
     const { id_dni, nombre, telefono, gmail } = req.body;
@@ -38,7 +38,7 @@ async function crearOActualizar(req, res) {
   }
 }
 
-// --- ACTUALIZAR HUÉSPED ---
+//ACTUALIZAR HUÉSPED 
 async function actualizar(req, res) {
   try {
     const { id_dni, nombre, telefono, gmail } = req.body;
@@ -63,7 +63,7 @@ async function actualizar(req, res) {
   }
 }
 
-// --- ELIMINAR HUÉSPED ---
+//ELIMINAR HUÉSPED
 async function eliminar(req, res) {
   try {
     const resultado = await modelo.eliminar(req.params.id_dni);
@@ -81,7 +81,7 @@ async function eliminar(req, res) {
   }
 }
 
-// --- GENERAR REPORTE DE HUÉSPEDES ---
+//GENERAR REPORTE DE HUÉSPEDES 
 async function generarReporteHuespedes(req, res) {
   try {
     const resultado = await modelo.obtenerTodos();

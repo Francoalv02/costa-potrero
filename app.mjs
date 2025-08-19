@@ -47,7 +47,7 @@ app.use('/', express.static('sitio')); // público
 
 // Levantamos el servidor
 app.listen(PUERTO, () => {
-  console.log(`✅ Servidor corriendo en http://localhost:${PUERTO}`);
+  console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
 });
 
 // Atrapamos todos los métodos y rutas no configuradas

@@ -24,16 +24,16 @@ function validarFechas(fechaInicio, fechaFin) {
   const fin = new Date(fechaFin);
   
   if (inicio < hoy) {
-    return { valido: false, mensaje: '❌ La fecha de llegada no puede ser anterior a hoy' };
+    return { valido: false, mensaje: 'La fecha de llegada no puede ser anterior a hoy' };
   }
   
   if (fin <= inicio) {
-    return { valido: false, mensaje: '❌ La fecha de salida debe ser posterior a la fecha de llegada' };
+    return { valido: false, mensaje: 'La fecha de salida debe ser posterior a la fecha de llegada' };
   }
   
   const dias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
   if (dias > 30) {
-    return { valido: false, mensaje: '❌ La estadía no puede ser mayor a 30 días' };
+    return { valido: false, mensaje: 'La estadía no puede ser mayor a 30 días' };
   }
   
   return { valido: true, dias };
@@ -89,11 +89,11 @@ function mostrarInfoCabana(idCabana, dias = null, precioTotal = null) {
   
   detallesCabana.innerHTML = `
     <div class="cabana-info-detalle">
-      <p><strong>🏠 ${cabana.nombre_cabana}</strong></p>
-      <p>👥 Capacidad: ${cabana.capacidad_personas} personas</p>
-      <p>💰 Precio por día: $${cabana.precio}</p>
-      <p>📝 ${cabana.descripcion || 'Sin descripción disponible'}</p>
-      ${dias ? `<p><strong>📅 Estadía: ${dias} día${dias > 1 ? 's' : ''}${precioText}</strong></p>` : ''}
+      <p><strong>Cabaña: ${cabana.nombre_cabana}</strong></p>
+      <p>Capacidad: ${cabana.capacidad_personas} personas</p>
+      <p>Precio por día: $${cabana.precio}</p>
+      <p> ${cabana.descripcion || 'Sin descripción disponible'}</p>
+      ${dias ? `<p><strong> Estadía: ${dias} día${dias > 1 ? 's' : ''}${precioText}</strong></p>` : ''}
     </div>
   `;
   
@@ -162,7 +162,7 @@ formulario.addEventListener('submit', async (evento) => {
 
   try {
     // Mostrar loading
-    mostrarMensaje(mensajes, '🔄 Creando reserva...', 'info');
+    mostrarMensaje(mensajes, ' Creando reserva...', 'info');
     
     // Crear huésped
     const resHuesped = await fetch('/api/v1/huespedes', {
@@ -193,7 +193,7 @@ formulario.addEventListener('submit', async (evento) => {
 
   } catch (error) {
     console.error(error);
-    mostrarMensaje(mensajes, '❌ Error al crear la reserva. Verifica los datos e intenta nuevamente.', 'error');
+    mostrarMensaje(mensajes, ' Error al crear la reserva. Verifica los datos e intenta nuevamente.', 'error');
   }
 });
 

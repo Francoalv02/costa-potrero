@@ -8,37 +8,37 @@ function mostrarMensaje(mensaje, tipo = 'info') {
 // Cargar estadísticas generales
 async function cargarEstadisticas() {
     try {
-        console.log('📊 Iniciando carga de estadísticas...');
+        console.log('Iniciando carga de estadísticas...');
         
         // Cargar datos de reservas
-        console.log('📡 Cargando reservas...');
+        console.log('Cargando reservas...');
         const reservasResponse = await fetch('/api/v1/reservas');
         const reservasData = await reservasResponse.json();
         const reservas = Array.isArray(reservasData) ? reservasData : (reservasData.data || []);
-        console.log('✅ Reservas cargadas:', reservas.length);
+        console.log('Reservas cargadas:', reservas.length);
         
         // Cargar datos de cabañas
-        console.log('📡 Cargando cabañas...');
+        console.log('Cargando cabañas...');
         const cabanasResponse = await fetch('/api/v1/cabanas');
         const cabanasData = await cabanasResponse.json();
         const cabanas = Array.isArray(cabanasData) ? cabanasData : (cabanasData.data || []);
-        console.log('✅ Cabañas cargadas:', cabanas.length);
+        console.log('Cabañas cargadas:', cabanas.length);
         
         // Cargar datos de huéspedes
-        console.log('📡 Cargando huéspedes...');
+        console.log('Cargando huéspedes...');
         const huespedesResponse = await fetch('/api/v1/huespedes');
         const huespedesData = await huespedesResponse.json();
         const huespedes = Array.isArray(huespedesData) ? huespedesData : (huespedesData.data || []);
-        console.log('✅ Huéspedes cargados:', huespedes.length);
+        console.log('Huéspedes cargados:', huespedes.length);
         
         // Cargar datos de pagos
-        console.log('📡 Cargando pagos...');
+        console.log('Cargando pagos...');
         const pagosResponse = await fetch('/api/v1/pagos');
         const pagosData = await pagosResponse.json();
         const pagos = Array.isArray(pagosData) ? pagosData : (pagosData.data || []);
-        console.log('✅ Pagos cargados:', pagos.length);
+        console.log('Pagos cargados:', pagos.length);
         
-        console.log('📊 Datos cargados para estadísticas:', {
+        console.log('Datos cargados para estadísticas:', {
             reservas: reservas.length,
             cabanas: cabanas.length,
             huespedes: huespedes.length,
@@ -82,34 +82,34 @@ async function cargarEstadisticas() {
         const ingresosTotales = document.getElementById('ingresos-totales');
         const reservasHoy = document.getElementById('reservas-hoy');
         
-        console.log('🎯 Actualizando elementos del DOM...');
+        console.log('Actualizando elementos del DOM...');
         
         if (totalReservas) {
             totalReservas.textContent = reservasValidas.length;
-            console.log('✅ Total reservas actualizado:', reservasValidas.length);
+            console.log('Total reservas actualizado:', reservasValidas.length);
         } else {
-            console.log('❌ Elemento total-reservas no encontrado');
+            console.log('Elemento total-reservas no encontrado');
         }
         
         if (totalCabanas) {
             totalCabanas.textContent = cabanasValidas.length;
-            console.log('✅ Total cabañas actualizado:', cabanasValidas.length);
+            console.log('Total cabañas actualizado:', cabanasValidas.length);
         } else {
-            console.log('❌ Elemento total-cabanas no encontrado');
+            console.log('Elemento total-cabanas no encontrado');
         }
         
         if (totalHuespedes) {
             totalHuespedes.textContent = huespedesValidos.length;
-            console.log('✅ Total huéspedes actualizado:', huespedesValidos.length);
+            console.log('Total huéspedes actualizado:', huespedesValidos.length);
         } else {
-            console.log('❌ Elemento total-huespedes no encontrado');
+            console.log('Elemento total-huespedes no encontrado');
         }
         
         if (totalPagos) {
             totalPagos.textContent = pagosValidos.length;
-            console.log('✅ Total pagos actualizado:', pagosValidos.length);
+            console.log('Total pagos actualizado:', pagosValidos.length);
         } else {
-            console.log('❌ Elemento total-pagos no encontrado');
+            console.log('Elemento total-pagos no encontrado');
         }
         
         // Calcular ingresos totales con validación
@@ -119,12 +119,12 @@ async function cargarEstadisticas() {
                 return total + (isNaN(monto) ? 0 : monto);
             }, 0);
             ingresosTotales.textContent = `$${ingresos.toLocaleString()}`;
-            console.log('✅ Ingresos totales actualizados:', ingresos);
+            console.log('Ingresos totales actualizados:', ingresos);
         } else if (ingresosTotales) {
             ingresosTotales.textContent = '$0';
-            console.log('✅ Ingresos totales establecidos en $0');
+            console.log('Ingresos totales establecidos en $0');
         } else {
-            console.log('❌ Elemento ingresos-totales no encontrado');
+            console.log('Elemento ingresos-totales no encontrado');
         }
         
         // Calcular reservas de hoy con validación
@@ -139,12 +139,12 @@ async function cargarEstadisticas() {
                 }
             }).length;
             reservasHoy.textContent = reservasHoyCount;
-            console.log('✅ Reservas de hoy actualizadas:', reservasHoyCount);
+            console.log('Reservas de hoy actualizadas:', reservasHoyCount);
         } else if (reservasHoy) {
             reservasHoy.textContent = '0';
-            console.log('✅ Reservas de hoy establecidas en 0');
+            console.log('Reservas de hoy establecidas en 0');
         } else {
-            console.log('❌ Elemento reservas-hoy no encontrado');
+            console.log('Elemento reservas-hoy no encontrado');
         }
         
         mostrarMensaje('Estadísticas cargadas correctamente', 'success');
@@ -489,7 +489,7 @@ async function cargarActividadReciente() {
                     const tiempoTranscurrido = calcularTiempoTranscurrido(fecha);
                     
                                          actividades.push({
-                         icon: '📋',
+                         icon: '',
                          titulo: 'Reserva Registrada',
                          descripcion: `Reserva #${reserva.id || 'N/A'} para ${reserva.nombre_cabana || 'Cabaña'}`,
                          tiempo: tiempoTranscurrido
@@ -513,7 +513,7 @@ async function cargarActividadReciente() {
                     const tiempoTranscurrido = calcularTiempoTranscurrido(fecha);
                     
                                          actividades.push({
-                         icon: '💰',
+                         icon: '',
                          titulo: 'Pago Registrado',
                          descripcion: `Pago #${pago.id_pago || 'N/A'} - $${pago.monto || 0} por ${pago.metodo_pago || 'No especificado'}`,
                          tiempo: tiempoTranscurrido
@@ -529,7 +529,7 @@ async function cargarActividadReciente() {
             const huespedesRecientes = huespedes.slice(0, 2);
             huespedesRecientes.forEach(huesped => {
                                  actividades.push({
-                     icon: '👥',
+                     icon: '',
                      titulo: 'Huésped Registrado',
                      descripcion: `${huesped.nombre || 'Sin nombre'} (DNI: ${huesped.id_dni || 'N/A'})`,
                      tiempo: 'Recientemente'
@@ -566,7 +566,7 @@ async function cargarActividadReciente() {
             } else {
                                  activityList.innerHTML = `
                      <div class="activity-item">
-                         <div class="activity-icon">📊</div>
+                         <div class="activity-icon"></div>
                          <div class="activity-content">
                              <h4>Sin Actividad Reciente</h4>
                              <p>No hay actividades registradas en el sistema</p>
@@ -584,7 +584,7 @@ async function cargarActividadReciente() {
                  if (activityList) {
              activityList.innerHTML = `
                  <div class="activity-item">
-                     <div class="activity-icon">❌</div>
+                     <div class="activity-icon"></div>
                      <div class="activity-content">
                          <h4>Error al Cargar Actividad</h4>
                          <p>No se pudieron cargar las actividades recientes</p>

@@ -142,7 +142,7 @@ async function cargarPagos() {
           // Pago completo - no hay restante
           pagoRestante = 0;
           pagoRestanteColor = '#28a745'; // Verde
-          pagoRestanteTexto = '✅ Completado';
+          pagoRestanteTexto = 'Completado';
         } else if (p.nombre_estado_pago.toLowerCase() === 'señado' || p.nombre_estado_pago.toLowerCase() === 'señado') {
           // Pago parcial - falta la mitad
           pagoRestante = montoTotal / 2;
@@ -197,8 +197,8 @@ async function cargarPagos() {
             <td>${p.metodo_pago ?? '-'}</td>
             <td>${p.observacion ?? '-'}</td>
             <td>
-              <button class="btn-editar-reserva" onclick="editarPago(${p.id_pago})">✏️ Editar</button>
-              <button class="btn-eliminar-reserva" data-id="${p.id_pago}">🗑️ Eliminar</button>
+              <button class="btn-editar-reserva" onclick="editarPago(${p.id_pago})">Editar</button>
+              <button class="btn-eliminar-reserva" data-id="${p.id_pago}">Eliminar</button>
             </td>
           </tr>
         `;
@@ -285,7 +285,7 @@ formBuscar.addEventListener('submit', async (e) => {
   
   try {
     // Mostrar loading dentro del modal
-    resultado.innerHTML = '<div class="mensajes info">🔍 Buscando pago...</div>';
+    resultado.innerHTML = '<div class="mensajes info">Buscando pago...</div>';
     
     const response = await fetch(`/api/v1/pagos/${idPago}`);
     const data = await response.json();
@@ -294,7 +294,7 @@ formBuscar.addEventListener('submit', async (e) => {
       // Mostrar resultado
       resultado.innerHTML = `
         <div class="gestion-pagos">
-          <h2>💰 Detalles del Pago #${data.id_pago}</h2>
+          <h2>Detalles del Pago #${data.id_pago}</h2>
           
           <div class="form-row">
             <div class="form-col">
@@ -370,14 +370,14 @@ formBuscar.addEventListener('submit', async (e) => {
             <div class="form-col">
               <label>Acciones:</label>
               <div class="acciones-container">
-                <button class="btn-editar-reserva" onclick="editarPago(${data.id_pago})">✏️ Editar</button>
-                <button class="btn-eliminar-reserva" onclick="eliminarPago(${data.id_pago})">🗑️ Eliminar</button>
+                <button class="btn-editar-reserva" onclick="editarPago(${data.id_pago})">Editar</button>
+                <button class="btn-eliminar-reserva" onclick="eliminarPago(${data.id_pago})">Eliminar</button>
               </div>
             </div>
             <div class="form-col">
               <label>Ver Reserva:</label>
               <div class="acciones-container">
-                <a href="../reservas/index.html" class="btn-reservar-cabana">📋 Ver Reserva</a>
+                <a href="../reservas/index.html" class="btn-reservar-cabana">Ver Reserva</a>
               </div>
             </div>
           </div>
@@ -389,7 +389,7 @@ formBuscar.addEventListener('submit', async (e) => {
       // Mostrar mensaje de error dentro del modal
       resultado.innerHTML = `
         <div class="mensajes error">
-          <h3>❌ Pago no encontrado</h3>
+          <h3>Pago no encontrado</h3>
           <p>No se encontró un pago con el ID ${idPago}</p>
           <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
         </div>
@@ -400,7 +400,7 @@ formBuscar.addEventListener('submit', async (e) => {
     // Mostrar error dentro del modal
     resultado.innerHTML = `
       <div class="mensajes error">
-        <h3>❌ Error al buscar el pago</h3>
+        <h3>Error al buscar el pago</h3>
         <p>Ocurrió un error al procesar la búsqueda</p>
         <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
       </div>
@@ -418,7 +418,7 @@ async function eliminarPago(id) {
     const datos = await response.json();
     
     if (response.ok) {
-      mostrarMensaje(mensajeDiv, '✅ Pago eliminado exitosamente', 'success');
+      mostrarMensaje(mensajeDiv, 'Pago eliminado exitosamente', 'success');
       // Recargar la tabla
       await cargarPagos();
       // Limpiar búsqueda
@@ -426,19 +426,19 @@ async function eliminarPago(id) {
     } else {
       // Manejar diferentes tipos de error
       if (datos.tipo === 'TIENE_RESERVAS') {
-        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje}`, 'error');
+        mostrarMensaje(mensajeDiv, ` ${datos.mensaje}`, 'error');
         if (datos.detalle) {
-          mostrarMensaje(mensajeDiv, `ℹ️ ${datos.detalle}`, 'info');
+          mostrarMensaje(mensajeDiv, ` ${datos.detalle}`, 'info');
         }
       } else if (datos.tipo === 'NO_ENCONTRADO') {
-        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje}`, 'error');
+        mostrarMensaje(mensajeDiv, ` ${datos.mensaje}`, 'error');
       } else {
-        mostrarMensaje(mensajeDiv, `❌ ${datos.mensaje || 'Error al eliminar el pago'}`, 'error');
+        mostrarMensaje(mensajeDiv, ` ${datos.mensaje || 'Error al eliminar el pago'}`, 'error');
       }
     }
   } catch (error) {
     console.error('Error al eliminar pago:', error);
-    mostrarMensaje(mensajeDiv, '❌ Error de conexión al eliminar el pago', 'error');
+    mostrarMensaje(mensajeDiv, 'Error de conexión al eliminar el pago', 'error');
   }
 }
 
@@ -578,10 +578,10 @@ window.editarPago = async (idPago) => {
     // Abrir modal de edición
     modalEditarOverlay.classList.add('active');
     
-    mostrarMensaje(mensajeDiv, '📝 Modo edición activado', 'info');
+    mostrarMensaje(mensajeDiv, 'Modo edición activado', 'info');
   } catch (error) {
     console.error('Error al cargar pago:', error);
-    mostrarMensaje(mensajeDiv, '❌ Error al cargar datos del pago', 'error');
+    mostrarMensaje(mensajeDiv, 'Error al cargar datos del pago', 'error');
   }
 };
 
@@ -609,7 +609,7 @@ formEditarPago.addEventListener('submit', async (e) => {
     console.log('Respuesta de actualización:', response.status);
 
     if (response.ok) {
-      mostrarMensaje(mensajeDiv, '✅ Pago actualizado exitosamente', 'success');
+      mostrarMensaje(mensajeDiv, 'Pago actualizado exitosamente', 'success');
       modalEditarOverlay.classList.remove('active');
       formEditarPago.reset();
       await cargarPagos(); // Recargar tabla
@@ -617,11 +617,11 @@ formEditarPago.addEventListener('submit', async (e) => {
     } else {
       const errorData = await response.json();
       console.error('Error en respuesta:', errorData);
-      mostrarMensaje(mensajeDiv, `❌ Error: ${errorData.mensaje || 'Error al actualizar el pago'}`, 'error');
+      mostrarMensaje(mensajeDiv, `Error: ${errorData.mensaje || 'Error al actualizar el pago'}`, 'error');
     }
   } catch (error) {
     console.error('Error:', error);
-    mostrarMensaje(mensajeDiv, '❌ Error al procesar la solicitud', 'error');
+    mostrarMensaje(mensajeDiv, 'Error al procesar la solicitud', 'error');
   }
 });
 

@@ -129,7 +129,7 @@ async function actualizarPago(id_pago, { id_estado_pago, metodo_pago, observacio
 }
 
 // Eliminar un pago con validación de reservas asociadas
-// NO permite eliminar pagos que tengan reservas asociadas (por seguridad e integridad de datos)
+// NO permite eliminar pagos que tengan reservas asociadas
 async function eliminarPago(id_pago) {
   const client = await pool.connect();
   try {

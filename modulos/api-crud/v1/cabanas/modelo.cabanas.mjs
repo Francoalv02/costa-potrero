@@ -43,7 +43,7 @@ async function crearCabana(cabana) {
             nombre_cabana,
             descripcion,
             capacidad_personas,
-            precio // ✅ agregado
+            precio 
         } = cabana;
 
         const resultado = await pool.query(
@@ -54,7 +54,7 @@ async function crearCabana(cabana) {
                 ($1, $2, $3, $4)
             RETURNING id_cabana
             `,
-            [nombre_cabana, descripcion, capacidad_personas, precio] // ✅ agregado
+            [nombre_cabana, descripcion, capacidad_personas, precio] 
         );
 
         return resultado;
@@ -71,7 +71,7 @@ async function modificarCabana(cabana) {
             nombre_cabana,
             descripcion,
             capacidad_personas,
-            precio // ✅ agregado
+            precio 
         } = cabana;
 
         const resultado = await pool.query(
@@ -85,7 +85,7 @@ async function modificarCabana(cabana) {
             WHERE id_cabana = $5
             RETURNING id_cabana
             `,
-            [nombre_cabana, descripcion, capacidad_personas, precio, id_cabana] // ✅ actualizado
+            [nombre_cabana, descripcion, capacidad_personas, precio, id_cabana] 
         );
 
         return resultado;
@@ -110,7 +110,7 @@ async function modificarCabana(cabana) {
       throw err;
     }
 
-    // 1) ¿Tiene reservas?
+    
     const { rows: [ rowCountRes ] } = await client.query(
       `SELECT COUNT(*)::int AS total FROM reservas WHERE id_cabana = $1`,
       [id]
@@ -124,13 +124,13 @@ async function modificarCabana(cabana) {
       throw err;
     }
 
-    // 2) No tiene reservas → limpiamos solicitudes para no chocar con la FK
+    
     await client.query(
       `DELETE FROM solicitudes_reserva WHERE id_cabana = $1`,
       [id]
     );
 
-    // 3) Eliminamos la cabaña
+    
     const del = await client.query(
       `DELETE FROM cabanas WHERE id_cabana = $1 RETURNING id_cabana`,
       [id]
@@ -144,7 +144,7 @@ async function modificarCabana(cabana) {
     }
 
     await client.query('COMMIT');
-    return del; // del.rows[0].id_cabana
+    return del; 
   } catch (e) {
     try { await client.query('ROLLBACK'); } catch {}
     throw e;

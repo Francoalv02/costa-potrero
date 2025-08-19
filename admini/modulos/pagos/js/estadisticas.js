@@ -401,7 +401,7 @@ async function cargarEstadisticas() {
         // Mostrar mensaje de error en la interfaz
         const mensajes = document.getElementById('mensajes');
         if (mensajes) {
-            mostrarMensaje(mensajes, '❌ Error al cargar las estadísticas', 'error');
+            mostrarMensaje(mensajes, 'Error al cargar las estadísticas', 'error');
         }
     }
 }
@@ -412,14 +412,14 @@ async function exportarEstadisticasPDF() {
     // Verificar que jsPDF esté disponible
     const { jsPDF } = window.jspdf || {};
     if (!jsPDF) {
-      mostrarMensaje(document.getElementById('mensajes'), '❌ Error: jsPDF no está disponible', 'error');
+      mostrarMensaje(document.getElementById('mensajes'), 'Error: jsPDF no está disponible', 'error');
       return;
     }
 
     // Mostrar mensaje de carga
     const mensajes = document.getElementById('mensajes');
     if (mensajes) {
-      mostrarMensaje(mensajes, '📄 Generando reporte PDF de estadísticas...', 'info');
+      mostrarMensaje(mensajes, 'Generando reporte PDF de estadísticas...', 'info');
     }
 
     // Obtener datos actuales de las estadísticas
@@ -498,7 +498,7 @@ async function exportarEstadisticasPDF() {
     
     // Mostrar mensaje de éxito
     if (mensajes) {
-      mostrarMensaje(mensajes, '✅ Reporte PDF de estadísticas generado exitosamente', 'success');
+      mostrarMensaje(mensajes, 'Reporte PDF de estadísticas generado exitosamente', 'success');
     }
     
   } catch (error) {
@@ -507,7 +507,7 @@ async function exportarEstadisticasPDF() {
     // Mostrar mensaje de error
     const mensajes = document.getElementById('mensajes');
     if (mensajes) {
-      mostrarMensaje(mensajes, '❌ Error al generar el reporte PDF de estadísticas', 'error');
+      mostrarMensaje(mensajes, 'Error al generar el reporte PDF de estadísticas', 'error');
     }
   }
 }

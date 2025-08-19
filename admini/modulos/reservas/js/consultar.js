@@ -17,16 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const fin = new Date(fechaFin);
         
         if (inicio < hoy) {
-            return { valido: false, mensaje: '❌ La fecha de llegada no puede ser anterior a hoy' };
+            return { valido: false, mensaje: ' La fecha de llegada no puede ser anterior a hoy' };
         }
         
         if (fin <= inicio) {
-            return { valido: false, mensaje: '❌ La fecha de salida debe ser posterior a la fecha de llegada' };
+            return { valido: false, mensaje: ' La fecha de salida debe ser posterior a la fecha de llegada' };
         }
         
         const dias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
         if (dias > 30) {
-            return { valido: false, mensaje: '❌ La estadía no puede ser mayor a 30 días' };
+            return { valido: false, mensaje: ' La estadía no puede ser mayor a 30 días' };
         }
         
         return { valido: true };
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const dias = calcularDias(fecha_inicio, fecha_fin);
         resultado.innerHTML = `
             <div class="mensajes info">
-                <h3>🔍 Buscando disponibilidad...</h3>
-                <p>📅 Período: ${dias} día${dias > 1 ? 's' : ''} (${fecha_inicio} al ${fecha_fin})</p>
+                <h3>Buscando disponibilidad...</h3>
+                <p>Período: ${dias} día${dias > 1 ? 's' : ''} (${fecha_inicio} al ${fecha_fin})</p>
             </div>
         `;
         
@@ -93,21 +93,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     return `
                         <div class="cabana-disponible">
                             <div class="cabana-info">
-                                <div class="cabana-nombre">🏠 ${cabana.nombre_cabana}</div>
+                                <div class="cabana-nombre">Cabaña: ${cabana.nombre_cabana}</div>
                                 <div class="cabana-detalles">
                                     <span class="cabana-id">ID: ${cabana.id_cabana}</span>
-                                    <span class="cabana-precio">💰 $${cabana.precio}/día</span>
-                                    <span class="cabana-capacidad">👥 ${cabana.capacidad_personas} personas</span>
+                                    <span class="cabana-precio">Precio $${cabana.precio}/día</span>
+                                    <span class="cabana-capacidad">Capacidad: ${cabana.capacidad_personas} personas</span>
                                 </div>
                                 <div class="cabana-descripcion">${cabana.descripcion || 'Sin descripción disponible'}</div>
                                 <div class="cabana-total">
-                                    <strong>💵 Precio total estimado: $${precioEstimado}</strong>
+                                    <strong> Precio total estimado: $${precioEstimado}</strong>
                                 </div>
                             </div>
                             <div class="cabana-accion">
                                 <a href="alta.html?id=${cabana.id_cabana}&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}" 
                                    class="btn-reservar-cabana">
-                                    📅 Reservar Ahora
+                                    Reservar Ahora
                                 </a>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 resultado.innerHTML = `
                     <div class="mensajes success">
-                        <h3>✅ ¡Cabañas Disponibles!</h3>
+                        <h3>¡Cabañas Disponibles!</h3>
                         <p>Se encontraron ${disponibles.length} cabaña${disponibles.length > 1 ? 's' : ''} disponible${disponibles.length > 1 ? 's' : ''} para tu estadía</p>
                     </div>
                     <div class="cabanas-grid">
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 resultado.innerHTML = `
                     <div class="mensajes error">
-                        <h3>❌ No hay cabañas disponibles</h3>
+                        <h3>No hay cabañas disponibles</h3>
                         <p>No se encontraron cabañas disponibles para las fechas seleccionadas (${fecha_inicio} al ${fecha_fin}).</p>
                     </div>
                 `;
@@ -135,11 +135,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (sugerencia) {
                     resultado.innerHTML += `
                         <div class="mensajes info">
-                            <h3>💡 Sugerencia de Disponibilidad</h3>
+                            <h3> Sugerencia de Disponibilidad</h3>
                             <p>Próxima disponibilidad sugerida: del ${sugerencia.fecha_inicio} al ${sugerencia.fecha_fin}</p>
                             <button onclick="cargarSugerencia('${sugerencia.fecha_inicio}', '${sugerencia.fecha_fin}')" 
                                     class="btn-estadisticas" style="margin-top: 10px;">
-                                🔍 Consultar Sugerencia
+                                 Consultar Sugerencia
                             </button>
                         </div>
                     `;
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error al consultar disponibilidad:', err);
             resultado.innerHTML = `
                 <div class="mensajes error">
-                    <h3>❌ Error al consultar disponibilidad</h3>
+                    <h3> Error al consultar disponibilidad</h3>
                     <p>Hubo un problema al conectar con el servidor. Intenta nuevamente.</p>
                     <p>Error: ${err.message}</p>
                 </div>

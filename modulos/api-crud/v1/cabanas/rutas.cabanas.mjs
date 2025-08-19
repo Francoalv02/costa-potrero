@@ -1,5 +1,5 @@
 import express from 'express';
-import * as controlador from './controlador.cabanas.mjs'; // Cambia el controlador por el correspondiente a cabañas
+import * as controlador from './controlador.cabanas.mjs';
 
 const rutasCabanas = express.Router();
 rutasCabanas.use(express.json());

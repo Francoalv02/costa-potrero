@@ -124,7 +124,7 @@ async function aplicarFiltros() {
 
   try {
     // Mostrar loading
-    mostrarMensaje(mensajes, '🔍 Aplicando filtros...', 'info');
+    mostrarMensaje(mensajes, 'Aplicando filtros...', 'info');
     
     // Construir URL con filtros
     const params = new URLSearchParams();
@@ -171,7 +171,7 @@ async function aplicarFiltros() {
     actualizarInfoFiltros(filtros, reservasFiltradas.length);
     
     filtrosAplicados = true;
-    mostrarMensaje(mensajes, `✅ Filtros aplicados. Se encontraron ${reservasFiltradas.length} reservas.`, 'success');
+    mostrarMensaje(mensajes, `Filtros aplicados. Se encontraron ${reservasFiltradas.length} reservas.`, 'success');
     
     // Hacer scroll hacia la grilla para mostrar los resultados
     setTimeout(() => {
@@ -189,9 +189,9 @@ async function aplicarFiltros() {
     
     // Si es un error de red o servidor, mostrar mensaje genérico
     if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-      mostrarMensaje(mensajes, '❌ Error de conexión. Verifica tu conexión a internet.', 'error');
+      mostrarMensaje(mensajes, 'Error de conexión. Verifica tu conexión a internet.', 'error');
     } else {
-      mostrarMensaje(mensajes, `❌ Error al aplicar los filtros: ${error.message}`, 'error');
+      mostrarMensaje(mensajes, `Error al aplicar los filtros: ${error.message}`, 'error');
     }
   }
 }
@@ -217,11 +217,11 @@ function generarMensajeSinResultados(filtros) {
   }
   
   if (filtrosAplicados.length === 0) {
-    return '📭 No se encontraron reservas con los filtros aplicados.';
+    return 'No se encontraron reservas con los filtros aplicados.';
   }
   
   const filtrosTexto = filtrosAplicados.join(' y ');
-  return `📭 No se encontraron reservas con ${filtrosTexto}.`;
+  return `No se encontraron reservas con ${filtrosTexto}.`;
 }
 
 // Limpiar filtros
@@ -243,7 +243,7 @@ function limpiarFiltros() {
   actualizarInfoFiltros({}, cantidad);
   
   filtrosAplicados = false;
-  mostrarMensaje(mensajes, '🗑️ Filtros limpiados. Mostrando todas las reservas.', 'info');
+  mostrarMensaje(mensajes, 'Filtros limpiados. Mostrando todas las reservas.', 'info');
 }
 
 // Actualizar información de filtros aplicados
@@ -353,7 +353,7 @@ function mostrarReservas(reservas) {
     contenedorReservas.innerHTML = `
       <tr>
         <td colspan="11" style="text-align: center; padding: 20px; color: #6c757d;">
-          <h3>❌ Error: No se recibieron datos</h3>
+          <h3>Error: No se recibieron datos</h3>
           <p>No se pudieron cargar las reservas.</p>
         </td>
       </tr>
@@ -369,14 +369,14 @@ function mostrarReservas(reservas) {
     if (filtrosAplicados && filtrosAplicados.textContent.includes('Filtros:')) {
       // Hay filtros aplicados
       mensaje = `
-        <h3>📭 No se encontraron reservas</h3>
+        <h3>No se encontraron reservas</h3>
         <p>No hay reservas que coincidan con los filtros aplicados.</p>
         <p><strong>Sugerencia:</strong> Intenta con otros filtros o <button onclick="limpiarFiltros()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">limpiar todos los filtros</button> para ver todas las reservas.</p>
       `;
     } else {
       // No hay filtros aplicados
       mensaje = `
-        <h3>📭 No se encontraron reservas</h3>
+        <h3>No se encontraron reservas</h3>
         <p>No hay reservas registradas en el sistema.</p>
       `;
     }
@@ -406,8 +406,8 @@ function mostrarReservas(reservas) {
         <td>${generarBotonesEstado(reserva)}</td>
         <td>
           <div class="acciones-reserva">
-            <button class="btn-eliminar-reserva" data-id="${reserva.id}">🗑️ Eliminar</button>
-            <a class="btn-editar-reserva" href="editar.html?id=${reserva.id}">✏️ Editar</a>
+            <button class="btn-eliminar-reserva" data-id="${reserva.id}"> Eliminar</button>
+            <a class="btn-editar-reserva" href="editar.html?id=${reserva.id}"> Editar</a>
           </div>
         </td>
       </tr>
@@ -431,7 +431,7 @@ contenedorReservas.addEventListener('click', async (e) => {
   // Validar que el ID sea un número válido
   if (!id || isNaN(parseInt(id))) {
     console.error('ID inválido en fila:', id);
-    mostrarMensaje(mensajes, '❌ ID de reserva inválido', 'error');
+    mostrarMensaje(mensajes, ' ID de reserva inválido', 'error');
     return;
   }
   
@@ -445,7 +445,7 @@ contenedorReservas.addEventListener('click', async (e) => {
     modalOverlay.classList.add('active');
     resultado.innerHTML = `
       <div class="gestion-pagos">
-        <h2>📋 Detalles de la Reserva #${data.id}</h2>
+        <h2>Detalles de la Reserva #${data.id}</h2>
         <div class="form-row">
           <div class="form-col"><label>DNI</label><input type="text" value="${data.id_dni}" readonly></div>
           <div class="form-col"><label>Huésped</label><input type="text" value="${data.nombre || 'N/A'}" readonly></div>
@@ -465,8 +465,8 @@ contenedorReservas.addEventListener('click', async (e) => {
         <div class="form-row">
           <div class="form-col" style="width:100%">
             <div class="acciones-container">
-              <a href="editar.html?id=${data.id}" class="btn-editar-reserva">✏️ Editar</a>
-              <a href="../pagos/alta.html?id_reserva=${data.id}" class="btn-estadisticas">💰 Registrar Pago</a>
+              <a href="editar.html?id=${data.id}" class="btn-editar-reserva"> Editar</a>
+              <a href="../pagos/alta.html?id_reserva=${data.id}" class="btn-estadisticas">Registrar Pago</a>
             </div>
           </div>
         </div>
@@ -474,7 +474,7 @@ contenedorReservas.addEventListener('click', async (e) => {
     `;
   } catch (err) {
     console.error('Error al cargar detalles de reserva:', err);
-    mostrarMensaje(mensajes, '❌ No se pudieron cargar los detalles de la reserva', 'error');
+    mostrarMensaje(mensajes, 'No se pudieron cargar los detalles de la reserva', 'error');
   }
 });
 
@@ -513,10 +513,10 @@ document.getElementById('btn-reporte-reservas').addEventListener('click', async 
     link.click();
 
     window.URL.revokeObjectURL(url);
-    mostrarMensaje(mensajes, '✅ Reporte generado exitosamente', 'success');
+    mostrarMensaje(mensajes, 'Reporte generado exitosamente', 'success');
   } catch (error) {
     console.error(error);
-    mostrarMensaje(mensajes, '❌ Error al generar el reporte', 'error');
+    mostrarMensaje(mensajes, 'Error al generar el reporte', 'error');
   }
 });
 
@@ -607,7 +607,7 @@ formBuscar.addEventListener('submit', async (e) => {
 
   try {
     // Mostrar loading dentro del modal
-    resultado.innerHTML = '<div class="mensajes info">🔍 Buscando...</div>';
+    resultado.innerHTML = '<div class="mensajes info" Buscando...</div>';
 
     if (tipo === 'id') {
       const idReserva = parseInt(inputId.value, 10);
@@ -695,7 +695,7 @@ formBuscar.addEventListener('submit', async (e) => {
 function renderDetalleReserva(data) {
   resultado.innerHTML = `
     <div class="gestion-pagos">
-      <h2>📋 Detalles de la Reserva #${data.id}</h2>
+      <h2>Detalles de la Reserva #${data.id}</h2>
       <div class="form-row">
         <div class="form-col">
           <label>ID de Reserva:</label>
@@ -744,8 +744,8 @@ function renderDetalleReserva(data) {
         <div class="form-col">
           <label>Acciones:</label>
           <div class="acciones-container">
-            <a href="editar.html?id=${data.id}" class="btn-editar-reserva">✏️ Editar</a>
-            <button class="btn-eliminar-reserva" onclick="eliminarReserva(${data.id})">🗑️ Eliminar</button>
+            <a href="editar.html?id=${data.id}" class="btn-editar-reserva">Editar</a>
+            <button class="btn-eliminar-reserva" onclick="eliminarReserva(${data.id})">Eliminar</button>
             <a href="../pagos/alta.html?id_reserva=${data.id}" class="btn-estadisticas">Registrar Pago</a>
           </div>
         </div>
@@ -962,7 +962,7 @@ document.getElementById('btn-actualizar-res-estadisticas')?.addEventListener('cl
 document.getElementById('btn-exportar-res-estadisticas')?.addEventListener('click', async () => {
   const { jsPDF } = window.jspdf || {};
   if (!jsPDF) {
-    mostrarMensaje(mensajes, '❌ Error: jsPDF no está disponible', 'error');
+    mostrarMensaje(mensajes, 'Error: jsPDF no está disponible', 'error');
     return;
   }
 
@@ -1034,10 +1034,10 @@ document.getElementById('btn-exportar-res-estadisticas')?.addEventListener('clic
     const fecha = new Date().toISOString().split('T')[0];
     doc.save(`estadisticas_reservas_${fecha}.pdf`);
     
-    mostrarMensaje(mensajes, '✅ Estadísticas exportadas exitosamente', 'success');
+    mostrarMensaje(mensajes, 'Estadísticas exportadas exitosamente', 'success');
   } catch (error) {
     console.error('Error al exportar estadísticas:', error);
-    mostrarMensaje(mensajes, '❌ Error al exportar estadísticas', 'error');
+    mostrarMensaje(mensajes, 'Error al exportar estadísticas', 'error');
   }
 });
 
@@ -1054,17 +1054,17 @@ async function avanzarEstado(idReserva, nuevoEstado) {
 
     if (response.ok) {
       const data = await response.json();
-      mostrarMensaje(mensajes, `✅ ${data.mensaje}`, 'success');
+      mostrarMensaje(mensajes, ` ${data.mensaje}`, 'success');
       
       // Recargar las reservas
       await cargarReservas();
     } else {
       const error = await response.json();
-      mostrarMensaje(mensajes, `❌ ${error.mensaje}`, 'error');
+      mostrarMensaje(mensajes, ` ${error.mensaje}`, 'error');
     }
   } catch (error) {
     console.error('Error avanzando estado:', error);
-    mostrarMensaje(mensajes, '❌ Error al actualizar el estado', 'error');
+    mostrarMensaje(mensajes, 'Error al actualizar el estado', 'error');
   }
 }
 

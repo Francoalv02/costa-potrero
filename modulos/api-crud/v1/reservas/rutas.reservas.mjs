@@ -7,10 +7,10 @@ const router = express.Router();
 router.get('/', controlador.obtenerReservas);
 router.get('/activas', controlador.obtenerReservasActivas);
 router.get('/ultima', controlador.obtenerUltimaReserva);
-router.get('/filtros', controlador.obtenerReservasConFiltros); // MOVER ANTES DE /:id
+router.get('/filtros', controlador.obtenerReservasConFiltros); 
 router.get('/reporte', controlador.generarReporteReservas);
 
-// Rutas con parámetros (deben ir DESPUÉS de las rutas específicas)
+// Rutas con parámetros 
 router.get('/:id', controlador.obtenerReserva);
 router.post('/', controlador.crearReservaHandler);
 router.put('/:id', controlador.modificarReserva);

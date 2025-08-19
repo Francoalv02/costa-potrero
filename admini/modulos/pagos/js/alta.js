@@ -229,7 +229,7 @@ form.addEventListener('submit', async (e) => {
     const data = await r.json();
     if (!r.ok) throw new Error(data?.mensaje || 'No se pudo registrar el pago');
 
-    mostrarMensaje(mensajes, '✅ Pago registrado');
+    mostrarMensaje(mensajes, 'Pago registrado');
     setTimeout(() => (window.location.href = '../reservas/index.html'), 1200);
   } catch (err) {
     console.error(err);

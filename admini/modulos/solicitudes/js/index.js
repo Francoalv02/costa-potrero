@@ -79,7 +79,7 @@ async function confirmarAprobacion() {
     const observaciones = document.getElementById('observaciones-aprobar').value;
     
     try {
-        mostrarMensaje('🔄 Aprobando solicitud...', 'info');
+        mostrarMensaje('Aprobando solicitud...', 'info');
         
         const response = await fetch(`/api/v1/solicitudes/${solicitudSeleccionada}/estado`, {
             method: 'PUT',
@@ -93,15 +93,15 @@ async function confirmarAprobacion() {
         const data = await response.json();
         
         if (data.success) {
-            mostrarMensaje('✅ Solicitud aprobada exitosamente', 'success');
+            mostrarMensaje('Solicitud aprobada exitosamente', 'success');
             cerrarModal(document.getElementById('modal-aprobar-overlay'));
             cargarSolicitudes();
         } else {
-            mostrarMensaje('❌ Error al aprobar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
+            mostrarMensaje('Error al aprobar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
         }
     } catch (error) {
         console.error('Error al aprobar solicitud:', error);
-        mostrarMensaje('❌ Error al aprobar la solicitud', 'error');
+        mostrarMensaje('Error al aprobar la solicitud', 'error');
     }
 }
 
@@ -112,12 +112,12 @@ async function confirmarRechazo() {
     const motivo = document.getElementById('motivo-rechazo').value;
     
     if (!motivo.trim()) {
-        mostrarMensaje('❌ Debes ingresar un motivo para el rechazo', 'error');
+        mostrarMensaje('Debes ingresar un motivo para el rechazo', 'error');
         return;
     }
     
     try {
-        mostrarMensaje('🔄 Rechazando solicitud...', 'info');
+        mostrarMensaje('Rechazando solicitud...', 'info');
         
         const response = await fetch(`/api/v1/solicitudes/${solicitudSeleccionada}/estado`, {
             method: 'PUT',
@@ -131,15 +131,15 @@ async function confirmarRechazo() {
         const data = await response.json();
         
         if (data.success) {
-            mostrarMensaje('✅ Solicitud rechazada exitosamente', 'success');
+            mostrarMensaje('Solicitud rechazada exitosamente', 'success');
             cerrarModal(document.getElementById('modal-rechazar-overlay'));
             cargarSolicitudes();
         } else {
-            mostrarMensaje('❌ Error al rechazar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
+            mostrarMensaje('Error al rechazar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
         }
     } catch (error) {
         console.error('Error al rechazar solicitud:', error);
-        mostrarMensaje('❌ Error al rechazar la solicitud', 'error');
+        mostrarMensaje('Error al rechazar la solicitud', 'error');
     }
 }
 
@@ -148,7 +148,7 @@ async function confirmarEliminacion() {
     if (!solicitudSeleccionada) return;
     
     try {
-        mostrarMensaje('🔄 Eliminando solicitud...', 'info');
+        mostrarMensaje('Eliminando solicitud...', 'info');
         
         const response = await fetch(`/api/v1/solicitudes/${solicitudSeleccionada}`, {
             method: 'DELETE'
@@ -157,22 +157,22 @@ async function confirmarEliminacion() {
         const data = await response.json();
         
         if (data.success) {
-            mostrarMensaje('✅ Solicitud eliminada exitosamente', 'success');
+            mostrarMensaje('Solicitud eliminada exitosamente', 'success');
             cerrarModal(document.getElementById('modal-eliminar-overlay'));
             cargarSolicitudes();
         } else {
-            mostrarMensaje('❌ Error al eliminar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
+            mostrarMensaje('Error al eliminar la solicitud: ' + (data.mensaje || 'Error desconocido'), 'error');
         }
     } catch (error) {
         console.error('Error al eliminar solicitud:', error);
-        mostrarMensaje('❌ Error al eliminar la solicitud', 'error');
+        mostrarMensaje('Error al eliminar la solicitud', 'error');
     }
 }
 
 // Función para cargar las solicitudes
 async function cargarSolicitudes() {
     try {
-        mostrarMensaje('🔄 Cargando solicitudes...', 'info');
+        mostrarMensaje('Cargando solicitudes...', 'info');
         
         const response = await fetch('/api/v1/solicitudes');
         const data = await response.json();
@@ -180,14 +180,14 @@ async function cargarSolicitudes() {
         if (data.success) {
             solicitudes = data.data;
             mostrarSolicitudes(solicitudes);
-            mostrarMensaje(`✅ ${solicitudes.length} solicitudes cargadas`, 'success');
+            mostrarMensaje(` ${solicitudes.length} solicitudes cargadas`, 'success');
         } else {
             console.error('Error al cargar solicitudes:', data.mensaje);
-            mostrarMensaje('❌ Error al cargar las solicitudes', 'error');
+            mostrarMensaje(' Error al cargar las solicitudes', 'error');
         }
     } catch (error) {
         console.error('Error de conexión:', error);
-        mostrarMensaje('❌ Error de conexión al cargar las solicitudes', 'error');
+        mostrarMensaje(' Error de conexión al cargar las solicitudes', 'error');
     }
 }
 
@@ -199,7 +199,7 @@ function mostrarSolicitudes(solicitudesAMostrar) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="9" style="text-align: center; padding: 2rem; color: #6c757d;">
-                    📭 No hay solicitudes para mostrar
+                    No hay solicitudes para mostrar
                 </td>
             </tr>
         `;
@@ -224,8 +224,8 @@ function mostrarSolicitudes(solicitudesAMostrar) {
                 <td>#${solicitud.id_solicitud}</td>
                 <td><strong>${solicitud.nombre}</strong></td>
                 <td>
-                    📧 ${solicitud.gmail}<br>
-                    📞 ${solicitud.telefono}
+                    ${solicitud.gmail}<br>
+                    ${solicitud.telefono}
                 </td>
                 <td>${solicitud.nombre_cabana || 'Cabaña #' + solicitud.id_cabana}</td>
                 <td>
@@ -241,13 +241,13 @@ function mostrarSolicitudes(solicitudesAMostrar) {
                 <td>${fechaSolicitud}</td>
                 <td>
                     <button class="btn-estadisticas" style="background: #28a745; margin: 0.25rem;" onclick="aprobarSolicitud(${solicitud.id_solicitud})">
-                        ✅ Aprobar
+                        Aprobar
                     </button>
                     <button class="btn-estadisticas" style="background: #dc3545; margin: 0.25rem;" onclick="rechazarSolicitud(${solicitud.id_solicitud})">
-                        ❌ Rechazar
+                        Rechazar
                     </button>
                     <button class="btn-estadisticas" style="background: #6c757d; margin: 0.25rem;" onclick="eliminarSolicitud(${solicitud.id_solicitud})">
-                        🗑️ Eliminar
+                        Eliminar
                     </button>
                 </td>
             </tr>

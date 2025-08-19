@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
                 return res.json({ mensaje: 'Inicio de sesión exitoso', rol: resultado.rows[0].rol });
             }
         } catch (dbError) {
-            console.log('⚠️ Error de base de datos, usando fallback:', dbError.message);
+            console.log('Error de base de datos, usando fallback:', dbError.message);
         }
         
         // Fallback: buscar en credenciales hardcodeadas

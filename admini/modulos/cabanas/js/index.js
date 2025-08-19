@@ -36,10 +36,10 @@ document.getElementById('btn-reporte-cabanas').addEventListener('click', async (
     link.click();
 
     window.URL.revokeObjectURL(url);
-    mostrarMensaje(document.getElementById('mensajes'), '✅ Reporte generado exitosamente', 'success');
+    mostrarMensaje(document.getElementById('mensajes'), ' Reporte generado exitosamente', 'success');
   } catch (error) {
     console.error(error);
-    mostrarMensaje(document.getElementById('mensajes'), '❌ Error al generar el reporte', 'error');
+    mostrarMensaje(document.getElementById('mensajes'), ' Error al generar el reporte', 'error');
   }
 });
 
@@ -88,7 +88,7 @@ formBuscar.addEventListener('submit', async (e) => {
   
   try {
     // Mostrar loading dentro del modal
-    resultado.innerHTML = '<div class="mensajes info">🔍 Buscando cabaña...</div>';
+    resultado.innerHTML = '<div class="mensajes info"> Buscando cabaña...</div>';
     
     const response = await fetch(`/api/v1/cabanas/${idCabana}`);
     const data = await response.json();
@@ -100,7 +100,7 @@ formBuscar.addEventListener('submit', async (e) => {
       // Mostrar resultado
       resultado.innerHTML = `
         <div class="gestion-pagos">
-          <h2>🏠 Detalles de la Cabaña #${data.id_cabana}</h2>
+          <h2> Detalles de la Cabaña #${data.id_cabana}</h2>
           
           <div class="form-row">
             <div class="form-col">
@@ -139,14 +139,14 @@ formBuscar.addEventListener('submit', async (e) => {
             <div class="form-col">
               <label>Acciones:</label>
               <div class="acciones-container">
-                <a href="editar.html?id=${data.id_cabana}" class="btn-editar-reserva">✏️ Editar</a>
-                <button class="btn-eliminar-reserva" onclick="eliminarCabana(${data.id_cabana})">🗑️ Eliminar</button>
+                <a href="editar.html?id=${data.id_cabana}" class="btn-editar-reserva"> Editar</a>
+                <button class="btn-eliminar-reserva" onclick="eliminarCabana(${data.id_cabana})"> Eliminar</button>
               </div>
             </div>
             <div class="form-col">
               <label>Ver Reservas:</label>
               <div class="acciones-container">
-                <a href="../reservas/index.html" class="btn-reservar-cabana">📋 Ver Reservas</a>
+                <a href="../reservas/index.html" class="btn-reservar-cabana"> Ver Reservas</a>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@ formBuscar.addEventListener('submit', async (e) => {
       // Mostrar mensaje de error dentro del modal
       resultado.innerHTML = `
         <div class="mensajes error">
-          <h3>❌ Cabaña no encontrada</h3>
+          <h3> Cabaña no encontrada</h3>
           <p>No se encontró una cabaña con el ID ${idCabana}</p>
           <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
         </div>
@@ -170,7 +170,7 @@ formBuscar.addEventListener('submit', async (e) => {
     // Mostrar error dentro del modal
     resultado.innerHTML = `
       <div class="mensajes error">
-        <h3>❌ Error al buscar la cabaña</h3>
+        <h3> Error al buscar la cabaña</h3>
         <p>Ocurrió un error al procesar la búsqueda</p>
         <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
       </div>
@@ -189,7 +189,7 @@ async function eliminarCabana(id) {
     const datos = await response.json();
     
     if (response.ok) {
-      mostrarMensaje(mensajes, '✅ Cabaña eliminada exitosamente', 'success');
+      mostrarMensaje(mensajes, 'Cabaña eliminada exitosamente', 'success');
       // Recargar la tabla
       await cargarCabanas();
       // Limpiar búsqueda
@@ -197,19 +197,19 @@ async function eliminarCabana(id) {
     } else {
       // Manejar diferentes tipos de error
       if (datos.tipo === 'RESERVAS_ASOCIADAS') {
-        mostrarMensaje(mensajes, `❌ ${datos.mensaje}`, 'error');
+        mostrarMensaje(mensajes, ` ${datos.mensaje}`, 'error');
         if (datos.detalle) {
-          mostrarMensaje(mensajes, `ℹ️ ${datos.detalle}`, 'info');
+          mostrarMensaje(mensajes, ` ${datos.detalle}`, 'info');
         }
       } else if (datos.tipo === 'NO_ENCONTRADA') {
-        mostrarMensaje(mensajes, `❌ ${datos.mensaje}`, 'error');
+        mostrarMensaje(mensajes, ` ${datos.mensaje}`, 'error');
       } else {
-        mostrarMensaje(mensajes, `❌ ${datos.mensaje || 'Error al eliminar la cabaña'}`, 'error');
+        mostrarMensaje(mensajes, ` ${datos.mensaje || 'Error al eliminar la cabaña'}`, 'error');
       }
     }
   } catch (error) {
     console.error('Error al eliminar cabaña:', error);
-    mostrarMensaje(mensajes, '❌ Error de conexión al eliminar la cabaña', 'error');
+    mostrarMensaje(mensajes, ' Error de conexión al eliminar la cabaña', 'error');
   }
 }
 
@@ -239,8 +239,8 @@ async function cargarCabanas() {
         <td>${cabana.capacidad_personas}</td>
         <td>$${(parseFloat(cabana.precio) || 0).toLocaleString('es-AR')}</td>
         <td>
-          <button class="btn-eliminar-reserva" data-id="${cabana.id_cabana}">🗑️ Eliminar</button>
-          <a class="btn-editar-reserva" href="editar.html?id=${cabana.id_cabana}">✏️ Editar</a>
+          <button class="btn-eliminar-reserva" data-id="${cabana.id_cabana}"> Eliminar</button>
+          <a class="btn-editar-reserva" href="editar.html?id=${cabana.id_cabana}"> Editar</a>
         </td>
       </tr>
     `).join('');
@@ -265,30 +265,30 @@ contenedorCabanas.addEventListener('click', async (evento) => {
       const datos = await respuesta.json();
       
       if (respuesta.ok) {
-        mostrarMensaje(document.getElementById('mensajes'), `✅ ${datos.mensaje}`, 'success');
+        mostrarMensaje(document.getElementById('mensajes'), ` ${datos.mensaje}`, 'success');
         // Recargar la tabla para reflejar los cambios
         await cargarCabanas();
       } else {
         // Manejar diferentes tipos de error
         if (datos.tipo === 'RESERVAS_ASOCIADAS') {
-          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje}`, 'error');
+          mostrarMensaje(document.getElementById('mensajes'), ` ${datos.mensaje}`, 'error');
           if (datos.detalle) {
-            mostrarMensaje(document.getElementById('mensajes'), `ℹ️ ${datos.detalle}`, 'info');
+            mostrarMensaje(document.getElementById('mensajes'), ` ${datos.detalle}`, 'info');
           }
         } else if (datos.tipo === 'NO_ENCONTRADA') {
-          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje}`, 'error');
+          mostrarMensaje(document.getElementById('mensajes'), ` ${datos.mensaje}`, 'error');
         } else {
-          mostrarMensaje(document.getElementById('mensajes'), `❌ ${datos.mensaje || 'No se pudo eliminar la cabaña'}`, 'error');
+          mostrarMensaje(document.getElementById('mensajes'), ` ${datos.mensaje || 'No se pudo eliminar la cabaña'}`, 'error');
         }
       }
     } catch (error) {
       console.error('Error al eliminar cabaña:', error);
-      mostrarMensaje(document.getElementById('mensajes'), '❌ Error de conexión al eliminar la cabaña', 'error');
+      mostrarMensaje(document.getElementById('mensajes'), 'Error de conexión al eliminar la cabaña', 'error');
     }
   }
 });
 
 // Inicializar página
 window.addEventListener('load', async () => {
-  await cargarCabanas(); // 🔄 Cargar cabañas al iniciar
+  await cargarCabanas(); // Cargar cabañas al iniciar
 });

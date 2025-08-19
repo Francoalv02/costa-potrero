@@ -119,7 +119,7 @@ btnCerrarModalConfirmacion.addEventListener('click', () => {
 btnCancelarConfirmacion.addEventListener('click', () => {
     modalConfirmacionOverlay.classList.remove('active');
     datosPendientes = null;
-    mostrarMensaje('❌ Operación cancelada', 'info');
+    mostrarMensaje('Operación cancelada', 'info');
 });
 
 // Cerrar modal confirmación al hacer clic en el overlay
@@ -142,7 +142,7 @@ btnModificarExistente.addEventListener('click', async () => {
         });
 
         if (updateResponse.ok) {
-            mostrarMensaje('✅ Huésped actualizado exitosamente', 'success');
+            mostrarMensaje('Huésped actualizado exitosamente', 'success');
             modalConfirmacionOverlay.classList.remove('active');
             modalAgregarOverlay.classList.remove('active');
             formAgregarHuesped.reset();
@@ -150,11 +150,11 @@ btnModificarExistente.addEventListener('click', async () => {
             datosPendientes = null;
         } else {
             const errorData = await updateResponse.json();
-            mostrarMensaje(`❌ Error: ${errorData.mensaje || 'Error al actualizar el huésped'}`, 'error');
+            mostrarMensaje(`Error: ${errorData.mensaje || 'Error al actualizar el huésped'}`, 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarMensaje('❌ Error al procesar la solicitud', 'error');
+        mostrarMensaje('Error al procesar la solicitud', 'error');
     }
 });
 
@@ -188,7 +188,7 @@ async function cargarHuespedes() {
     mostrarHuespedes(datos);
   } catch (error) {
     console.error('Error al cargar huéspedes:', error);
-    mostrarMensaje('❌ Error al cargar los huéspedes', 'error');
+    mostrarMensaje('Error al cargar los huéspedes', 'error');
   }
 }
 
@@ -207,8 +207,8 @@ function mostrarHuespedes(huéspedes) {
       <td>${h.telefono || ''}</td>
       <td>${h.gmail}</td>
       <td>
-        <button class="btn-eliminar-reserva" onclick="eliminarHuesped('${h.id_dni}')">🗑️ Eliminar</button>
-        <button class="btn-editar-reserva" onclick="editarHuesped('${h.id_dni}')">✏️ Editar</button>
+        <button class="btn-eliminar-reserva" onclick="eliminarHuesped('${h.id_dni}')">Eliminar</button>
+        <button class="btn-editar-reserva" onclick="editarHuesped('${h.id_dni}')">Editar</button>
       </td>
     `;
     tabla.appendChild(fila);
@@ -231,7 +231,7 @@ formBuscarHuesped.addEventListener('submit', async (e) => {
   }
   
   try {
-    resultadoBusqueda.innerHTML = '<div class="mensajes info">🔍 Buscando huésped...</div>';
+    resultadoBusqueda.innerHTML = '<div class="mensajes info">Buscando huésped...</div>';
     
     const response = await fetch(`/api/v1/huespedes/${dniBuscar}`);
     const data = await response.json();
@@ -239,7 +239,7 @@ formBuscarHuesped.addEventListener('submit', async (e) => {
     if (response.ok) {
       resultadoBusqueda.innerHTML = `
         <div class="gestion-pagos">
-          <h2>👤 Detalles del Huésped</h2>
+          <h2>Detalles del Huésped</h2>
           
           <div class="form-row">
             <div class="form-col">
@@ -267,8 +267,8 @@ formBuscarHuesped.addEventListener('submit', async (e) => {
             <div class="form-col">
               <label>Acciones:</label>
               <div class="acciones-container">
-                <button class="btn-editar-reserva" onclick="editarHuesped('${data.id_dni}')">✏️ Editar</button>
-                <button class="btn-eliminar-reserva" onclick="eliminarHuesped('${data.id_dni}')">🗑️ Eliminar</button>
+                <button class="btn-editar-reserva" onclick="editarHuesped('${data.id_dni}')">Editar</button>
+                <button class="btn-eliminar-reserva" onclick="eliminarHuesped('${data.id_dni}')">Eliminar</button>
               </div>
             </div>
           </div>
@@ -279,9 +279,8 @@ formBuscarHuesped.addEventListener('submit', async (e) => {
     } else {
       resultadoBusqueda.innerHTML = `
         <div class="mensajes error">
-          <h3>❌ Huésped no encontrado</h3>
+          <h3>Huésped no encontrado</h3>
           <p>No se encontró un huésped con el DNI ${dniBuscar}</p>
-          <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
         </div>
       `;
     }
@@ -289,7 +288,7 @@ formBuscarHuesped.addEventListener('submit', async (e) => {
     console.error(error);
     resultadoBusqueda.innerHTML = `
       <div class="mensajes error">
-        <h3>❌ Error al buscar el huésped</h3>
+        <h3>Error al buscar el huésped</h3>
         <p>Ocurrió un error al procesar la búsqueda</p>
         <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
       </div>
@@ -337,18 +336,18 @@ formAgregarHuesped.addEventListener('submit', async (e) => {
   });
 
       if (response.ok) {
-        mostrarMensaje('✅ Huésped agregado exitosamente', 'success');
+        mostrarMensaje('Huésped agregado exitosamente', 'success');
         modalAgregarOverlay.classList.remove('active');
         formAgregarHuesped.reset();
         cargarHuespedes();
       } else {
         const errorData = await response.json();
-        mostrarMensaje(`❌ Error: ${errorData.mensaje || 'Error al agregar el huésped'}`, 'error');
+        mostrarMensaje(`Error: ${errorData.mensaje || 'Error al agregar el huésped'}`, 'error');
       }
     }
   } catch (error) {
     console.error('Error:', error);
-    mostrarMensaje('❌ Error al procesar la solicitud', 'error');
+    mostrarMensaje('Error al procesar la solicitud', 'error');
   }
 });
 
@@ -376,7 +375,7 @@ formEditarHuesped.addEventListener('submit', async (e) => {
     console.log('Respuesta de actualización:', response.status);
 
     if (response.ok) {
-      mostrarMensaje('✅ Huésped actualizado exitosamente', 'success');
+      mostrarMensaje('Huésped actualizado exitosamente', 'success');
       modalEditarOverlay.classList.remove('active');
       formEditarHuesped.reset();
   cargarHuespedes();
@@ -384,11 +383,11 @@ formEditarHuesped.addEventListener('submit', async (e) => {
     } else {
       const errorData = await response.json();
       console.error('Error en respuesta:', errorData);
-      mostrarMensaje(`❌ Error: ${errorData.mensaje || 'Error al actualizar el huésped'}`, 'error');
+      mostrarMensaje(`Error: ${errorData.mensaje || 'Error al actualizar el huésped'}`, 'error');
     }
   } catch (error) {
     console.error('Error:', error);
-    mostrarMensaje('❌ Error al procesar la solicitud', 'error');
+    mostrarMensaje('Error al procesar la solicitud', 'error');
   }
 });
 
@@ -440,14 +439,14 @@ window.editarHuesped = async (dni) => {
       // Abrir modal de edición
       modalEditarOverlay.classList.add('active');
       
-      mostrarMensaje('📝 Modo edición activado', 'info');
+      mostrarMensaje('Modo edición activado', 'info');
     } else {
       console.error('No se encontraron todos los campos del formulario');
-      mostrarMensaje('❌ Error: No se encontraron los campos del formulario', 'error');
+      mostrarMensaje('Error: No se encontraron los campos del formulario', 'error');
     }
   } catch (error) {
     console.error('Error al cargar huésped:', error);
-    mostrarMensaje('❌ Error al cargar datos del huésped', 'error');
+    mostrarMensaje('Error al cargar datos del huésped', 'error');
   }
 };
 
@@ -458,15 +457,15 @@ window.eliminarHuesped = async (dni) => {
     const response = await fetch(`/api/v1/huespedes/${dni}`, { method: 'DELETE' });
     
     if (response.ok) {
-      mostrarMensaje('✅ Huésped eliminado exitosamente', 'success');
+      mostrarMensaje('Huésped eliminado exitosamente', 'success');
   cargarHuespedes();
     } else {
       const errorData = await response.json();
-      mostrarMensaje(`❌ Error: ${errorData.mensaje || 'Error al eliminar'}`, 'error');
+      mostrarMensaje(`Error: ${errorData.mensaje || 'Error al eliminar'}`, 'error');
     }
   } catch (error) {
     console.error('Error al eliminar huésped:', error);
-    mostrarMensaje('❌ Error al eliminar el huésped', 'error');
+    mostrarMensaje('Error al eliminar el huésped', 'error');
   }
 };
 
@@ -474,7 +473,7 @@ window.eliminarHuesped = async (dni) => {
 async function generarReporteHuespedes() {
     try {
         console.log('Iniciando generación de reporte...');
-        mostrarMensaje('📄 Generando reporte...', 'info');
+        mostrarMensaje('Generando reporte...', 'info');
         
         // Hacer la petición al servidor
         const respuesta = await fetch('/api/v1/huespedes/reporte');
@@ -513,10 +512,10 @@ async function generarReporteHuespedes() {
         // Limpiar URL
         window.URL.revokeObjectURL(url);
         
-        mostrarMensaje('✅ Reporte generado exitosamente', 'success');
+        mostrarMensaje('Reporte generado exitosamente', 'success');
     } catch (error) {
         console.error('Error al generar reporte:', error);
-        mostrarMensaje(`❌ Error: ${error.message}`, 'error');
+        mostrarMensaje(`Error: ${error.message}`, 'error');
     }
 }
 

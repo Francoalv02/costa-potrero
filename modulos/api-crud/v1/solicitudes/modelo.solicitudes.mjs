@@ -3,7 +3,7 @@ import pool from '../../../../conexion/conexion.db.mjs';
 // Función para crear la tabla si no existe
 async function inicializarTabla() {
     try {
-        console.log('🔧 Verificando tabla de solicitudes...');
+        
         
         // Crear la tabla si no existe
         await pool.query(`
@@ -22,7 +22,7 @@ async function inicializarTabla() {
             );
         `);
         
-        console.log('✅ Tabla de solicitudes verificada/creada');
+        console.log('Tabla de solicitudes verificada y creada');
         
         // Insertar datos de prueba si la tabla está vacía
         const countResult = await pool.query('SELECT COUNT(*) as total FROM solicitudes_reserva');
@@ -33,11 +33,11 @@ async function inicializarTabla() {
                 ('María González', 'maria.gonzalez@hotmail.com', '+54 351 987 6543', 2, '2025-08-25', '2025-08-30', 75000.00),
                 ('Carlos López', 'carlos.lopez@yahoo.com', '+54 351 555 1234', 3, '2025-09-01', '2025-09-05', 65000.00);
             `);
-            console.log('✅ Datos de prueba insertados');
+            console.log('Datos de prueba insertados');
         }
         
     } catch (error) {
-        console.error('❌ Error al inicializar tabla de solicitudes:', error);
+        console.error('Error al inicializar tabla de solicitudes:', error);
     }
 }
 
