@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Costa Potrero</title>
     <link rel="stylesheet" href="./modulos/css/estilo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="./js/dashboard.js"></script>
 </head>
@@ -17,13 +18,13 @@
         <nav>
             <ul>
                 <li> 
+                    <a href="./../index.html">Inicio</a>
                     <a href="./modulos/reservas/disponibilidad.html">Disponibilidad</a>
                     <a href="./modulos/reservas/index.html">Listado Reservas</a>
                     <a href="./modulos/cabanas/alta.html">Alta Cabaña</a>
                     <a href="./modulos/cabanas/index.html">Listado Cabañas</a>
                     <a href="./modulos/huespedes/index.html">Listado Huespedes</a>
                     <a href="./modulos/pagos/pagos.html">Lista de Pagos</a>
-                    <a href="./modulos/solicitudes/index.html">Solicitudes</a>
                 </li>
             </ul>
         </nav>
@@ -40,6 +41,24 @@
                     <span id="current-date"></span>
                     <span id="current-time"></span>
                 </div>
+            </div>
+        </section>
+
+        <section class="quick-access-section">
+            <h2> Gestiones </h2>
+            <div class="quick-access-grid">
+                <div class="quick-card" onclick="window.location.href='./modulos/solicitudes/index.html'">
+                    <div class="card-icon"></div>
+                    <h3>Gestionar Solicitudes</h3>
+                    <p>Ver solicitudes,aceptarlas o rechazarlas</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='./modulos/usuarios/index.html'">
+                    <div class="card-icon"></div>
+                    <h3>Gestionar Usuarios</h3>
+                    <p>Ver, editar y administrar los usuarios del sistema</p>
+                </div>
+                
+             
             </div>
         </section>
 
@@ -126,6 +145,7 @@
                 </div>
                 <div class="chart-card">
                     <h3>Estado de Reservas</h3>
+                    <p class="chart-subtitle">Reservada, Check In, Limpieza, Check Out</p>
                     <canvas id="chart-estado-cabanas"></canvas>
                 </div>
                 <div class="chart-card">

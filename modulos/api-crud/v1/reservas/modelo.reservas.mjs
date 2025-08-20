@@ -117,9 +117,14 @@ async function obtenerReservasConEstado() {
   }
 }
 
-// Obtener solo reservas activas (excluyendo Check Out)
+// Obtener solo reservas activas (fecha de entrada >= día actual)
 async function obtenerReservasActivas() {
   try {
+    const fechaActual = new Date();
+    const fechaActualFormateada = fechaActual.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    
+    console.log('Fecha actual para filtro de reservas activas:', fechaActualFormateada);
+    
     const resultado = await pool.query(`
       SELECT 
         r.id_reserva AS id,
@@ -135,9 +140,11 @@ async function obtenerReservasActivas() {
       JOIN huespedes h ON r.id_dni = h.id_dni
       JOIN cabanas c ON r.id_cabana = c.id_cabana
       JOIN Estados e ON r.id_estado = e.id_estado
-      WHERE LOWER(e.nombreestado) NOT LIKE '%check out%'
-      ORDER BY r.id_reserva
-    `);
+      WHERE r.fechaInicio >= $1
+      ORDER BY r.fechaInicio ASC, r.id_reserva ASC
+    `, [fechaActualFormateada]);
+    
+    console.log(`Reservas activas encontradas: ${resultado.rows.length} (fecha >= ${fechaActualFormateada})`);
     return resultado;
   } catch (error) {
     console.error(error);

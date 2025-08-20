@@ -152,10 +152,11 @@ async function eliminarPago(id_pago) {
 
     // 2) Verificar si la reserva asociada existe
     const reservaExiste = await client.query(
-      `SELECT COUNT(*)::int AS total, ID_Estado
-       FROM reservas
-       WHERE id_reserva = $1`,
-      [id_reserva]
+      `SELECT id_estado
+      FROM reservas
+      WHERE id_reserva = $1
+      LIMIT 1`,
+     [id_reserva]
     );
 
     if (reservaExiste.rows.length === 0 || reservaExiste.rows[0].total === 0) {
@@ -170,7 +171,7 @@ async function eliminarPago(id_pago) {
     await client.query('ROLLBACK');
     const error = new Error('No se puede eliminar el pago porque está asociado a una reserva.');
     error.code = 'TIENE_RESERVAS';
-    error.detail = `Este pago está vinculado a la reserva #${id_reserva} y no puede ser eliminado por seguridad e integridad de datos.`;
+    error.detail = `Este pago está vinculado a la reserva ${id_reserva} y no puede ser eliminado.`;
     throw error;
 
   } catch (error) {

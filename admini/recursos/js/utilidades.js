@@ -8,9 +8,23 @@ export function procesarFormulario(formulario) {
 }
 
 // Muestra un mensaje dentro de un elemento
-export function mostrarMensaje(contenedor, mensaje) {
-  contenedor.innerHTML = mensaje;
-  setTimeout(() => contenedor.innerHTML = '', 3000);
+export function mostrarMensaje(contenedor, mensaje, tipo = 'info') {
+  if (!contenedor) return;
+  
+  const claseColor = tipo === 'error' ? 'error' : tipo === 'success' ? 'success' : 'info';
+  
+  contenedor.innerHTML = `
+    <div class="mensaje mensaje-${claseColor}">
+      ${mensaje}
+    </div>
+  `;
+  
+  // Auto-limpiar después de 5 segundos
+  setTimeout(() => {
+    if (contenedor.innerHTML.includes('mensaje-')) {
+      contenedor.innerHTML = '';
+    }
+  }, 5000);
 }
 
 // Devuelve el ID obtenido desde la URL (por ejemplo editar.html?id=3 => 3)

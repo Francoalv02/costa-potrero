@@ -162,7 +162,7 @@ async function eliminarPago(req, res) {
     }
 
     res.status(500).json({
-      mensaje: 'Error al eliminar el pago',
+      mensaje: 'Error al eliminar el pagooo',
       tipo: 'ERROR_SERVIDOR'
     });
   }

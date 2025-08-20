@@ -50,31 +50,29 @@
                         <h2 style="color: var(--primary-color);">Iniciar Sesión</h2>
                         <p style="color: var(--gray-dark); margin-top: 0.5rem;">Accede a tu cuenta de administración</p>
                     </div>
-                    <form id="form-login">
+                    <form id="form-login" autocomplete="off">
                         <div class="form-group">
                             <label for="email">
                                 <i class="fas fa-envelope"></i> Correo Electrónico
                             </label>
-                            <input type="email" id="email" required>
+                            <input type="email" id="email" name="usuario" required autocomplete="username">
                         </div>
                         <div class="form-group">
                             <label for="password">
                                 <i class="fas fa-lock"></i> Contraseña
                             </label>
-                            <input type="password" id="password" placeholder="••••••••" required>
+                            <input type="password" id="password" name="clave" placeholder="••••••••" required autocomplete="current-password">
                         </div>
                         <button type="submit" class="btn-ingresar">
                             <i class="fas fa-sign-in-alt"></i> Ingresar
-                        </button>
-                        <button type="button" class="btn-modern" style="background: transparent; border: 2px solid var(--gray-light); color: var(--gray-dark); margin-top: 1rem;">
-                            <i class="fas fa-key"></i> Olvidé mi contraseña
                         </button>
                         <div id="mensaje" class="notification" style="margin-top: 1rem; display: none;"></div>
                         <hr style="border: none; height: 1px; background: var(--gray-light); margin: 2rem 0;">
                         <button type="button" onclick="location.href='./index.html'" class="btn-modern" style="background: var(--accent-color); border-color: var(--accent-color);">
                             <i class="fas fa-home"></i> Volver al Inicio
                         </button>
-                </form>
+                    </form>
+                    
                 </div>
             </div>
         </section>

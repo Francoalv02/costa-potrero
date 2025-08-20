@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - Administración</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <script type="module" src="./js/index.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="h1">Costa Potrero</h1>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+        </div>
+        <nav>
+            <ul>
+                <li> 
+                    <a href="./../../index.html">Inicio</a>
+                    <a href="./../reservas/disponibilidad.html">Disponibilidad</a>
+                    <a href="./../reservas/index.html">Listado Reservas</a>
+                    <a href="./../cabanas/alta.html">Alta Cabaña</a>
+                    <a href="./../cabanas/index.html">Listado Cabañas</a>
+                    <a href="./../huespedes/index.html">Listado Huespedes</a>
+                    <a href="./../pagos/pagos.html">Lista de Pagos</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Botón flotante para crear usuario -->
+    <button id="btn-nuevo-usuario" class="btn-busqueda-flotante" title="Crear Nuevo Usuario">
+        <span class="btn-busqueda-texto"> Nuevo Usuario</span>
+    </button>
+
+    <!-- Modal para crear/editar usuario -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-busqueda">
+            <button class="btn-cerrar-modal" id="btn-cerrar-modal">×</button>
+            <h3 id="modal-titulo">Crear Nuevo Usuario</h3>
+            <form id="form-usuario" class="form-busqueda">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="usuario">Usuario *</label>
+                        <input type="text" id="usuario" name="usuario" required placeholder="Ej: admin2" maxlength="50">
+                    </div>
+                    <div class="form-col">
+                        <label for="clave">Clave *</label>
+                        <input type="password" id="clave" name="clave" required placeholder="Mínimo 3 caracteres" minlength="3">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="confirmar_clave">Confirmar Clave *</label>
+                        <input type="password" id="confirmar_clave" name="confirmar_clave" required placeholder="Repetir clave" minlength="3">
+                    </div>
+                    <div class="form-col">
+                        <label for="rol">Rol *</label>
+                        <select id="rol" name="rol" required>
+                            <option value="admin">Administrador</option>
+                            <option value="cliente">Cliente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <button type="submit" class="btn-estadisticas" id="btn-guardar">Crear Usuario</button>
+                    <button type="button" class="btn-estadisticas" style="background: #6c757d;" onclick="cerrarModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Sección: Gestión de Usuarios -->
+        <section class="section-grilla">
+            <h1 class="titulo-reservas">Gestión de Usuarios</h1>
+            <h2 class="subtitulo-reservas">Administradores del Sistema</h2>
+
+            <div id="mensajes"></div>
+
+            <!-- Tabla de usuarios -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="contenedor-usuarios">
+                    <!-- Los usuarios se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sección: Estadísticas de Usuarios -->
+        <section class="section-estadisticas">
+            <h2>Estadísticas de Usuarios</h2>
+            <div class="estadisticas-container">
+                <!-- Tarjetas de resumen -->
+                <div class="tarjetas-resumen">
+                    <div class="tarjeta">
+                        <h3>Total de Usuarios</h3>
+                        <p id="total-usuarios">0</p>
+                    </div>
+                    <div class="tarjeta">
+                        <h3>Administradores</h3>
+                        <p id="total-admin">0</p>
+                    </div>
+                    <div class="tarjeta">
+                        <h3>Clientes</h3>
+                        <p id="total-cliente">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-container">
+                <button id="btn-actualizar-estadisticas" class="btn-estadisticas">Actualizar Estadísticas</button>
+                <button id="btn-exportar-usuarios" class="btn-estadisticas">Exportar Lista (PDF)</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function cerrarSesion() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/login.html';
+                })
+                .catch(error => {
+                    console.error('Error al cerrar sesión:', error);
+                });
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

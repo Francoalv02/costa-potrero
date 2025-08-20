@@ -249,60 +249,94 @@ async function cargarGraficos(reservas, cabanas, pagos) {
             }
         }
         
-        // Gráfico de estado de reservas (datos reales)
+        // Gráfico de estado de reservas (estados reales de la BD)
         const ctxCabanas = document.getElementById('chart-estado-cabanas');
         if (ctxCabanas) {
             try {
-                // Calcular estado de reservas
-                const hoy = new Date();
-                let reservasActivas = 0;
-                let reservasCompletadas = 0;
-                let reservasPendientes = 0;
+                console.log('Creando gráfico de estado de reservas con datos reales...');
+                
+                // Usar estados reales de la base de datos
+                const conteoEstados = {};
                 
                 if (reservasArray && reservasArray.length > 0) {
                     reservasArray.forEach(reserva => {
-                        if (reserva && reserva.fechainicio && reserva.fechafin) {
-                            try {
-                                const inicio = new Date(reserva.fechainicio);
-                                const fin = new Date(reserva.fechafin);
-                                
-                                if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
-                                    if (hoy >= inicio && hoy <= fin) {
-                                        reservasActivas++;
-                                    } else if (hoy > fin) {
-                                        reservasCompletadas++;
-                                    } else {
-                                        reservasPendientes++;
-                                    }
-                                }
-                            } catch (error) {
-                                console.error('Error procesando reserva para estado:', error);
-                            }
+                        // Buscar el estado en diferentes campos posibles
+                        let estado = reserva.NombreEstado || reserva.nombreestado || reserva.estado || 'Sin estado';
+                        
+                        // Si el estado sigue siendo null o undefined
+                        if (!estado || estado === 'null' || estado === 'undefined') {
+                            estado = 'Sin estado';
                         }
+                        
+                        console.log(`Reserva ${reserva.id}: estado = "${estado}" (campos: NombreEstado="${reserva.NombreEstado}", nombreestado="${reserva.nombreestado}")`);
+                        
+                        conteoEstados[estado] = (conteoEstados[estado] || 0) + 1;
                     });
                 }
+                
+                console.log('Conteo de estados calculado:', conteoEstados);
+                
+                // Si no hay estados, mostrar mensaje
+                if (Object.keys(conteoEstados).length === 0) {
+                    conteoEstados['Sin datos'] = 1;
+                }
+                
+                const labels = Object.keys(conteoEstados);
+                const data = Object.values(conteoEstados);
+                
+                // Colores específicos para cada estado
+                const coloresEstados = {
+                    'Reservada': '#4CAF50',      // Verde
+                    'Check In': '#2196F3',       // Azul
+                    'Limpieza': '#FF9800',       // Naranja
+                    'Check Out': '#9C27B0',      // Morado
+                    'Sin estado': '#F44336',     // Rojo
+                    'Sin datos': '#607D8B'       // Gris
+                };
+                
+                const colores = labels.map(label => coloresEstados[label] || '#607D8B');
                 
                 new Chart(ctxCabanas, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Activas', 'Completadas', 'Pendientes'],
+                        labels: labels,
                         datasets: [{
-                            data: [reservasActivas, reservasCompletadas, reservasPendientes],
-                            backgroundColor: ['#28a745', '#17a2b8', '#ffc107']
+                            data: data,
+                            backgroundColor: colores,
+                            borderWidth: 2,
+                            borderColor: '#fff'
                         }]
                     },
                     options: {
                         responsive: true,
                         plugins: {
                             legend: {
-                                position: 'bottom'
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
                             }
                         }
                     }
                 });
-                console.log('Gráfico de estado de reservas creado');
+                console.log('Gráfico de estado de reservas creado con estados reales');
             } catch (error) {
-                console.error('Error creando gráfico de reservas:', error);
+                console.error('Error creando gráfico de estado de reservas:', error);
             }
         }
         
@@ -461,17 +495,24 @@ async function cargarActividadReciente() {
         console.log('Cargando actividad reciente...');
         
         // Cargar datos recientes de todas las tablas
-        const [reservasResponse, pagosResponse, huespedesResponse] = await Promise.all([
+        const [reservasResponse, pagosResponse, huespedesResponse, cabanasResponse] = await Promise.all([
             fetch('/api/v1/reservas'),
             fetch('/api/v1/pagos'),
-            fetch('/api/v1/huespedes')
+            fetch('/api/v1/huespedes'),
+            fetch('/api/v1/cabanas')
         ]);
         
         const reservas = await reservasResponse.json();
         const pagos = await pagosResponse.json();
         const huespedes = await huespedesResponse.json();
+        const cabanas = await cabanasResponse.json();
         
-        console.log('Datos cargados:', { reservas: reservas.length, pagos: pagos.length, huespedes: huespedes.length });
+        console.log('Datos cargados:', { 
+            reservas: reservas.length, 
+            pagos: pagos.length, 
+            huespedes: huespedes.length,
+            cabanas: cabanas.length
+        });
         
         // Crear lista de actividades basada en datos reales
         const actividades = [];
@@ -488,12 +529,13 @@ async function cargarActividadReciente() {
                     const fecha = new Date(reserva.fechainicio);
                     const tiempoTranscurrido = calcularTiempoTranscurrido(fecha);
                     
-                                         actividades.push({
-                         icon: '',
-                         titulo: 'Reserva Registrada',
-                         descripcion: `Reserva #${reserva.id || 'N/A'} para ${reserva.nombre_cabana || 'Cabaña'}`,
-                         tiempo: tiempoTranscurrido
-                     });
+                    actividades.push({
+                        icon: '<i class="fas fa-home"></i>',
+                        titulo: 'Reserva Registrada',
+                        descripcion: `Reserva #${reserva.id || 'N/A'} para ${reserva.nombre_cabana || 'Cabaña'}`,
+                        tiempo: tiempoTranscurrido,
+                        fecha: fecha
+                    });
                 } catch (error) {
                     console.error('Error procesando reserva:', error);
                 }
@@ -512,42 +554,66 @@ async function cargarActividadReciente() {
                     const fecha = new Date(pago.fecha_pago);
                     const tiempoTranscurrido = calcularTiempoTranscurrido(fecha);
                     
-                                         actividades.push({
-                         icon: '',
-                         titulo: 'Pago Registrado',
-                         descripcion: `Pago #${pago.id_pago || 'N/A'} - $${pago.monto || 0} por ${pago.metodo_pago || 'No especificado'}`,
-                         tiempo: tiempoTranscurrido
-                     });
+                    actividades.push({
+                        icon: '<i class="fas fa-dollar-sign"></i>',
+                        titulo: 'Pago Registrado',
+                        descripcion: `Pago #${pago.id_pago || 'N/A'} - $${pago.monto || 0} por ${pago.metodo_pago || 'No especificado'}`,
+                        tiempo: tiempoTranscurrido,
+                        fecha: fecha
+                    });
                 } catch (error) {
                     console.error('Error procesando pago:', error);
                 }
             });
         }
         
-        // Agregar huéspedes recientes (últimos 2)
+        // Agregar huéspedes recientes (últimos 2) - Ordenar por ID descendente para mostrar los más recientes
         if (huespedes && huespedes.length > 0) {
-            const huespedesRecientes = huespedes.slice(0, 2);
+            const huespedesRecientes = huespedes
+                .sort((a, b) => (b.id || b.id_dni || 0) - (a.id || a.id_dni || 0))
+                .slice(0, 2);
+                
             huespedesRecientes.forEach(huesped => {
-                                 actividades.push({
-                     icon: '',
-                     titulo: 'Huésped Registrado',
-                     descripcion: `${huesped.nombre || 'Sin nombre'} (DNI: ${huesped.id_dni || 'N/A'})`,
-                     tiempo: 'Recientemente'
-                 });
+                actividades.push({
+                    icon: '<i class="fas fa-user"></i>',
+                    titulo: 'Huésped Registrado',
+                    descripcion: `${huesped.nombre || 'Sin nombre'} (DNI: ${huesped.id_dni || 'N/A'})`,
+                    tiempo: 'Recientemente',
+                    fecha: new Date() // Fecha actual para ordenamiento
+                });
+            });
+        }
+        
+        // Agregar cabañas recientes (últimas 2) - Ordenar por ID descendente para mostrar las más recientes
+        if (cabanas && cabanas.length > 0) {
+            const cabanasRecientes = cabanas
+                .sort((a, b) => (b.id || b.id_cabana || 0) - (a.id || a.id_cabana || 0))
+                .slice(0, 2);
+                
+            cabanasRecientes.forEach(cabana => {
+                actividades.push({
+                    icon: '<i class="fas fa-building"></i>',
+                    titulo: 'Cabaña Registrada',
+                    descripcion: `${cabana.nombre || 'Sin nombre'} - ${cabana.capacidad || 'N/A'} personas`,
+                    tiempo: 'Recientemente',
+                    fecha: new Date() // Fecha actual para ordenamiento
+                });
             });
         }
         
         console.log('Actividades encontradas:', actividades.length);
         
-        // Ordenar actividades por tiempo (más recientes primero)
+        // Ordenar actividades por fecha (más recientes primero)
         actividades.sort((a, b) => {
-            const tiempoA = a.tiempo.includes('Hace') ? parseInt(a.tiempo.match(/\d+/)?.[0] || 0) : 0;
-            const tiempoB = b.tiempo.includes('Hace') ? parseInt(b.tiempo.match(/\d+/)?.[0] || 0) : 0;
-            return tiempoA - tiempoB;
+            if (a.fecha && b.fecha) {
+                return b.fecha - a.fecha;
+            }
+            // Si no hay fecha, mantener el orden original
+            return 0;
         });
         
-        // Limitar a 4 actividades
-        const actividadesFinales = actividades.slice(0, 4);
+        // Limitar a 6 actividades para mostrar más variedad
+        const actividadesFinales = actividades.slice(0, 6);
         
         const activityList = document.getElementById('activity-list');
         if (activityList) {
@@ -564,16 +630,16 @@ async function cargarActividadReciente() {
                 `).join('');
                 console.log('Actividades mostradas:', actividadesFinales.length);
             } else {
-                                 activityList.innerHTML = `
-                     <div class="activity-item">
-                         <div class="activity-icon"></div>
-                         <div class="activity-content">
-                             <h4>Sin Actividad Reciente</h4>
-                             <p>No hay actividades registradas en el sistema</p>
-                             <span class="activity-time">Sin datos</span>
-                         </div>
-                     </div>
-                 `;
+                activityList.innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div class="activity-content">
+                            <h4>Sin Actividad Reciente</h4>
+                            <p>No hay actividades registradas en el sistema</p>
+                            <span class="activity-time">Sin datos</span>
+                        </div>
+                    </div>
+                `;
                 console.log('No se encontraron actividades');
             }
         }
@@ -581,18 +647,18 @@ async function cargarActividadReciente() {
     } catch (error) {
         console.error('Error al cargar actividad reciente:', error);
         const activityList = document.getElementById('activity-list');
-                 if (activityList) {
-             activityList.innerHTML = `
-                 <div class="activity-item">
-                     <div class="activity-icon"></div>
-                     <div class="activity-content">
-                         <h4>Error al Cargar Actividad</h4>
-                         <p>No se pudieron cargar las actividades recientes</p>
-                         <span class="activity-time">Error</span>
-                     </div>
-                 </div>
-             `;
-         }
+        if (activityList) {
+            activityList.innerHTML = `
+                <div class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="activity-content">
+                        <h4>Error al Cargar Actividad</h4>
+                        <p>No se pudieron cargar las actividades recientes</p>
+                        <span class="activity-time">Error</span>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 

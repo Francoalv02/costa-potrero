@@ -659,20 +659,29 @@ formBuscar.addEventListener('submit', async (e) => {
       return;
     }
 
-    // Mostrar listado clicable dentro del modal
+    // Si solo hay un resultado, mostrar directamente el detalle completo
+    if (filtradas.length === 1) {
+      const reserva = filtradas[0];
+      renderDetalleReserva(reserva);
+      return;
+    }
+    
+    // Si hay múltiples resultados, mostrar lista y permitir selección
     const items = filtradas.map(r => `
-      <div class="item-resultado" data-id="${r.id}">
-        <div><strong>#${r.id}</strong> - ${r.nombre || 'N/A'} (${r.id_dni})</div>
-        <div>${r.fechainicio || ''} → ${r.fechafin || ''} | ${r.nombre_cabana || ''}</div>
+      <div class="item-resultado" data-id="${r.id}" style="cursor: pointer; padding: 10px; border: 1px solid #ddd; margin: 5px 0; border-radius: 4px; background: #f8f9fa;">
+        <div style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">#${r.id} - ${r.nombre || 'N/A'} (${r.id_dni})</div>
+        <div style="color: #6c757d; font-size: 0.9em;">${formatearFecha(r.fechainicio)} → ${formatearFecha(r.fechafin)} | ${r.nombre_cabana || ''}</div>
       </div>
     `).join('');
+    
     resultado.innerHTML = `
       <div class="lista-resultados">
+        <h4 style="margin-bottom: 15px; color: #2c3e50;">Se encontraron ${filtradas.length} reservas. Selecciona una para ver detalles:</h4>
         ${items}
       </div>
     `;
 
-    // Delegación: click en un resultado para ver detalle
+    // Delegación: click en un resultado para ver detalle completo
     resultado.querySelectorAll('.item-resultado').forEach(el => {
       el.addEventListener('click', async () => {
         const idSel = el.dataset.id;
@@ -834,6 +843,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     await cargarCabanas();
     await cargarReservas();
     await cargarEstadisticasReservas();
+    
+    // Event listener para cambio de vista
+    const selectVista = document.getElementById('vista-reservas');
+    if (selectVista) {
+      selectVista.addEventListener('change', async () => {
+        console.log('Vista cambiada a:', selectVista.value);
+        await cargarReservas();
+        await cargarEstadisticasReservas();
+      });
+    }
   } catch (error) {
     console.error('Error inicializando página:', error);
   }
