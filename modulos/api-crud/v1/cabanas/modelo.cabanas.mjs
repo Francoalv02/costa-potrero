@@ -18,7 +18,7 @@ async function obtenerCabanas() {
 
 async function obtenerCabana(id_cabana) {
     try {
-        // Consulta simple sin JOIN, ya que la tabla cabanas puede no tener id_estado
+        
         const resultado = await pool.query(`
             SELECT 
                 id_cabana,
@@ -97,7 +97,7 @@ async function modificarCabana(cabana) {
 
 
 
- async function eliminarCabana(id_cabana) {
+async function eliminarCabana(id_cabana) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

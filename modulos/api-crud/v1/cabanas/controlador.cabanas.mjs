@@ -233,7 +233,7 @@ async function obtenerCabana(req, res) {
 
 async function crearCabana(req, res) {
     try {
-                const {
+        const {
         nombre_cabana,
         descripcion,
         capacidad_personas,

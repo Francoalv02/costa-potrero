@@ -159,9 +159,9 @@ formBuscar.addEventListener('submit', async (e) => {
       // Mostrar mensaje de error dentro del modal
       resultado.innerHTML = `
         <div class="mensajes error">
-          <h3> Cabaña no encontrada</h3>
-          <p>No se encontró una cabaña con el ID ${idCabana}</p>
-          <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
+          <h3> Cabaña no Registrada</h3>
+          <p>No se encontró una cabaña con ese ID ${idCabana}</p>
+          
         </div>
       `;
     }
@@ -172,7 +172,7 @@ formBuscar.addEventListener('submit', async (e) => {
       <div class="mensajes error">
         <h3> Error al buscar la cabaña</h3>
         <p>Ocurrió un error al procesar la búsqueda</p>
-        <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
+  
       </div>
     `;
   }

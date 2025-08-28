@@ -237,7 +237,7 @@ async function generarReporteHuespedes(req, res) {
       
       dataY += 20;
       
-      // Nueva página si es necesario
+      
       if (dataY > 700) {
         doc.addPage();
         dataY = 30;

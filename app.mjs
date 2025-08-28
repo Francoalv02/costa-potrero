@@ -9,7 +9,7 @@ dotenv.config();
 
 // Módulos
 import modulosAp1 from './modulos/modulos.mjs';
-import rutaLogin from './modulos/auth/ruta.login.mjs'; // nueva ruta
+import rutaLogin from './modulos/auth/ruta.login.mjs'; 
 
 // Instanciamos Express
 const app = express();

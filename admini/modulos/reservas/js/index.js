@@ -615,13 +615,29 @@ formBuscar.addEventListener('submit', async (e) => {
         mostrarMensaje(mensajes, 'Ingresá un ID válido', 'error');
         return;
       }
+
       const response = await fetch(`/api/v1/reservas/${idReserva}`);
+
+      if (response.status === 404) {
+        // Manejo especial si la API devuelve 404
+        resultado.innerHTML = `
+          <div class="mensajes error">
+            <h3>Reserva no encontrada</h3>
+            <p>No existe ninguna reserva con ID ${idReserva}.</p>
+          </div>`;
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
+
       const data = await response.json();
-      if (!response.ok) throw new Error('No encontrada');
       renderDetalleReserva(data);
       mostrarMensaje(mensajes, 'Reserva encontrada', 'success');
       return;
     }
+
 
     // Para DNI y Nombre, usamos el endpoint general y filtramos en servidor si existiera; si no, filtramos en cliente
     let reservas = [];
@@ -653,8 +669,8 @@ formBuscar.addEventListener('submit', async (e) => {
     if (!filtradas.length) {
       resultado.innerHTML = `
         <div class="mensajes error">
-          <h3>Sin resultados</h3>
-          <p>No se encontraron reservas para la búsqueda.</p>
+          <h3>Reserva no encontrada</h3>
+          <p>No existe ninguna reserva .</p>
         </div>`;
       return;
     }

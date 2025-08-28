@@ -390,8 +390,9 @@ formBuscar.addEventListener('submit', async (e) => {
       resultado.innerHTML = `
         <div class="mensajes error">
           <h3>Pago no encontrado</h3>
-          <p>No se encontró un pago con el ID ${idPago}</p>
-          <button class="btn-estadisticas" onclick="modalOverlay.classList.remove('active')">Cerrar</button>
+          <hr>
+          <p>   (No se encontró un pago con el ID ${idPago})</p>
+
         </div>
       `;
     }
