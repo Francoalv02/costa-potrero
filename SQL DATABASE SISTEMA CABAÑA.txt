@@ -1,0 +1,157 @@
+-- Database: sistema
+
+-- DROP DATABASE IF EXISTS sistema;
+
+CREATE DATABASE sistema
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'es-ES'
+    LC_CTYPE = 'es-ES'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+
+-- Tabla Huespedes
+CREATE TABLE Huespedes ( 
+    ID_DNI VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    gmail VARCHAR(100)
+);
+
+INSERT INTO Huespedes (ID_DNI, nombre, telefono, gmail)
+VALUES 
+('12345678', 'Juan Pérez', '3511234567', 'juanperez@gmail.com'),
+('23456789', 'Ana Torres', '3517654321', 'ana.torres@example.com'),
+('34567890', 'Carlos Ruiz', '3519876543', 'cruiz@gmail.com');
+
+-- Tabla Cabanas
+CREATE TABLE Cabanas (
+    ID_Cabana SERIAL PRIMARY KEY,
+    nombre_cabana VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    capacidad_personas INT CHECK (capacidad_personas > 0 AND capacidad_personas <= 8),
+    Precio NUMERIC(10,2)
+);
+
+INSERT INTO Cabanas (nombre_cabana, descripcion, capacidad_personas, Precio)
+VALUES 
+('Cabaña Lu', 'Cama matrimonial, sofá cama para dos personas, una cama.', 5, 19000),
+('Cabaña Peque', 'Cama matrimonial, sofá cama para dos personas.', 4, 12000),
+('Cabaña Ju', '3 camas matrimoniales, sofá cama para dos personas.', 8, 13000),
+('Cabaña Fran', '2 camas matrimoniales, sofá cama para dos personas.', 6, 19000);
+
+-- Tabla Estados
+CREATE TABLE Estados (
+    ID_Estado SERIAL PRIMARY KEY,
+    NombreEstado TEXT NOT NULL
+);
+
+INSERT INTO Estados (NombreEstado)
+VALUES 
+('Reservada'),
+('Check In'),
+('Check Out'),
+('Baja');
+('Limpieza);
+
+-- Tabla Reservas
+CREATE TABLE Reservas (
+    ID_Reserva SERIAL PRIMARY KEY,
+    ID_DNI VARCHAR(20) REFERENCES Huespedes(ID_DNI),
+    ID_Cabana INT REFERENCES Cabanas(ID_Cabana),
+    FechaInicio DATE NOT NULL,
+    FechaFin DATE NOT NULL,
+    PrecioTotal NUMERIC(10, 2),
+    ID_Estado INT REFERENCES Estados(ID_Estado),
+    CONSTRAINT chk_fecha CHECK (FechaFin > FechaInicio)
+);
+
+INSERT INTO Reservas (ID_DNI, ID_Cabana, FechaInicio, FechaFin, PrecioTotal, ID_Estado)
+VALUES
+('12345678', 1, '2025-07-01', '2025-07-05', 50000, 2),  -- Reservada
+('23456789', 2, '2025-07-10', '2025-07-15', 70000, 3),  -- Check-In
+('34567890', 1, '2025-07-20', '2025-07-25', 60000, 1);  -- Disponible
+
+-- Tabla usuarios
+CREATE TABLE usuarios (
+  id SERIAL PRIMARY KEY,
+  usuario TEXT UNIQUE NOT NULL,
+  clave TEXT NOT NULL,
+  rol TEXT NOT NULL CHECK (rol IN ('admin', 'cliente'))
+);
+
+INSERT INTO usuarios (usuario, clave, rol)
+VALUES 
+('admin@costa.com', 'admin123', 'admin'),
+('usuario@costa.com', 'usuario456', 'cliente');
+
+
+-- 1. Crear tabla de estados de pago
+CREATE TABLE EstadoPago (
+    id_estado_pago SERIAL PRIMARY KEY,
+    nombre_estado_pago TEXT NOT NULL
+);
+
+-- Insertar estados posibles
+INSERT INTO EstadoPago (nombre_estado_pago)
+VALUES
+('Señado'),        -- 50%
+('Realizado');     -- 100%
+
+
+-- 2. Crear tabla de pagos
+CREATE TABLE Pagos (
+    id_pago SERIAL PRIMARY KEY,
+    id_reserva INT NOT NULL REFERENCES Reservas(id_reserva) ON DELETE CASCADE,
+    monto restante NUMERIC(10,2) NOT NULL,
+    fecha_pago DATE NOT NULL DEFAULT CURRENT_DATE,
+    id_estado_pago INT NOT NULL REFERENCES EstadoPago(id_estado_pago),
+    metodo_pago TEXT, (efectivo, transferencia, etc.)
+    observacion TEXT  -- opcional
+);
+-- Insertar pagos reales vinculados a reservas existentes
+INSERT INTO Pagos (id_reserva, monto, id_estado_pago, metodo_pago, observacion)
+VALUES
+(13, 30000.00, 2, 'Transferencia', 'Seña del 50% abonada'),
+(14, 70000.00, 3, 'Efectivo', 'Pago total en mostrador'),
+(15, 0.00, 1, NULL, 'Reserva aún sin pago'),
+(16, 25000.00, 2, 'MercadoPago', 'Seña enviada por link'),
+(17, 70000.00, 3, 'Transferencia', 'Transferencia realizada el 05/07'),
+(18, 60000.00, 3, 'Tarjeta', 'Pago completo con tarjeta'),
+(20, 50000.00, 2, 'Efectivo', 'Seña entregada en recepción'),
+(21, 36000.00, 3, 'Transferencia', 'Pago completo por transferencia anticipada');
+
+
+CREATE TABLE IF NOT EXISTS solicitudes_reserva (
+ id_solicitud SERIAL PRIMARY KEY,
+ nombre VARCHAR(100) NOT NULL,
+ gmail VARCHAR(100) NOT NULL,
+ telefono VARCHAR(20) NOT NULL,
+ id_cabana INTEGER REFERENCES cabanas(id_cabana),
+ fecha_inicio DATE NOT NULL,
+ fecha_fin DATE NOT NULL,
+ estado VARCHAR(20) DEFAULT 'Pendiente',
+ fecha_solicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ observaciones TEXT,
+ precio_estimado DECIMAL(10,2)
+
+INSERT INTO solicitudes_reserva (nombre, gmail, telefono, id_cabana, fecha_inicio, fecha_fin, precio_estimado) VALUES
+ ('Juan Pérez', 'juan.perez@gmail.com', '+54 351 123 4567', 1, '2025-08-15', '2025-08-20', 80000.00),
+ ('María González', 'maria.gonzalez@hotmail.com', '+54 351 987 6543', 2, '2025-08-25', '2025-08-30', 75000.00),
+ ('Carlos López', 'carlos.lopez@yahoo.com', '+54 351 555 1234', 3, '2025-09-01', '2025-09-05', 65000.00)
+ ON CONFLICT DO NOTHING;
+
+
+
+
+
+
+
+------------------------------------------------------------
+
+
+
